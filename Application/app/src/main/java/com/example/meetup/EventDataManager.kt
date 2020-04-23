@@ -7,7 +7,7 @@ object EventDataManager {
     val attendingEvents = mutableListOf<Event>()
     val declinedEvents = mutableListOf<Event>()
     val dateFormat = SimpleDateFormat("dd-MMM-yyyy")
-    val timeFormat = SimpleDateFormat("hh:mm")
+    val timeFormat = SimpleDateFormat("HH:mm")
 
     init {
 

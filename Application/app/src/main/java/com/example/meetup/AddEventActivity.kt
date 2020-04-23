@@ -73,7 +73,7 @@ class AddEventActivity : AppCompatActivity() {
     fun addEvent() {
         val name = nameEditText.text.toString()
 
-        val dateFormat = SimpleDateFormat("yyyy-mm-dd-hh-mm")
+        val dateFormat = SimpleDateFormat("yyyy-mm-dd-HH-mm")
         val formatedDate = dateFormat.format(calendar.getTime())
         val date = dateFormat.parse(formatedDate)
 
