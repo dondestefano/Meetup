@@ -13,6 +13,7 @@ import android.widget.TimePicker
 import kotlinx.android.synthetic.main.activity_add_new_event.*
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.xml.datatype.DatatypeConstants.FEBRUARY
 import javax.xml.datatype.DatatypeConstants.MONTHS
 
 class AddEventActivity : AppCompatActivity() {
@@ -33,6 +34,8 @@ class AddEventActivity : AppCompatActivity() {
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
+
+
         val date = EventDataManager.dateFormat.format(calendar.time)
         val time = EventDataManager.timeFormat.format(calendar.time)
         dateEditText.setText(date)
@@ -42,14 +45,20 @@ class AddEventActivity : AppCompatActivity() {
         dateEditText.setOnClickListener {
             val datePickerDialog = DatePickerDialog(
                 this,
-                DatePickerDialog.OnDateSetListener { datePicker, selectedYear, selectedMonth, dayOfMonth ->
+                DatePickerDialog.OnDateSetListener { datePicker, selectedYear, monthValue, dayOfMonth ->
                     calendar.set(Calendar.YEAR, selectedYear)
-                    calendar.set(Calendar.MONTH, selectedMonth)
                     calendar.set(Calendar.DAY_OF_YEAR, dayOfMonth)
-                    val newDate = EventDataManager.dateFormat.format(calendar.time)
+                    var newDate = EventDataManager.dateFormat.format(calendar.getTime())
                     dateEditText.setText(newDate)
+                    calendar.set(Calendar.MONTH, monthValue)
+                    val testMonth = calendar.get(Calendar.MONTH)
+                    newDate = EventDataManager.dateFormat.format(calendar.getTime())
+                    dateEditText.setText(newDate)
+
+
                 }, year, month, day
             )
+
             datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000
             datePickerDialog.show()
         }
@@ -71,16 +80,19 @@ class AddEventActivity : AppCompatActivity() {
     }
 
     fun addEvent() {
+        Log.d("hej", calendar.time.toString())
+
         val name = nameEditText.text.toString()
 
-        val dateFormat = SimpleDateFormat("yyyy-mm-dd-HH-mm")
-        val formatedDate = dateFormat.format(calendar.getTime())
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd-HH-mm")
+        val formatedDate = dateFormat.format(calendar.time)
+        Log.d("hej2", formatedDate)
         val date = dateFormat.parse(formatedDate)
 
         val event = Event(name, date, true)
         EventDataManager.attendingEvents.add(event)
+        Log.d("hej", event.date.toString())
         finish()
     }
-
 }
 

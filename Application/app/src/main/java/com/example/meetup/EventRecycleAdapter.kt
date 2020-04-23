@@ -83,5 +83,4 @@ class EventRecycleAdapter(private val context : Context, private val events: Lis
         }
         notifyDataSetChanged()
     }
-
 }
