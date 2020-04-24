@@ -17,7 +17,7 @@ import javax.xml.datatype.DatatypeConstants.FEBRUARY
 import javax.xml.datatype.DatatypeConstants.MONTHS
 
 class AddEventActivity : AppCompatActivity() {
-    val calendar = Calendar.getInstance()
+    private val calendar: Calendar = Calendar.getInstance()
     lateinit var timeEditText: EditText
     lateinit var dateEditText: EditText
     lateinit var saveButton : Button
@@ -30,56 +30,22 @@ class AddEventActivity : AppCompatActivity() {
         dateEditText = findViewById(R.id.dateEditText)
         saveButton = findViewById(R.id.saveButton)
 
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-
-
-        val date = EventDataManager.dateFormat.format(calendar.time)
-        val time = EventDataManager.timeFormat.format(calendar.time)
-        dateEditText.setText(date)
-        timeEditText.setText(time)
-
-
         dateEditText.setOnClickListener {
-            val datePickerDialog = DatePickerDialog(
-                this,
-                DatePickerDialog.OnDateSetListener { datePicker, selectedYear, monthValue, dayOfMonth ->
-                    calendar.set(Calendar.YEAR, selectedYear)
-                    calendar.set(Calendar.DAY_OF_YEAR, dayOfMonth)
-                    var newDate = EventDataManager.dateFormat.format(calendar.getTime())
-                    dateEditText.setText(newDate)
-                    calendar.set(Calendar.MONTH, monthValue)
-                    val testMonth = calendar.get(Calendar.MONTH)
-                    newDate = EventDataManager.dateFormat.format(calendar.getTime())
-                    dateEditText.setText(newDate)
-
-
-                }, year, month, day
-            )
-
-            datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000
-            datePickerDialog.show()
+            pickDate()
         }
 
         timeEditText.setOnClickListener{
-            val timeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
-                calendar.set(Calendar.HOUR_OF_DAY, hour)
-                calendar.set(Calendar.MINUTE, minute)
-                val newTime = EventDataManager.timeFormat.format(calendar.time)
-                timeEditText.setText(newTime)
-            }
-            TimePickerDialog(this, timeSetListener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show()
+            pickTime()
         }
 
         saveButton.setOnClickListener{
             addEvent()
         }
 
+        setDateAndTime()
     }
 
-    fun addEvent() {
+    private fun addEvent() {
         Log.d("hej", calendar.time.toString())
 
         val name = nameEditText.text.toString()
@@ -93,6 +59,45 @@ class AddEventActivity : AppCompatActivity() {
         EventDataManager.attendingEvents.add(event)
         Log.d("hej", event.date.toString())
         finish()
+    }
+
+    private fun pickDate() {
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(
+            this,
+            DatePickerDialog.OnDateSetListener { datePicker, selectedYear, monthValue, dayOfMonth ->
+                calendar.set(Calendar.YEAR, selectedYear)
+                calendar.set(Calendar.DAY_OF_YEAR, dayOfMonth)
+                var newDate = EventDataManager.dateFormat.format(calendar.getTime())
+                dateEditText.setText(newDate)
+                calendar.set(Calendar.MONTH, monthValue)
+                newDate = EventDataManager.dateFormat.format(calendar.getTime())
+                dateEditText.setText(newDate)
+            }, year, month, day
+        )
+        datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000
+        datePickerDialog.show()
+    }
+
+    private fun pickTime() {
+        val timeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
+            calendar.set(Calendar.HOUR_OF_DAY, hour)
+            calendar.set(Calendar.MINUTE, minute)
+            val newTime = EventDataManager.timeFormat.format(calendar.time)
+            timeEditText.setText(newTime)
+        }
+        TimePickerDialog(this, timeSetListener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true)
+            .show()
+    }
+
+    fun setDateAndTime() {
+        val date = EventDataManager.dateFormat.format(calendar.time)
+        val time = EventDataManager.timeFormat.format(calendar.time)
+        dateEditText.setText(date)
+        timeEditText.setText(time)
     }
 }
 
