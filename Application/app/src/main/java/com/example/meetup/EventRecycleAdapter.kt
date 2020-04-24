@@ -1,19 +1,15 @@
 package com.example.meetup
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.SimpleAdapter
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import java.text.SimpleDateFormat
-import java.util.*
 
-class EventRecycleAdapter(private val context : Context, private val events: List<Event>) : RecyclerView.Adapter<EventRecycleAdapter.ViewHolder>() {
+class EventRecycleAdapter(private val context: Context, private val events: List<Event>, private var otherAdapter: EventRecycleAdapter?) : RecyclerView.Adapter<EventRecycleAdapter.ViewHolder>() {
 
     private val layoutInflater = LayoutInflater.from(context)
 
@@ -68,7 +64,7 @@ class EventRecycleAdapter(private val context : Context, private val events: Lis
         } else {
             EventDataManager.attendingEvents.add(event)
         }
-        notifyDataSetChanged()
+        updateRecycleView()
     }
 
     fun addEventToDeclined(position: Int) {
@@ -81,6 +77,17 @@ class EventRecycleAdapter(private val context : Context, private val events: Lis
         } else {
             EventDataManager.declinedEvents.add(event)
         }
-        notifyDataSetChanged()
+        updateRecycleView()
     }
+
+    fun setOtherAdapter(adapter : EventRecycleAdapter){
+        otherAdapter = adapter
+    }
+
+    fun updateRecycleView() {
+        notifyDataSetChanged()
+        otherAdapter?.notifyDataSetChanged()
+    }
+
+
 }

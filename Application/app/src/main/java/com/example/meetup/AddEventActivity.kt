@@ -69,12 +69,12 @@ class AddEventActivity : AppCompatActivity() {
         val datePickerDialog = DatePickerDialog(
             this,
             DatePickerDialog.OnDateSetListener { datePicker, selectedYear, monthValue, dayOfMonth ->
+
                 calendar.set(Calendar.YEAR, selectedYear)
                 calendar.set(Calendar.DAY_OF_YEAR, dayOfMonth)
-                var newDate = EventDataManager.dateFormat.format(calendar.getTime())
-                dateEditText.setText(newDate)
+                calendar.time //Don't ask...
                 calendar.set(Calendar.MONTH, monthValue)
-                newDate = EventDataManager.dateFormat.format(calendar.getTime())
+                var newDate = EventDataManager.dateFormat.format(calendar.time)
                 dateEditText.setText(newDate)
             }, year, month, day
         )

@@ -1,17 +1,12 @@
 package com.example.meetup
 
 import android.content.Intent
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
-import org.w3c.dom.Text
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,8 +20,11 @@ class MainActivity : AppCompatActivity() {
         attendRecyclerView.layoutManager = LinearLayoutManager(this)
         notAttendRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        val attendAdapter = EventRecycleAdapter(this, EventDataManager.attendingEvents)
-        val notAttendAdapter = EventRecycleAdapter(this, EventDataManager.declinedEvents)
+
+        val attendAdapter = EventRecycleAdapter(this, EventDataManager.attendingEvents, null)
+        val notAttendAdapter = EventRecycleAdapter(this, EventDataManager.declinedEvents, null)
+        attendAdapter.setOtherAdapter(notAttendAdapter)
+        notAttendAdapter.setOtherAdapter(attendAdapter)
 
         attendRecyclerView.adapter = attendAdapter
         notAttendRecyclerView.adapter = notAttendAdapter
