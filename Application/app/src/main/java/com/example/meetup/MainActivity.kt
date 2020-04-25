@@ -31,7 +31,8 @@ class MainActivity : AppCompatActivity() {
 
         val fab = findViewById<View>(R.id.addEventActionButton)
         fab.setOnClickListener{ view ->
-            val intent = Intent(this, AddEventActivity::class.java)
+            val intent = Intent(this, AddAndEditEventActivity::class.java)
+            intent.putExtra("EVENT_POSITION", "NO_LIST")
             startActivity(intent)
 
         }

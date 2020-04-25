@@ -1,7 +1,9 @@
 package com.example.meetup
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +27,7 @@ class EventRecycleAdapter(private val context: Context, private val events: List
         val event = events[position]
         holder.textViewName.text = event.name
         holder.textViewDate.text = (EventDataManager.dateFormat.format(event.date) + " " + EventDataManager.timeFormat.format(event.date))
+        holder.eventPosition = position
 
         holder.attendButton.setOnClickListener{
             val currentEvent = events[position]
@@ -46,12 +49,6 @@ class EventRecycleAdapter(private val context: Context, private val events: List
             holder.attendButton.setText("Yes")
         } else {holder.attendButton.setBackgroundColor(Color.RED)
             holder.attendButton.setText("No")}
-    }
-
-    inner class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
-        val textViewName = itemView.findViewById<TextView>(R.id.textViewName)
-        val textViewDate = itemView.findViewById<TextView>(R.id.textViewDate)
-        val attendButton = itemView.findViewById<Button>(R.id.attendButton)
     }
 
     fun addEventToAttending(position: Int) {
@@ -89,5 +86,24 @@ class EventRecycleAdapter(private val context: Context, private val events: List
         otherAdapter?.notifyDataSetChanged()
     }
 
+    inner class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
+        val textViewName = itemView.findViewById<TextView>(R.id.textViewName)
+        val textViewDate = itemView.findViewById<TextView>(R.id.textViewDate)
+        val attendButton = itemView.findViewById<Button>(R.id.attendButton)
+        var eventPosition = 0
 
+        init {
+            itemView.setOnClickListener {
+                val intent = Intent(context, AddAndEditEventActivity::class.java)
+                intent.putExtra("EVENT_POSITION", eventPosition)
+                Log.d("hej", eventPosition.toString())
+                if (events == EventDataManager.attendingEvents) {
+                    intent.putExtra("EVENT_LIST", "attending")
+                } else {
+                    intent.putExtra("EVENT_LIST", "declined")
+                }
+                context.startActivity(intent)
+            }
+        }
+    }
 }

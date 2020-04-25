@@ -16,11 +16,19 @@ import java.util.*
 import javax.xml.datatype.DatatypeConstants.FEBRUARY
 import javax.xml.datatype.DatatypeConstants.MONTHS
 
-class AddEventActivity : AppCompatActivity() {
+const val EVENT_POSITION_NOT_SET = -1
+const val EVENT_POSITION_KEY = "EVENT_POSITION"
+const val EVENT_LIST_KEY = "EVENT_LIST"
+const val EVENT_LIST_NOT_SET = "NO_LIST"
+
+class AddAndEditEventActivity : AppCompatActivity() {
     private val calendar: Calendar = Calendar.getInstance()
     lateinit var timeEditText: EditText
     lateinit var dateEditText: EditText
+    lateinit var nameEditText : EditText
     lateinit var saveButton : Button
+    private var eventPosition = EVENT_POSITION_NOT_SET
+    private var eventList = EVENT_LIST_NOT_SET
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,36 +36,61 @@ class AddEventActivity : AppCompatActivity() {
 
         timeEditText = findViewById(R.id.timeEditText)
         dateEditText = findViewById(R.id.dateEditText)
+        nameEditText = findViewById(R.id.nameEditText)
         saveButton = findViewById(R.id.saveButton)
 
-        dateEditText.setOnClickListener {
-            pickDate()
+        val stringExtra = intent.getStringExtra(EVENT_LIST_KEY)
+        eventPosition = intent.getIntExtra(EVENT_POSITION_KEY, eventPosition)
+        if (stringExtra != null) {
+            eventList = stringExtra
         }
 
-        timeEditText.setOnClickListener{
-            pickTime()
-        }
 
-        saveButton.setOnClickListener{
-            addEvent()
-        }
 
+        setOnClickListeners()
         setDateAndTime()
     }
 
+
+    private fun setOnClickListeners() {
+        dateEditText.setOnClickListener {
+            pickDate()
+        }
+        timeEditText.setOnClickListener{
+            pickTime()
+        }
+        saveButton.setOnClickListener{
+            if (eventPosition != EVENT_POSITION_NOT_SET) {
+                editEvent(eventPosition)
+            } else {
+                addEvent()
+            }
+        }
+    }
+
     private fun addEvent() {
-        Log.d("hej", calendar.time.toString())
-
         val name = nameEditText.text.toString()
-
         val dateFormat = SimpleDateFormat("yyyy-MM-dd-HH-mm")
         val formatedDate = dateFormat.format(calendar.time)
-        Log.d("hej2", formatedDate)
         val date = dateFormat.parse(formatedDate)
-
         val event = Event(name, date, true)
         EventDataManager.attendingEvents.add(event)
-        Log.d("hej", event.date.toString())
+        finish()
+    }
+
+    private fun editEvent(position: Int) {
+        val name = nameEditText.text.toString()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd-HH-mm")
+        val formatedDate = dateFormat.format(calendar.time)
+        val date = dateFormat.parse(formatedDate)
+
+        if(eventList == "attending") {
+            EventDataManager.attendingEvents[position].name = name
+            EventDataManager.attendingEvents[position].date = date
+        } else {
+            EventDataManager.declinedEvents[position].name = name
+            EventDataManager.declinedEvents[position].date = date
+        }
         finish()
     }
 
@@ -74,7 +107,7 @@ class AddEventActivity : AppCompatActivity() {
                 calendar.set(Calendar.DAY_OF_YEAR, dayOfMonth)
                 calendar.time //Don't ask...
                 calendar.set(Calendar.MONTH, monthValue)
-                var newDate = EventDataManager.dateFormat.format(calendar.time)
+                val newDate = EventDataManager.dateFormat.format(calendar.time)
                 dateEditText.setText(newDate)
             }, year, month, day
         )
@@ -93,11 +126,34 @@ class AddEventActivity : AppCompatActivity() {
             .show()
     }
 
-    fun setDateAndTime() {
-        val date = EventDataManager.dateFormat.format(calendar.time)
-        val time = EventDataManager.timeFormat.format(calendar.time)
+    private fun setDateAndTime() {
+        var date : String
+        var time : String
+        var event : Event
+        var name = "Event name"
+
+        if (eventList == "attending") {
+            event = EventDataManager.attendingEvents[eventPosition]
+            date = EventDataManager.dateFormat.format(event.date)
+            time = EventDataManager.timeFormat.format(event.date)
+            name = event.name
+        }
+
+        else if (eventList == "declined") {
+            event = EventDataManager.declinedEvents[eventPosition]
+            date = EventDataManager.dateFormat.format(event.date)
+            time = EventDataManager.timeFormat.format(event.date)
+            name = event.name
+        }
+
+        else {
+            date = EventDataManager.dateFormat.format(calendar.time)
+            time = EventDataManager.timeFormat.format(calendar.time)
+        }
+
         dateEditText.setText(date)
         timeEditText.setText(time)
+        nameEditText.setText(name)
     }
 }
 
