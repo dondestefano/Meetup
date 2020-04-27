@@ -61,6 +61,7 @@ class EventRecycleAdapter(private val context: Context, private val events: List
         } else {
             EventDataManager.attendingEvents.add(event)
         }
+        EventDataManager.sortLists()
         updateRecycleView()
     }
 
@@ -74,6 +75,7 @@ class EventRecycleAdapter(private val context: Context, private val events: List
         } else {
             EventDataManager.declinedEvents.add(event)
         }
+        EventDataManager.sortLists()
         updateRecycleView()
     }
 

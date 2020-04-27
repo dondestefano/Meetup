@@ -14,6 +14,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        EventDataManager.sortLists()
+
         val attendRecyclerView = findViewById<RecyclerView>(R.id.attendRecyclerView)
         val notAttendRecyclerView = findViewById<RecyclerView>(R.id.notAttendRecyclerView)
 
@@ -42,5 +44,6 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         attendRecyclerView.adapter?.notifyDataSetChanged()
         notAttendRecyclerView.adapter?.notifyDataSetChanged()
+        EventDataManager.sortLists()
     }
 }

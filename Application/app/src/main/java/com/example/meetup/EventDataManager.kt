@@ -8,5 +8,10 @@ object EventDataManager {
     val declinedEvents = mutableListOf<Event>()
     val dateFormat = SimpleDateFormat("E dd-MMM-yyyy")
     val timeFormat = SimpleDateFormat("HH:mm")
+
+    fun sortLists() {
+        attendingEvents.sortBy {it.date}
+        declinedEvents.sortBy {it.date}
+    }
 }
 
