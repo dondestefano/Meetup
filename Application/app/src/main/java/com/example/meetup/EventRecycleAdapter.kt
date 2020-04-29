@@ -33,18 +33,20 @@ class EventRecycleAdapter(private val context: Context, private val events: List
             val currentEvent = events[position]
             currentEvent.changeAttend()
 
-            if (event.attend) {
+            if (event.attend!!) {
                 holder.attendButton.setBackgroundColor(Color.GREEN)
                 holder.attendButton.setText("Yes")
-                addEventToAttending(position)
+              //  addEventToAttending(position)
+                updateRecycleView()
             } else {
                 holder.attendButton.setBackgroundColor(Color.RED)
                 holder.attendButton.setText("No")
-                addEventToDeclined(position)
+             //   addEventToDeclined(position)
+                updateRecycleView()
             }
         }
 
-        if (event.attend) {
+        if (event.attend!!) {
             holder.attendButton.setBackgroundColor(Color.GREEN)
             holder.attendButton.setText("Yes")
         } else {holder.attendButton.setBackgroundColor(Color.RED)

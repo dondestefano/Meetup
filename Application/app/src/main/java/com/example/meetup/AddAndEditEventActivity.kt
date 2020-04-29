@@ -17,10 +17,10 @@ const val EVENT_LIST_NOT_SET = "NO_LIST"
 
 class AddAndEditEventActivity : AppCompatActivity() {
     // Layout assets.
-    lateinit var timeEditText: EditText
-    lateinit var dateEditText: EditText
-    lateinit var nameEditText : EditText
-    lateinit var saveButton : Button
+    private lateinit var timeEditText: EditText
+    private lateinit var dateEditText: EditText
+    private lateinit var nameEditText : EditText
+    private lateinit var saveButton : Button
 
     // New/editable event and calendar.
     private lateinit var event : Event
@@ -78,10 +78,11 @@ class AddAndEditEventActivity : AppCompatActivity() {
     private fun addEvent() {
         val name = nameEditText.text.toString()
         val date : Date = calendar.time
-        event.changeDate(date)
-        event.changeName(name)
+        event.date = date
+        event.keyName = name
+        event.name = name
 
-        EventDataManager.attendingEvents.add(event)
+        event.name?.let { EventDataManager.updateEventToFirebase(it, event) }
         finish()
     }
 
@@ -91,13 +92,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
         event.changeDate(date)
         event.changeName(name)
 
-        // Get the event from the correct list
-        if(eventList == "attending") {
-            EventDataManager.attendingEvents[position] = event
-
-        } else {
-            EventDataManager.declinedEvents[position] = event
-        }
+        event.keyName?.let { EventDataManager.updateEventToFirebase(it, event) }
         finish()
     }
 
@@ -165,7 +160,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
             timeEditText.setText(time)
 
             // Set base data for a new event
-            event = Event("name", currentDate, true)
+            event = Event("nam2e", currentDate, true)
             saveButton.text = "Add"
         }
     }

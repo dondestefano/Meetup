@@ -3,10 +3,15 @@ package com.example.meetup
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
+import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,9 +19,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //EventDataManager.readFromFirebase()
+        EventDataManager.setFirebaseListener()
         setEventRecycleAdapters()
         setFabButton()
-        EventDataManager.sortLists()
+
     }
 
     override fun onResume() {
@@ -49,7 +56,8 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, AddAndEditEventActivity::class.java)
             intent.putExtra("EVENT_POSITION", "NO_LIST")
             startActivity(intent)
-
         }
     }
+
+
 }
