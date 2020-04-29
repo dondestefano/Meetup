@@ -14,6 +14,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        EventDataManager.sortLists()
+
         val attendRecyclerView = findViewById<RecyclerView>(R.id.attendRecyclerView)
         val notAttendRecyclerView = findViewById<RecyclerView>(R.id.notAttendRecyclerView)
 
@@ -31,7 +33,8 @@ class MainActivity : AppCompatActivity() {
 
         val fab = findViewById<View>(R.id.addEventActionButton)
         fab.setOnClickListener{ view ->
-            val intent = Intent(this, AddEventActivity::class.java)
+            val intent = Intent(this, AddAndEditEventActivity::class.java)
+            intent.putExtra("EVENT_POSITION", "NO_LIST")
             startActivity(intent)
 
         }
@@ -41,5 +44,6 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         attendRecyclerView.adapter?.notifyDataSetChanged()
         notAttendRecyclerView.adapter?.notifyDataSetChanged()
+        EventDataManager.sortLists()
     }
 }

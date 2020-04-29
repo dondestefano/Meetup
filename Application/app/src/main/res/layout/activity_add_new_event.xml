@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="AddEventActivity">
+    tools:context="AddAndEditEventActivity">
 
     <EditText
         android:id="@+id/nameEditText"
@@ -14,8 +14,8 @@
         android:layout_marginTop="127dp"
         android:layout_marginEnd="100dp"
         android:ems="10"
+        android:hint="Event name"
         android:inputType="textPersonName"
-        android:text="Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -42,8 +42,8 @@
         android:layout_marginTop="36dp"
         android:layout_marginEnd="100dp"
         android:ems="10"
-        android:inputType="time"
         android:focusableInTouchMode="false"
+        android:inputType="date|time"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dateEditText" />
@@ -55,7 +55,6 @@
         android:layout_marginStart="159dp"
         android:layout_marginTop="84dp"
         android:layout_marginEnd="159dp"
-        android:text="Button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
