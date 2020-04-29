@@ -41,7 +41,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
 
         getExtraFromIntent()
         setOnClickListeners()
-        setDateAndTime()
+        determineAddOrEdit()
     }
 
     private fun getExtraFromIntent() {
@@ -67,6 +67,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
         saveButton.setOnClickListener{
             if (eventPosition != EVENT_POSITION_NOT_SET) {
                 editEvent(eventPosition)
+                saveButton.text = "Save"
             } else {
                 saveButton.text = "Add"
                 addEvent()
@@ -137,7 +138,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun setDateAndTime() {
+    private fun determineAddOrEdit() {
         val date : String
         val time : String
 
@@ -165,6 +166,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
 
             // Set base data for a new event
             event = Event("name", currentDate, true)
+            saveButton.text = "Add"
         }
     }
 
@@ -176,6 +178,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
         dateEditText.setText(date)
         timeEditText.setText(time)
         nameEditText.setText(name)
+        saveButton.text = "Save"
     }
 }
 
