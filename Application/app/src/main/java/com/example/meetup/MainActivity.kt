@@ -14,8 +14,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        setEventRecycleAdapters()
+        setFabButton()
         EventDataManager.sortLists()
+    }
 
+    override fun onResume() {
+        super.onResume()
+        attendRecyclerView.adapter?.notifyDataSetChanged()
+        notAttendRecyclerView.adapter?.notifyDataSetChanged()
+        EventDataManager.sortLists()
+    }
+
+    fun setEventRecycleAdapters() {
         val attendRecyclerView = findViewById<RecyclerView>(R.id.attendRecyclerView)
         val notAttendRecyclerView = findViewById<RecyclerView>(R.id.notAttendRecyclerView)
 
@@ -30,7 +41,9 @@ class MainActivity : AppCompatActivity() {
 
         attendRecyclerView.adapter = attendAdapter
         notAttendRecyclerView.adapter = notAttendAdapter
+    }
 
+    fun setFabButton() {
         val fab = findViewById<View>(R.id.addEventActionButton)
         fab.setOnClickListener{ view ->
             val intent = Intent(this, AddAndEditEventActivity::class.java)
@@ -38,12 +51,5 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
 
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        attendRecyclerView.adapter?.notifyDataSetChanged()
-        notAttendRecyclerView.adapter?.notifyDataSetChanged()
-        EventDataManager.sortLists()
     }
 }
