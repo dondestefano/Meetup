@@ -1,6 +1,7 @@
 package com.example.meetup
 
 import android.util.Log
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import java.text.SimpleDateFormat
@@ -21,7 +22,7 @@ object EventDataManager {
         declinedEvents.sortBy {it.date}
     }
 
-   fun setFirebaseListener() {
+   fun setFirebaseListener(attendRecyclerView: RecyclerView, declineRecyclerView: RecyclerView) {
         eventRef.addSnapshotListener { snapshot, e ->
             attendingEvents.clear()
             declinedEvents.clear()
@@ -33,6 +34,8 @@ object EventDataManager {
                         sortLists()
                     } else if (loadEvent != null) {
                         declinedEvents.add(loadEvent!!)
+                        declineRecyclerView.adapter?.notifyDataSetChanged()
+                        attendRecyclerView.adapter?.notifyDataSetChanged()
                         sortLists()
                     }
                 }

@@ -15,15 +15,17 @@ import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //EventDataManager.readFromFirebase()
-        EventDataManager.setFirebaseListener()
+        attendRecyclerView.layoutManager = LinearLayoutManager(this)
+        notAttendRecyclerView.layoutManager = LinearLayoutManager(this)
+
         setEventRecycleAdapters()
         setFabButton()
-
+        EventDataManager.setFirebaseListener(attendRecyclerView, notAttendRecyclerView)
     }
 
     override fun onResume() {
@@ -33,13 +35,9 @@ class MainActivity : AppCompatActivity() {
         EventDataManager.sortLists()
     }
 
-    fun setEventRecycleAdapters() {
+    private fun setEventRecycleAdapters() {
         val attendRecyclerView = findViewById<RecyclerView>(R.id.attendRecyclerView)
         val notAttendRecyclerView = findViewById<RecyclerView>(R.id.notAttendRecyclerView)
-
-        attendRecyclerView.layoutManager = LinearLayoutManager(this)
-        notAttendRecyclerView.layoutManager = LinearLayoutManager(this)
-
 
         val attendAdapter = EventRecycleAdapter(this, EventDataManager.attendingEvents, null)
         val notAttendAdapter = EventRecycleAdapter(this, EventDataManager.declinedEvents, null)
@@ -50,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         notAttendRecyclerView.adapter = notAttendAdapter
     }
 
-    fun setFabButton() {
+    private fun setFabButton() {
         val fab = findViewById<View>(R.id.addEventActionButton)
         fab.setOnClickListener{ view ->
             val intent = Intent(this, AddAndEditEventActivity::class.java)
@@ -58,6 +56,4 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-
-
 }
