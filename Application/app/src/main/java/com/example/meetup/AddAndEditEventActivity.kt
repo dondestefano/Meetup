@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -21,7 +23,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
     private lateinit var saveButton : Button
 
     // New/editable event and calendar.
-    private lateinit var event : Event
+    private var event : Event? = null
     private val calendar: Calendar = Calendar.getInstance()
 
     // Put extra helpers.
@@ -68,23 +70,32 @@ class AddAndEditEventActivity : AppCompatActivity() {
 
     private fun addEvent() {
         val name = nameEditText.text.toString()
-        val date : Date = calendar.time
-        event.date = date
-        event.keyName = name
-        event.name = name
 
-        event.name?.let { EventDataManager.updateEventToFirebase(it, event) }
-        finish()
+        if (name.isNotEmpty()) {
+            val date : Date = calendar.time
+            event?.let { event ->
+                event.date = date
+                event.keyName = name
+                event.name = name
+                event.name?.let { EventDataManager.updateEventToFirebase(it, event) }
+                finish()
+            }
+        } else {
+            Toast.makeText(this, "Cannot make event without a name", Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 
     private fun editEvent(position: Int) {
         val name = nameEditText.text.toString()
         val date : Date = calendar.time
-        event.changeDate(date)
-        event.changeName(name)
+        event?.let { event ->
+            event.changeDate(date)
+            event.changeName(name)
 
-        event.keyName?.let { EventDataManager.updateEventToFirebase(it, event) }
-        finish()
+            event.keyName?.let { EventDataManager.updateEventToFirebase(it, event) }
+            finish()
+        }
     }
 
     private fun pickDate() {
@@ -130,9 +141,12 @@ class AddAndEditEventActivity : AppCompatActivity() {
         // Determine if the event is new or if the user wants to edit it.
         // If the user wants to edit the date determine which list it's in.
         if (eventPosition != EVENT_POSITION_NOT_SET) {
-            event = EventDataManager.events[eventPosition]
-            calendar.time = event.date
-            setDateForEventToEdit()
+            event = EventDataManager.itemsList[eventPosition].event
+            event?.let {event ->
+                calendar.time = event.date
+                setDateForEventToEdit()
+            }
+
         }
 
         // Get the current time and date if the user wants to add a new event.
@@ -144,20 +158,22 @@ class AddAndEditEventActivity : AppCompatActivity() {
             timeEditText.setText(time)
 
             // Set base data for a new event
-            event = Event("nam2e", currentDate, true)
+            event = Event("name", currentDate, true)
             saveButton.text = "Add"
         }
     }
 
     fun setDateForEventToEdit() {
-        val date = EventDataManager.dateFormat.format(event.date)
-        val time = EventDataManager.timeFormat.format(event.date)
-        val name = event.name
+        event?.let { event ->
+            val date = EventDataManager.dateFormat.format(event.date)
+            val time = EventDataManager.timeFormat.format(event.date)
+            val name = event.name
 
-        dateEditText.setText(date)
-        timeEditText.setText(time)
-        nameEditText.setText(name)
-        saveButton.text = "Save"
+            dateEditText.setText(date)
+            timeEditText.setText(time)
+            nameEditText.setText(name)
+            saveButton.text = "Save"
+        }
     }
 }
 

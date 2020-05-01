@@ -34,7 +34,8 @@ class MainActivity : AppCompatActivity() {
         eventRecyclerView = findViewById<RecyclerView>(R.id.attendRecyclerView)
         eventRecyclerView?.layoutManager = LinearLayoutManager(this)
 
-        val eventAdapter = EventRecycleAdapter(this, EventDataManager.events)
+        val eventAdapter = EventRecycleAdapter(this)
+        eventAdapter.updateItemsToList(EventDataManager.itemsList)
         eventRecyclerView?.adapter = eventAdapter
 
     }

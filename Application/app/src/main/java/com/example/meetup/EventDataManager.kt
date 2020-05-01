@@ -10,7 +10,7 @@ import kotlin.collections.HashMap
 
 
 object EventDataManager {
-    val events = mutableListOf<Event>()
+    val itemsList = mutableListOf<AdapterItem>()
     val dateFormat = SimpleDateFormat("E dd-MMM-yyyy")
     val timeFormat = SimpleDateFormat("HH:mm")
     var db = FirebaseFirestore.getInstance()
@@ -19,16 +19,49 @@ object EventDataManager {
 
    fun setFirebaseListener(eventRecyclerView: RecyclerView) {
         eventRef.addSnapshotListener { snapshot, e ->
-            events.clear()
+            // Clear list
+            itemsList.clear()
+
+            // Load attending events from Firebase
             if (snapshot != null) {
+                // Create temporary sortable lists for attending and not attending
+                val attendList = mutableListOf<AdapterItem>()
+                val declineList = mutableListOf<AdapterItem>()
+
                 for (document in snapshot.documents) {
                     val loadEvent = document.toObject(Event::class.java)
-                    if (loadEvent != null) {
-                        events.add(loadEvent!!)
-                        events.sortBy { it.date }
-                        eventRecyclerView.adapter?.notifyDataSetChanged()
+                    if (loadEvent != null && loadEvent.attend == true) {
+                        val item = AdapterItem(loadEvent, EventRecycleAdapter.TYPE_EVENT)
+                        attendList.add(item)
                     }
                 }
+
+                if(attendList.isNotEmpty()) {
+                    // Add attend header
+                    val attendHeader = AdapterItem(null, EventRecycleAdapter.TYPE_ACCEPT_HEADER)
+                    itemsList.add(attendHeader)
+                    // Sort attend list before adding it to itemsList
+                    attendList.sortBy { it.event?.date }
+                    itemsList.addAll(attendList)
+                }
+
+                for (document in snapshot.documents) {
+                    val loadEvent = document.toObject(Event::class.java)
+                    if (loadEvent != null && loadEvent.attend == false) {
+                        val item = AdapterItem(loadEvent, EventRecycleAdapter.TYPE_EVENT)
+                        declineList.add(item)
+                    }
+                }
+                if(declineList.isNotEmpty()) {
+                    // Add decline header
+                    val declineHeader = AdapterItem(null, EventRecycleAdapter.TYPE_DECLINE_HEADER)
+                    itemsList.add(declineHeader)
+                    // Sort decline list before adding it to itemsList
+                    declineList.sortBy { it.event?.date }
+                    itemsList.addAll(declineList)
+                }
+                // Notify changes to the adapter when the async data has been loaded
+                eventRecyclerView.adapter?.notifyDataSetChanged()
             }
         }
     }

@@ -10,27 +10,34 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import org.w3c.dom.Text
 
-private const val TYPE_ACCEPT_HEADER = 0
-private const val TYPE_DECLINE_HEADER = 1
-private const val TYPE_EVENT = 2
-
-class EventRecycleAdapter(private val context: Context, private val events: List<Event>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val layoutInflater = LayoutInflater.from(context)
+    private var listItems = listOf<AdapterItem>()
+    companion object {
+        const val TYPE_ACCEPT_HEADER = 0
+        const val TYPE_DECLINE_HEADER = 1
+        const val TYPE_EVENT = 2
+    }
 
+    fun updateItemsToList(list : List<AdapterItem>) {
+        listItems = list
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         when (viewType) {
             TYPE_ACCEPT_HEADER -> {
                 val itemView = layoutInflater.inflate(R.layout.event_header_card_layout, parent, false)
-                return HeaderViewHolder(itemView, "Hej")
+                return HeaderViewHolder(itemView, "Attending events")
             }
 
-/*            TYPE_DECLINE_HEADER -> {
+            TYPE_DECLINE_HEADER -> {
                 val itemView = layoutInflater.inflate(R.layout.event_header_card_layout, parent, false)
-                return HeaderViewHolder(itemView, "Då")
-            }*/
+                return HeaderViewHolder(itemView, "Declined events")
+            }
 
             else -> {
                 val itemView = layoutInflater.inflate(R.layout.event_card_layout, parent, false)
@@ -39,28 +46,9 @@ class EventRecycleAdapter(private val context: Context, private val events: List
         }
     }
 
-    override fun getItemViewType(position: Int): Int {
+    override fun getItemViewType(position: Int): Int = listItems[position].viewType
 
-        return when (position) {
-            0 -> {
-                TYPE_ACCEPT_HEADER
-            }
-            events.filter { it.attend == true }.size -> {
-                TYPE_DECLINE_HEADER
-            }
-            else -> {
-                TYPE_EVENT
-            }
-        }
-    }
-
-    override fun getItemCount(): Int {
-        var size = events.size + 1
-/*        if (events.any { it.attend == false }) {
-            size +=  1
-        }*/
-        return size
-    }
+    override fun getItemCount() = listItems.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
@@ -69,16 +57,17 @@ class EventRecycleAdapter(private val context: Context, private val events: List
             }
 
             is EventViewHolder -> {
-                val event = events[position - 1]
-                holder.textViewName.text = event.name
-                holder.textViewDate.text = (EventDataManager.dateFormat.format(event.date) + " " + EventDataManager.timeFormat.format(event.date))
-                holder.eventPosition = position - 1
+                val currentItem = listItems[position]
+                val event = currentItem.event
+                holder.textViewName.text = event?.name
+                holder.textViewDate.text = (EventDataManager.dateFormat.format(event?.date) + " " + EventDataManager.timeFormat.format(event?.date))
+                holder.eventPosition = position
 
                 holder.attendButton.setOnClickListener{
-                    val currentEvent = events[position - 1]
-                    currentEvent.changeAttend()
 
-                    if (event.attend!!) {
+                    currentItem.event?.changeAttend()
+
+                    if (event?.attend!!) {
                         holder.attendButton.setBackgroundColor(Color.GREEN)
                         holder.attendButton.setText("Yes")
                     } else {
@@ -87,7 +76,7 @@ class EventRecycleAdapter(private val context: Context, private val events: List
                     }
                 }
 
-                if (event.attend!!) {
+                if (event?.attend!!) {
                     holder.attendButton.setBackgroundColor(Color.GREEN)
                     holder.attendButton.setText("Yes")
                 } else {holder.attendButton.setBackgroundColor(Color.RED)
@@ -96,15 +85,10 @@ class EventRecycleAdapter(private val context: Context, private val events: List
         }
     }
 
-    fun setEventData() {
-
-    }
-
-
     inner class EventViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
-        val textViewName = itemView.findViewById<TextView>(R.id.textViewName)
-        val textViewDate = itemView.findViewById<TextView>(R.id.textViewDate)
-        val attendButton = itemView.findViewById<Button>(R.id.attendButton)
+        val textViewName: TextView = itemView.findViewById<TextView>(R.id.textViewName)
+        val textViewDate: TextView = itemView.findViewById<TextView>(R.id.textViewDate)
+        val attendButton: TextView = itemView.findViewById<Button>(R.id.attendButton)
         var eventPosition = 0
 
         init {
@@ -117,8 +101,7 @@ class EventRecycleAdapter(private val context: Context, private val events: List
     }
 
     inner class HeaderViewHolder(itemView: View, text: String) : RecyclerView.ViewHolder(itemView)  {
-        val headerNameTextView = itemView.findViewById<TextView>(R.id.eventListHeader)
+        val headerNameTextView: TextView = itemView.findViewById<TextView>(R.id.eventListHeader)
         val text = text
-
     }
 }
