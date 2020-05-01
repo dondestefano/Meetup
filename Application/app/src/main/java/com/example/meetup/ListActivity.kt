@@ -3,17 +3,19 @@ package com.example.meetup
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.service.autofill.UserData
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.firestore.auth.User
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 import kotlin.collections.HashMap
 
-class MainActivity : AppCompatActivity() {
+class ListActivity : AppCompatActivity() {
     private var eventRecyclerView : RecyclerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

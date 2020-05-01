@@ -1,5 +1,6 @@
 package com.example.meetup
 
+import android.service.autofill.UserData
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
@@ -14,11 +15,12 @@ object EventDataManager {
     val dateFormat = SimpleDateFormat("E dd-MMM-yyyy")
     val timeFormat = SimpleDateFormat("HH:mm")
     var db = FirebaseFirestore.getInstance()
-    private val eventRef = db.collection("events")
+    private val eventRef = UserDataManager.loggedInUser.userID?.let { db.collection("users").document(it).collection("events") }
 
 
    fun setFirebaseListener(eventRecyclerView: RecyclerView) {
-        eventRef.addSnapshotListener { snapshot, e ->
+
+        eventRef?.addSnapshotListener { snapshot, e ->
             // Clear list
             itemsList.clear()
 
@@ -68,7 +70,7 @@ object EventDataManager {
 
 
     fun updateEventToFirebase(ref : String, event : Event) {
-        eventRef.document(ref).set(event)
+        eventRef?.document(ref)?.set(event)
     }
 }
 
