@@ -14,38 +14,29 @@ import java.util.*
 import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
-
+    private var eventRecyclerView : RecyclerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        attendRecyclerView.layoutManager = LinearLayoutManager(this)
-        notAttendRecyclerView.layoutManager = LinearLayoutManager(this)
-
         setEventRecycleAdapters()
         setFabButton()
-        EventDataManager.setFirebaseListener(attendRecyclerView, notAttendRecyclerView)
+        eventRecyclerView?.let { EventDataManager.setFirebaseListener(it) }
     }
 
     override fun onResume() {
         super.onResume()
-        attendRecyclerView.adapter?.notifyDataSetChanged()
-        notAttendRecyclerView.adapter?.notifyDataSetChanged()
-        EventDataManager.sortLists()
+        eventRecyclerView?.adapter?.notifyDataSetChanged()
     }
 
     private fun setEventRecycleAdapters() {
-        val attendRecyclerView = findViewById<RecyclerView>(R.id.attendRecyclerView)
-        val notAttendRecyclerView = findViewById<RecyclerView>(R.id.notAttendRecyclerView)
+        eventRecyclerView = findViewById<RecyclerView>(R.id.attendRecyclerView)
+        eventRecyclerView?.layoutManager = LinearLayoutManager(this)
 
-        val attendAdapter = EventRecycleAdapter(this, EventDataManager.attendingEvents, null)
-        val notAttendAdapter = EventRecycleAdapter(this, EventDataManager.declinedEvents, null)
-        attendAdapter.setOtherAdapter(notAttendAdapter)
-        notAttendAdapter.setOtherAdapter(attendAdapter)
+        val eventAdapter = EventRecycleAdapter(this, EventDataManager.events)
+        eventRecyclerView?.adapter = eventAdapter
 
-        attendRecyclerView.adapter = attendAdapter
-        notAttendRecyclerView.adapter = notAttendAdapter
     }
 
     private fun setFabButton() {

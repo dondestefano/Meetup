@@ -10,62 +10,29 @@ import kotlin.collections.HashMap
 
 
 object EventDataManager {
-    val attendingEvents = mutableListOf<Event>()
-    val declinedEvents = mutableListOf<Event>()
+    val events = mutableListOf<Event>()
     val dateFormat = SimpleDateFormat("E dd-MMM-yyyy")
     val timeFormat = SimpleDateFormat("HH:mm")
     var db = FirebaseFirestore.getInstance()
     private val eventRef = db.collection("events")
 
-    fun sortLists() {
-        attendingEvents.sortBy {it.date}
-        declinedEvents.sortBy {it.date}
-    }
 
-   fun setFirebaseListener(attendRecyclerView: RecyclerView, declineRecyclerView: RecyclerView) {
+   fun setFirebaseListener(eventRecyclerView: RecyclerView) {
         eventRef.addSnapshotListener { snapshot, e ->
-            attendingEvents.clear()
-            declinedEvents.clear()
+            events.clear()
             if (snapshot != null) {
                 for (document in snapshot.documents) {
                     val loadEvent = document.toObject(Event::class.java)
-                    if (loadEvent != null && loadEvent.attend!!) {
-                        attendingEvents.add(loadEvent!!)
-                        sortLists()
-                    } else if (loadEvent != null) {
-                        declinedEvents.add(loadEvent!!)
-                        declineRecyclerView.adapter?.notifyDataSetChanged()
-                        attendRecyclerView.adapter?.notifyDataSetChanged()
-                        sortLists()
+                    if (loadEvent != null) {
+                        events.add(loadEvent!!)
+                        events.sortBy { it.date }
+                        eventRecyclerView.adapter?.notifyDataSetChanged()
                     }
                 }
             }
         }
     }
 
-    fun readFromFirebase() {
-        attendingEvents.clear()
-        declinedEvents.clear()
-        db.collection("events")
-            .get()
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    for (document in task.result!!) {
-                        val loadEvent = document.toObject(Event::class.java)
-                        if (loadEvent != null && loadEvent.attend!!) {
-                            attendingEvents.add(loadEvent!!)
-                            sortLists()
-                        } else if (loadEvent != null) {
-                            declinedEvents.add(loadEvent!!)
-                            sortLists()
-                        }
-                    }
-                } else {
-                    sortLists()
-                    Log.d("Hej", attendingEvents.size.toString())
-                }
-            }
-    }
 
     fun updateEventToFirebase(ref : String, event : Event) {
         eventRef.document(ref).set(event)

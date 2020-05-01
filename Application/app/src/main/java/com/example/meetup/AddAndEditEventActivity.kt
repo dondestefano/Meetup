@@ -12,8 +12,6 @@ import java.util.*
 
 const val EVENT_POSITION_NOT_SET = -1
 const val EVENT_POSITION_KEY = "EVENT_POSITION"
-const val EVENT_LIST_KEY = "EVENT_LIST"
-const val EVENT_LIST_NOT_SET = "NO_LIST"
 
 class AddAndEditEventActivity : AppCompatActivity() {
     // Layout assets.
@@ -28,7 +26,6 @@ class AddAndEditEventActivity : AppCompatActivity() {
 
     // Put extra helpers.
     private var eventPosition = EVENT_POSITION_NOT_SET
-    private var eventList = EVENT_LIST_NOT_SET
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,14 +42,8 @@ class AddAndEditEventActivity : AppCompatActivity() {
     }
 
     private fun getExtraFromIntent() {
-        val stringExtra = intent.getStringExtra(EVENT_LIST_KEY)
         // Get the event's position
         eventPosition = intent.getIntExtra(EVENT_POSITION_KEY, eventPosition)
-
-        //Get the event's list
-        if (stringExtra != null) {
-            eventList = stringExtra
-        }
     }
 
     private fun setOnClickListeners() {
@@ -108,7 +99,6 @@ class AddAndEditEventActivity : AppCompatActivity() {
 
                 calendar.set(Calendar.YEAR, selectedYear)
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                calendar.time //Don't ask...
                 calendar.set(Calendar.MONTH, monthValue)
                 val newDate = EventDataManager.dateFormat.format(calendar.time)
 
@@ -139,14 +129,8 @@ class AddAndEditEventActivity : AppCompatActivity() {
 
         // Determine if the event is new or if the user wants to edit it.
         // If the user wants to edit the date determine which list it's in.
-        if (eventList == "attending") {
-            event = EventDataManager.attendingEvents[eventPosition]
-            calendar.time = event.date
-            setDateForEventToEdit()
-        }
-
-        else if (eventList == "declined") {
-            event = EventDataManager.declinedEvents[eventPosition]
+        if (eventPosition != EVENT_POSITION_NOT_SET) {
+            event = EventDataManager.events[eventPosition]
             calendar.time = event.date
             setDateForEventToEdit()
         }
