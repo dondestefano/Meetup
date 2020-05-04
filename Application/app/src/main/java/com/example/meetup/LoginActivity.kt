@@ -43,7 +43,7 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(textEmail.text.toString(), passwordText.text.toString())
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    UserDataManager.getUser()
+                    UserDataManager.getLoggedInUser()
                     goToListActivity()
                     Toast.makeText(this, "Welcome!", Toast.LENGTH_SHORT)
                         .show()

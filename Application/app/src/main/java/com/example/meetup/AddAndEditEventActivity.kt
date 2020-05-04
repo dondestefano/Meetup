@@ -2,6 +2,7 @@ package com.example.meetup
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -20,6 +21,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
     private lateinit var timeEditText: EditText
     private lateinit var dateEditText: EditText
     private lateinit var nameEditText : EditText
+    private lateinit var inviteButton : Button
     private lateinit var saveButton : Button
 
     // New/editable event and calendar.
@@ -36,6 +38,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
         timeEditText = findViewById(R.id.timeEditText)
         dateEditText = findViewById(R.id.dateEditText)
         nameEditText = findViewById(R.id.nameEditText)
+        inviteButton = findViewById(R.id.inviteButton)
         saveButton = findViewById(R.id.saveButton)
 
         getExtraFromIntent()
@@ -54,6 +57,11 @@ class AddAndEditEventActivity : AppCompatActivity() {
         }
         timeEditText.setOnClickListener{
             pickTime()
+        }
+
+        inviteButton.setOnClickListener{
+            val intent = Intent(this, InviteActivity::class.java)
+            startActivity(intent)
         }
 
         // Determine if the saveButton should create a new event or edit an existing event.
