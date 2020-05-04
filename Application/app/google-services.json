@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "478950658266",
+    "firebase_url": "https://ugame-47ed3.firebaseio.com",
+    "project_id": "ugame-47ed3",
+    "storage_bucket": "ugame-47ed3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:478950658266:android:c941acb66ce3f1aef055e3",
+        "android_client_info": {
+          "package_name": "com.example.meetup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "478950658266-ngqde7u1kpqj89bgia9k7kmdpmjfgnh1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.meetup",
+            "certificate_hash": "d0fee9a9723704a218528965a5100da00b329e77"
+          }
+        },
+        {
+          "client_id": "478950658266-h4dctbbjad1sumlkp2d6fvrrf214e82b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDT1uNeMMo5Ddi91hhZp4Sr0prihUj0YDY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "478950658266-h4dctbbjad1sumlkp2d6fvrrf214e82b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

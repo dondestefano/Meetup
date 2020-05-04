@@ -2,33 +2,34 @@ package com.example.meetup
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
 
 const val EVENT_POSITION_NOT_SET = -1
 const val EVENT_POSITION_KEY = "EVENT_POSITION"
-const val EVENT_LIST_KEY = "EVENT_LIST"
-const val EVENT_LIST_NOT_SET = "NO_LIST"
 
 class AddAndEditEventActivity : AppCompatActivity() {
     // Layout assets.
-    lateinit var timeEditText: EditText
-    lateinit var dateEditText: EditText
-    lateinit var nameEditText : EditText
-    lateinit var saveButton : Button
+    private lateinit var timeEditText: EditText
+    private lateinit var dateEditText: EditText
+    private lateinit var nameEditText : EditText
+    private lateinit var inviteButton : Button
+    private lateinit var saveButton : Button
 
     // New/editable event and calendar.
-    private lateinit var event : Event
+    private var event : Event? = null
     private val calendar: Calendar = Calendar.getInstance()
 
     // Put extra helpers.
     private var eventPosition = EVENT_POSITION_NOT_SET
-    private var eventList = EVENT_LIST_NOT_SET
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +38,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
         timeEditText = findViewById(R.id.timeEditText)
         dateEditText = findViewById(R.id.dateEditText)
         nameEditText = findViewById(R.id.nameEditText)
+        inviteButton = findViewById(R.id.inviteButton)
         saveButton = findViewById(R.id.saveButton)
 
         getExtraFromIntent()
@@ -45,14 +47,8 @@ class AddAndEditEventActivity : AppCompatActivity() {
     }
 
     private fun getExtraFromIntent() {
-        val stringExtra = intent.getStringExtra(EVENT_LIST_KEY)
         // Get the event's position
         eventPosition = intent.getIntExtra(EVENT_POSITION_KEY, eventPosition)
-
-        //Get the event's list
-        if (stringExtra != null) {
-            eventList = stringExtra
-        }
     }
 
     private fun setOnClickListeners() {
@@ -61,6 +57,11 @@ class AddAndEditEventActivity : AppCompatActivity() {
         }
         timeEditText.setOnClickListener{
             pickTime()
+        }
+
+        inviteButton.setOnClickListener{
+            val intent = Intent(this, InviteActivity::class.java)
+            startActivity(intent)
         }
 
         // Determine if the saveButton should create a new event or edit an existing event.
@@ -77,28 +78,32 @@ class AddAndEditEventActivity : AppCompatActivity() {
 
     private fun addEvent() {
         val name = nameEditText.text.toString()
-        val date : Date = calendar.time
-        event.changeDate(date)
-        event.changeName(name)
 
-        EventDataManager.attendingEvents.add(event)
-        finish()
+        if (name.isNotEmpty()) {
+            val date : Date = calendar.time
+            event?.let { event ->
+                event.date = date
+                event.keyName = name
+                event.name = name
+                event.name?.let { EventDataManager.updateEventToFirebase(it, event) }
+                finish()
+            }
+        } else {
+            Toast.makeText(this, "Cannot make event without a name", Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 
     private fun editEvent(position: Int) {
         val name = nameEditText.text.toString()
         val date : Date = calendar.time
-        event.changeDate(date)
-        event.changeName(name)
+        event?.let { event ->
+            event.changeDate(date)
+            event.changeName(name)
 
-        // Get the event from the correct list
-        if(eventList == "attending") {
-            EventDataManager.attendingEvents[position] = event
-
-        } else {
-            EventDataManager.declinedEvents[position] = event
+            event.keyName?.let { EventDataManager.updateEventToFirebase(it, event) }
+            finish()
         }
-        finish()
     }
 
     private fun pickDate() {
@@ -113,7 +118,6 @@ class AddAndEditEventActivity : AppCompatActivity() {
 
                 calendar.set(Calendar.YEAR, selectedYear)
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                calendar.time //Don't ask...
                 calendar.set(Calendar.MONTH, monthValue)
                 val newDate = EventDataManager.dateFormat.format(calendar.time)
 
@@ -144,16 +148,13 @@ class AddAndEditEventActivity : AppCompatActivity() {
 
         // Determine if the event is new or if the user wants to edit it.
         // If the user wants to edit the date determine which list it's in.
-        if (eventList == "attending") {
-            event = EventDataManager.attendingEvents[eventPosition]
-            calendar.time = event.date
-            setDateForEventToEdit()
-        }
+        if (eventPosition != EVENT_POSITION_NOT_SET) {
+            event = EventDataManager.itemsList[eventPosition].event
+            event?.let {event ->
+                calendar.time = event.date
+                setDateForEventToEdit()
+            }
 
-        else if (eventList == "declined") {
-            event = EventDataManager.declinedEvents[eventPosition]
-            calendar.time = event.date
-            setDateForEventToEdit()
         }
 
         // Get the current time and date if the user wants to add a new event.
@@ -171,14 +172,16 @@ class AddAndEditEventActivity : AppCompatActivity() {
     }
 
     fun setDateForEventToEdit() {
-        val date = EventDataManager.dateFormat.format(event.date)
-        val time = EventDataManager.timeFormat.format(event.date)
-        val name = event.name
+        event?.let { event ->
+            val date = EventDataManager.dateFormat.format(event.date)
+            val time = EventDataManager.timeFormat.format(event.date)
+            val name = event.name
 
-        dateEditText.setText(date)
-        timeEditText.setText(time)
-        nameEditText.setText(name)
-        saveButton.text = "Save"
+            dateEditText.setText(date)
+            timeEditText.setText(time)
+            nameEditText.setText(name)
+            saveButton.text = "Save"
+        }
     }
 }
 
