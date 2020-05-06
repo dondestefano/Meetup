@@ -1,16 +1,16 @@
-package com.example.meetup
+package com.example.meetup.Activites
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.snackbar.Snackbar
-import java.text.SimpleDateFormat
+import com.example.meetup.DataManagers.EventDataManager
+import com.example.meetup.Objects.Event
+import com.example.meetup.R
 import java.util.*
 
 const val EVENT_POSITION_NOT_SET = -1
@@ -29,7 +29,8 @@ class AddAndEditEventActivity : AppCompatActivity() {
     private val calendar: Calendar = Calendar.getInstance()
 
     // Put extra helpers.
-    private var eventPosition = EVENT_POSITION_NOT_SET
+    private var eventPosition =
+        EVENT_POSITION_NOT_SET
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +61,10 @@ class AddAndEditEventActivity : AppCompatActivity() {
         }
 
         inviteButton.setOnClickListener{
+            addEvent()
             val intent = Intent(this, InviteActivity::class.java)
+            intent.putExtra("EVENT", event)
+
             startActivity(intent)
         }
 
@@ -89,7 +93,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
                 finish()
             }
         } else {
-            Toast.makeText(this, "Cannot make event without a name", Toast.LENGTH_SHORT)
+            Toast.makeText(this, "Please enter a name your event.", Toast.LENGTH_SHORT)
                 .show()
         }
     }

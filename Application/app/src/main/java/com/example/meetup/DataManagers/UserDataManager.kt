@@ -1,18 +1,18 @@
-package com.example.meetup
+package com.example.meetup.DataManagers
 
-import android.util.Log
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.meetup.Objects.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 object UserDataManager {
 
     var loggedInUser = User(null, null, null)
-    val auth : FirebaseAuth = FirebaseAuth.getInstance()
     val allUsersList = mutableListOf<User>()
+    val inviteList = mutableListOf<User>()
     var db = FirebaseFirestore.getInstance()
-    private val userRef = db.collection("testUsers")
+    val auth : FirebaseAuth = FirebaseAuth.getInstance()
+    private val userRef = db.collection("users")
 
     
     fun getLoggedInUser() {
@@ -26,17 +26,18 @@ object UserDataManager {
         }
     }
 
+    fun updateUserToFirebase() {
+        userRef?.document(loggedInUser.userID.toString()).set(loggedInUser)
+    }
+
     fun setFirebaseListenerForUsers(userRecyclerView: RecyclerView) {
         userRef.addSnapshotListener { snapshot, e ->
             // Clear list
             allUsersList.clear()
-            println("!!! cleared")
-            // Load attending events from Firebase
+            // Load all users from Firebase
             if (snapshot != null) {
                 for (document in snapshot.documents) {
-                    println("!!! $document")
                     val loadUser = document.toObject(User::class.java)
-                    println("!! hej")
                     loadUser?.let { allUsersList.add(it) }
                     userRecyclerView.adapter?.notifyDataSetChanged()
                 }

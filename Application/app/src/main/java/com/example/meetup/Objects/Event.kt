@@ -1,11 +1,16 @@
-package com.example.meetup
+package com.example.meetup.Objects
 
+import android.content.Context
+import android.content.Intent
+import com.example.meetup.Activites.InviteActivity
+import com.example.meetup.DataManagers.EventDataManager
+import java.io.Serializable
 import java.util.*
 
 data class Event(var name: String? = null,
                  var date: Date? = null,
                  var attend: Boolean? = null,
-                 var keyName: String? = null)  {
+                 var keyName: String? = null) : Serializable  {
 
     fun changeAttend() {
         attend = !attend!!

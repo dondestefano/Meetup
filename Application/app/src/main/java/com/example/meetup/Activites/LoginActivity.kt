@@ -1,4 +1,4 @@
-package com.example.meetup
+package com.example.meetup.Activites
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -7,7 +7,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import com.google.android.material.snackbar.Snackbar
+import com.example.meetup.DataManagers.UserDataManager
+import com.example.meetup.R
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
@@ -44,6 +45,7 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     UserDataManager.getLoggedInUser()
+                    UserDataManager.updateUserToFirebase()
                     goToListActivity()
                     Toast.makeText(this, "Welcome!", Toast.LENGTH_SHORT)
                         .show()

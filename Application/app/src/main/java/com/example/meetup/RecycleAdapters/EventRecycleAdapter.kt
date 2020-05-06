@@ -1,16 +1,18 @@
-package com.example.meetup
+package com.example.meetup.RecycleAdapters
 
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import org.w3c.dom.Text
+import com.example.meetup.Activites.AddAndEditEventActivity
+import com.example.meetup.Objects.AdapterItem
+import com.example.meetup.DataManagers.EventDataManager
+import com.example.meetup.R
 
 class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
