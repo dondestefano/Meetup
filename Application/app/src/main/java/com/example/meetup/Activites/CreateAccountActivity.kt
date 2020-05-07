@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 class CreateAccountActivity : AppCompatActivity() {
     lateinit var auth: FirebaseAuth
+    lateinit var createUsernameEditText: EditText
     lateinit var createEmailText: EditText
     lateinit var createPasswordText: EditText
 
@@ -20,6 +21,7 @@ class CreateAccountActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         createEmailText = findViewById(R.id.createEmailEditText)
         createPasswordText = findViewById(R.id.createPasswordEditText)
+        createUsernameEditText = findViewById(R.id.createNameEditText)
 
         val createButton = findViewById<Button>(R.id.createAccountButton)
 
@@ -33,6 +35,7 @@ class CreateAccountActivity : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(createEmailText.text.toString(), createPasswordText.text.toString())
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+
                     Toast.makeText(this, "User created.", Toast.LENGTH_SHORT)
                         .show()
                     finish()

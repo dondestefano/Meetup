@@ -84,18 +84,5 @@ object EventDataManager {
         eventRef?.document(eventKeyName)?.set(event)
     }
 
-    fun inviteUserToEvent(eventKeyName : String, event : Event) {
-        val inviteList = UserDataManager.inviteList
-        for (user in inviteList){
-            val inviteRef = user.userID?.let {
-                db.collection("userEvents").document(it).collection("events")
-            }
-
-            if (inviteRef != null) {
-                inviteRef.document(eventKeyName).set(event)
-            }
-        }
-        inviteList.clear()
-    }
 }
 

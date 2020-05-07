@@ -49,6 +49,7 @@ class LoginActivity : AppCompatActivity() {
                     goToListActivity()
                     Toast.makeText(this, "Welcome!", Toast.LENGTH_SHORT)
                         .show()
+                    finish()
                 } else {
                     Toast.makeText(this, "Wrong e-mail or password.", Toast.LENGTH_SHORT)
                         .show()

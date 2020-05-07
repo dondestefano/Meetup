@@ -37,7 +37,7 @@ class InviteActivity : AppCompatActivity() {
 
     fun setOnclickListeners() {
         inviteButton.setOnClickListener {
-            event?.keyName?.let { EventDataManager.inviteUserToEvent(it, event) }
+            event?.keyName?.let { inviteUserToEvent(it, event) }
             println("!!! ${event.keyName.toString()}")
             finish()
         }
@@ -58,5 +58,16 @@ class InviteActivity : AppCompatActivity() {
         event = intent.getSerializableExtra(EVENT_EXTRA) as Event
     }
 
-
+    private fun inviteUserToEvent(eventKeyName : String, event : Event) {
+        val inviteList = UserDataManager.inviteList
+        for (user in inviteList){
+            val inviteRef = user.userID?.let {
+                EventDataManager.db.collection("userEvents").document(it).collection("events")
+            }
+            if (inviteRef != null) {
+                inviteRef.document(eventKeyName).set(event)
+            }
+        }
+        inviteList.clear()
+    }
 }

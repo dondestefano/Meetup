@@ -14,6 +14,7 @@ object UserDataManager {
     val auth : FirebaseAuth = FirebaseAuth.getInstance()
     private val userRef = db.collection("users")
 
+
     
     fun getLoggedInUser() {
         val user = auth.currentUser

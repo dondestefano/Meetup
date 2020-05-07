@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="943212e7-bcd1-4237-b5e3-40cc31e4ddf4" name="Default Changelist" comment="" />
+    <list default="true" id="943212e7-bcd1-4237-b5e3-40cc31e4ddf4" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/Application/app/src/main/java/com/example/meetup/Activites/CreateAccountActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/Application/app/src/main/java/com/example/meetup/Activites/CreateAccountActivity.kt" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
