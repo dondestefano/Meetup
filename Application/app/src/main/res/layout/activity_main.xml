@@ -10,16 +10,17 @@
         android:id="@+id/addEventActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:clickable="true"
-        android:elevation="16dp"
-        app:cornerRadius="0dp"
-        android:tint="@android:color/white"
+        app:tint="@color/colorWhite"
         app:backgroundTint="@color/colorPrimary"
+        app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_add_white_24dp" />
+        app:srcCompat="@drawable/ic_add_white_24dp"
+        app:elevation="6dp"
+        app:borderWidth="0dp" />
 
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -28,15 +29,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_gravity="end|top"
         android:text="Log out"
-        android:elevation="16dp"
-        app:cornerRadius="0dp"
-        android:textColor="#FFFFFF"
-        app:backgroundTint="#6200EE"
+        android:textColor="@color/colorWhite"
+        app:backgroundTint="@color/colorPrimary"
         app:icon="@drawable/ic_highlight_off_black_24dp"
-        app:iconTint="#FFFFFF"
+        app:iconTint="@color/colorWhite"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:elevation="6dp"
+        app:borderWidth="0dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/attendRecyclerView"
@@ -44,7 +46,7 @@
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />

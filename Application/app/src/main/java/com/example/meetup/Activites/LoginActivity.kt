@@ -7,7 +7,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.example.meetup.DataManagers.EventDataManager
 import com.example.meetup.DataManagers.UserDataManager
+import com.example.meetup.Objects.Event
 import com.example.meetup.R
 import com.google.firebase.auth.FirebaseAuth
 
@@ -16,19 +18,20 @@ class LoginActivity : AppCompatActivity() {
     lateinit var textEmail: EditText
     lateinit var passwordText: EditText
     lateinit var createAccount : TextView
+    lateinit var loginButton : Button
     lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        auth = FirebaseAuth.getInstance()
+
         textEmail = findViewById(R.id.emailEditText)
         passwordText = findViewById(R.id.passwordEditText)
         createAccount = findViewById(R.id.createAccTextView)
+        loginButton = findViewById<Button>(R.id.loginButton)
 
-        auth = FirebaseAuth.getInstance()
-
-        val loginButton = findViewById<Button>(R.id.loginButton)
 
         loginButton.setOnClickListener {
             login()
@@ -39,15 +42,14 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-
     fun login() {
         auth.signInWithEmailAndPassword(textEmail.text.toString(), passwordText.text.toString())
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     UserDataManager.getLoggedInUser()
-                    UserDataManager.updateUserToFirebase()
+                    EventDataManager.resetEventDataManagerUser()
                     goToListActivity()
-                    Toast.makeText(this, "Welcome!", Toast.LENGTH_SHORT)
+                    Toast.makeText(this, "Welcome ${UserDataManager.loggedInUser.name}!", Toast.LENGTH_SHORT)
                         .show()
                     finish()
                 } else {
@@ -68,5 +70,3 @@ class LoginActivity : AppCompatActivity() {
         startActivity(intent)
     }
 }
-
-

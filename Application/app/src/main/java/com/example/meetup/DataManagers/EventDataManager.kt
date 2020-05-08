@@ -5,6 +5,10 @@ import com.example.meetup.Objects.AdapterItem
 import com.example.meetup.Objects.Event
 import com.example.meetup.Objects.User
 import com.example.meetup.RecycleAdapters.EventRecycleAdapter
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 
@@ -16,13 +20,14 @@ object EventDataManager {
     val timeFormat = SimpleDateFormat("HH:mm")
 
     var db = FirebaseFirestore.getInstance()
-    private val eventRef = UserDataManager.loggedInUser.userID?.let { db.collection("userEvents").document(it).collection("events") }
+    private lateinit var currentUser : FirebaseUser
+    private lateinit var eventRef : CollectionReference
 
     fun setFirebaseListener(eventRecyclerView: RecyclerView) {
-
         eventRef?.addSnapshotListener { snapshot, e ->
             // Clear list
             itemsList.clear()
+            println("!!! hämtar från ${currentUser?.uid}")
 
             // Load attending events from Firebase
             if (snapshot != null) {
@@ -82,6 +87,11 @@ object EventDataManager {
 
     fun updateEventToFirebase(eventKeyName : String, event : Event) {
         eventRef?.document(eventKeyName)?.set(event)
+    }
+
+    fun resetEventDataManagerUser() {
+        currentUser = FirebaseAuth.getInstance().currentUser!!
+        currentUser?.let { eventRef = db.collection("userEvents").document(it.uid).collection("events") }
     }
 
 }

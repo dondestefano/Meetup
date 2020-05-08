@@ -7,29 +7,27 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 object UserDataManager {
 
-    var loggedInUser = User(null, null, null)
+    var loggedInUser = User(null, null)
     val allUsersList = mutableListOf<User>()
     val inviteList = mutableListOf<User>()
     var db = FirebaseFirestore.getInstance()
     val auth : FirebaseAuth = FirebaseAuth.getInstance()
-    private val userRef = db.collection("users")
+    val userRef = db.collection("users")
 
 
     
     fun getLoggedInUser() {
-        val user = auth.currentUser
-        if (user != null) {
-            loggedInUser.name = user.displayName.toString()
-            loggedInUser.email = user.email.toString()
-            loggedInUser.userID = user.uid.toString()
-        } else {
-            return
+        val loggedInUserID = auth.currentUser?.uid
+        if(loggedInUserID != null) {
+            userRef.document(loggedInUserID).addSnapshotListener { snapshot, e ->
+                // Load user with teh correct
+                if (snapshot != null) {
+                    loggedInUser = snapshot.toObject(User::class.java)!!
+                }
+            }
         }
     }
 
-    fun updateUserToFirebase() {
-        userRef?.document(loggedInUser.userID.toString()).set(loggedInUser)
-    }
 
     fun setFirebaseListenerForUsers(userRecyclerView: RecyclerView) {
         userRef.addSnapshotListener { snapshot, e ->

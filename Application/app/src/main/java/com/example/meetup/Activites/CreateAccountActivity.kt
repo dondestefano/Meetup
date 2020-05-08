@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import com.example.meetup.DataManagers.UserDataManager
+import com.example.meetup.Objects.User
 import com.example.meetup.R
 import com.google.firebase.auth.FirebaseAuth
 
@@ -28,14 +30,13 @@ class CreateAccountActivity : AppCompatActivity() {
         createButton.setOnClickListener{
             addAccount()
         }
-
     }
 
     fun addAccount() {
         auth.createUserWithEmailAndPassword(createEmailText.text.toString(), createPasswordText.text.toString())
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-
+                    saveUserToDatabase()
                     Toast.makeText(this, "User created.", Toast.LENGTH_SHORT)
                         .show()
                     finish()
@@ -45,5 +46,18 @@ class CreateAccountActivity : AppCompatActivity() {
                         .show()
                 }
             }
+    }
+
+    private fun saveUserToDatabase() {
+        val currentUser = auth.currentUser
+        val userID = currentUser?.uid
+        val email = currentUser?.email.toString()
+        val name = createUsernameEditText.text.toString()
+        val newUser = User(name, email, userID)
+
+        UserDataManager.userRef?.document(userID.toString()).set(
+            newUser
+        )
+
     }
 }

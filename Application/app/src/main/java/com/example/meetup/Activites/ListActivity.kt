@@ -20,6 +20,7 @@ class ListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         auth = FirebaseAuth.getInstance()
+        println("!!! ${auth.currentUser?.uid}")
 
         setEventRecycleAdapters()
         setFabButtons()
