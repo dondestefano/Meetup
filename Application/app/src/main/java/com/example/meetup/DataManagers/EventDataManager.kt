@@ -27,8 +27,6 @@ object EventDataManager {
         eventRef?.addSnapshotListener { snapshot, e ->
             // Clear list
             itemsList.clear()
-            println("!!! hämtar från ${currentUser?.uid}")
-
             // Load attending events from Firebase
             if (snapshot != null) {
                 // Create temporary sortable lists for attending and not attending
@@ -91,7 +89,7 @@ object EventDataManager {
 
     fun resetEventDataManagerUser() {
         currentUser = FirebaseAuth.getInstance().currentUser!!
-        currentUser?.let { eventRef = db.collection("userEvents").document(it.uid).collection("events") }
+        currentUser?.let { eventRef = db.collection("users").document(it.uid).collection("userEvents") }
     }
 
 }

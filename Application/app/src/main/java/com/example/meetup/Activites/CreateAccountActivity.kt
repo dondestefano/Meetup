@@ -9,8 +9,10 @@ import com.example.meetup.DataManagers.UserDataManager
 import com.example.meetup.Objects.User
 import com.example.meetup.R
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class CreateAccountActivity : AppCompatActivity() {
+    val db = FirebaseFirestore.getInstance()
     lateinit var auth: FirebaseAuth
     lateinit var createUsernameEditText: EditText
     lateinit var createEmailText: EditText
@@ -41,7 +43,6 @@ class CreateAccountActivity : AppCompatActivity() {
                         .show()
                     finish()
                 } else {
-                    println("!!! user NOT created!")
                     Toast.makeText(this, "User not created.", Toast.LENGTH_SHORT)
                         .show()
                 }
@@ -55,9 +56,8 @@ class CreateAccountActivity : AppCompatActivity() {
         val name = createUsernameEditText.text.toString()
         val newUser = User(name, email, userID)
 
-        UserDataManager.userRef?.document(userID.toString()).set(
+        UserDataManager.allUsersRef.document(userID.toString()).set(
             newUser
         )
-
     }
 }

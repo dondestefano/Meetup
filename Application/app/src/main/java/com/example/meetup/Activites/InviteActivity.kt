@@ -38,7 +38,6 @@ class InviteActivity : AppCompatActivity() {
     fun setOnclickListeners() {
         inviteButton.setOnClickListener {
             event?.keyName?.let { inviteUserToEvent(it, event) }
-            println("!!! ${event.keyName.toString()}")
             finish()
         }
     }
@@ -59,11 +58,15 @@ class InviteActivity : AppCompatActivity() {
     }
 
     private fun inviteUserToEvent(eventKeyName : String, event : Event) {
+        // Set not attend as a default for new invites.
+        event.attend = false
+        // Go through the list of invites and get a collection path with their userID.
         val inviteList = UserDataManager.inviteList
         for (user in inviteList){
             val inviteRef = user.userID?.let {
-                EventDataManager.db.collection("userEvents").document(it).collection("events")
+                EventDataManager.db.collection("users").document(it).collection("userEvents")
             }
+            // When the collection path is set add a new document with the event.
             if (inviteRef != null) {
                 inviteRef.document(eventKeyName).set(event)
             }

@@ -61,11 +61,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
         }
 
         inviteButton.setOnClickListener{
-            addEvent()
-            val intent = Intent(this, InviteActivity::class.java)
-            intent.putExtra("EVENT", event)
-
-            startActivity(intent)
+            goToInvite()
         }
 
         // Determine if the saveButton should create a new event or edit an existing event.
@@ -93,8 +89,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
                 finish()
             }
         } else {
-            Toast.makeText(this, "Please enter a name your event.", Toast.LENGTH_SHORT)
-                .show()
+            errorToast("Please enter a name for your event.")
         }
     }
 
@@ -107,6 +102,19 @@ class AddAndEditEventActivity : AppCompatActivity() {
 
             event.keyName?.let { EventDataManager.updateEventToFirebase(it, event) }
             finish()
+        }
+    }
+
+    private fun goToInvite() {
+        val name = nameEditText.text.toString()
+        if (name.isNotEmpty()) {
+            addEvent()
+            val intent = Intent(this, InviteActivity::class.java)
+            intent.putExtra("EVENT", event)
+
+            startActivity(intent)
+        } else {
+            errorToast("Please enter a name for your event.")
         }
     }
 
@@ -186,6 +194,11 @@ class AddAndEditEventActivity : AppCompatActivity() {
             nameEditText.setText(name)
             saveButton.text = "Save"
         }
+    }
+
+    private fun errorToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT)
+            .show()
     }
 }
 
