@@ -1,29 +1,28 @@
-package com.example.meetup
+package com.example.meetup.Activites
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.service.autofill.UserData
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreSettings
-import com.google.firebase.firestore.auth.User
-import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
-import kotlin.collections.HashMap
+import com.example.meetup.DataManagers.EventDataManager
+import com.example.meetup.RecycleAdapters.EventRecycleAdapter
+import com.example.meetup.R
+import com.google.firebase.auth.FirebaseAuth
 
 class ListActivity : AppCompatActivity() {
     private var eventRecyclerView : RecyclerView? = null
+    lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        auth = FirebaseAuth.getInstance()
+
         setEventRecycleAdapters()
-        setFabButton()
+        setFabButtons()
         eventRecyclerView?.let { EventDataManager.setFirebaseListener(it) }
     }
 
@@ -36,18 +35,27 @@ class ListActivity : AppCompatActivity() {
         eventRecyclerView = findViewById<RecyclerView>(R.id.attendRecyclerView)
         eventRecyclerView?.layoutManager = LinearLayoutManager(this)
 
-        val eventAdapter = EventRecycleAdapter(this)
+        val eventAdapter =
+            EventRecycleAdapter(this)
         eventAdapter.updateItemsToList(EventDataManager.itemsList)
         eventRecyclerView?.adapter = eventAdapter
 
     }
 
-    private fun setFabButton() {
+    private fun setFabButtons() {
         val fab = findViewById<View>(R.id.addEventActionButton)
         fab.setOnClickListener{ view ->
             val intent = Intent(this, AddAndEditEventActivity::class.java)
             intent.putExtra("EVENT_POSITION", "NO_LIST")
             startActivity(intent)
+        }
+
+        val logoutFab = findViewById<View>(R.id.logoutButton)
+        logoutFab.setOnClickListener{
+            auth.signOut()
+            val intent = Intent (this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 }

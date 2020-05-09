@@ -4,28 +4,52 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ListActivity">
+    tools:context=".Activites.ListActivity">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addEventActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:clickable="true"
-        android:tint="#FFFFFF"
-        app:backgroundTint="#3F51B5"
+        app:tint="@color/colorWhite"
+        app:backgroundTint="@color/colorPrimary"
+        app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_add_black_24dp" />
+        app:srcCompat="@drawable/ic_add_white_24dp"
+        app:elevation="6dp"
+        app:borderWidth="0dp" />
+
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/logoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_gravity="end|top"
+        android:text="Log out"
+        android:textColor="@color/colorWhite"
+        app:backgroundTint="@color/colorPrimary"
+        app:icon="@drawable/ic_highlight_off_black_24dp"
+        app:iconTint="@color/colorWhite"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:elevation="6dp"
+        app:borderWidth="0dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/attendRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:elevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
