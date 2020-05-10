@@ -9,24 +9,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activites.SplashActivity">
+        <activity android:name=".activites.SearchUsersActivity"></activity>
+        <activity android:name=".activites.FriendListActivity" />
+        <activity android:name=".activites.UserProfileActivity" />
+        <activity android:name=".activites.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activites.InviteActivity" />
-        <activity android:name=".Activites.CreateAccountActivity" />
-        <activity android:name=".Activites.LoginActivity">
+        <activity android:name=".activites.InviteActivity" />
+        <activity android:name=".activites.CreateAccountActivity" />
+        <activity android:name=".activites.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activites.AddAndEditEventActivity" />
-        <activity android:name=".Activites.ListActivity" />
+        <activity android:name=".activites.AddAndEditEventActivity" />
+        <activity android:name=".activites.ListActivity" />
     </application>
 
 </manifest>

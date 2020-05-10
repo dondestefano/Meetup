@@ -1,4 +1,4 @@
-package com.example.meetup.Activites
+package com.example.meetup.activites
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.meetup.DataManagers.EventDataManager
-import com.example.meetup.RecycleAdapters.EventRecycleAdapter
+import com.example.meetup.data_managers.EventDataManager
+import com.example.meetup.recycle_adapters.EventRecycleAdapter
 import com.example.meetup.R
 import com.google.firebase.auth.FirebaseAuth
 
@@ -44,9 +44,15 @@ class ListActivity : AppCompatActivity() {
 
     private fun setFabButtons() {
         val fab = findViewById<View>(R.id.addEventActionButton)
-        fab.setOnClickListener{ view ->
+        fab.setOnClickListener{
             val intent = Intent(this, AddAndEditEventActivity::class.java)
             intent.putExtra("EVENT_POSITION", "NO_LIST")
+            startActivity(intent)
+        }
+
+        val friendFab = findViewById<View>(R.id.addFriendsButton)
+        friendFab.setOnClickListener{
+            val intent = Intent(this, FriendListActivity::class.java)
             startActivity(intent)
         }
 

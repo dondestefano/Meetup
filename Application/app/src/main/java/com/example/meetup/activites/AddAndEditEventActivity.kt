@@ -1,4 +1,4 @@
-package com.example.meetup.Activites
+package com.example.meetup.activites
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -8,8 +8,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.meetup.DataManagers.EventDataManager
-import com.example.meetup.Objects.Event
+import com.example.meetup.data_managers.EventDataManager
+import com.example.meetup.objects.Event
 import com.example.meetup.R
 import java.util.*
 

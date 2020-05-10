@@ -1,12 +1,12 @@
-package com.example.meetup.Activites
+package com.example.meetup.activites
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import com.example.meetup.DataManagers.UserDataManager
-import com.example.meetup.Objects.User
+import com.example.meetup.data_managers.UserDataManager
+import com.example.meetup.objects.User
 import com.example.meetup.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore

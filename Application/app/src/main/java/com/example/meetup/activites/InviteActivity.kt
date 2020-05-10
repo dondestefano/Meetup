@@ -1,4 +1,4 @@
-package com.example.meetup.Activites
+package com.example.meetup.activites
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -6,12 +6,11 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.meetup.DataManagers.EventDataManager
-import com.example.meetup.DataManagers.UserDataManager
-import com.example.meetup.Objects.Event
-import com.example.meetup.Objects.User
+import com.example.meetup.data_managers.EventDataManager
+import com.example.meetup.data_managers.UserDataManager
+import com.example.meetup.objects.Event
 import com.example.meetup.R
-import com.example.meetup.RecycleAdapters.UserRecycleAdapter
+import com.example.meetup.recycle_adapters.UserRecycleAdapter
 
 const val EVENT_EXTRA = "EVENT"
 
@@ -31,19 +30,19 @@ class InviteActivity : AppCompatActivity() {
         getExtraFromIntent()
         setOnclickListeners()
 
-        setEventRecycleAdapter()
+        setInviteUserRecycleAdapter()
         userRecyclerView?.let { UserDataManager.setFirebaseListenerForUsers(it) }
     }
 
     fun setOnclickListeners() {
         inviteButton.setOnClickListener {
-            event?.keyName?.let { inviteUserToEvent(it, event) }
+            event.keyName?.let { inviteUserToEvent(it, event) }
             finish()
         }
     }
 
 
-    private fun setEventRecycleAdapter() {
+    private fun setInviteUserRecycleAdapter() {
         userRecyclerView = findViewById<RecyclerView>(R.id.userInviteRecycleView)
         userRecyclerView?.layoutManager = LinearLayoutManager(this)
 

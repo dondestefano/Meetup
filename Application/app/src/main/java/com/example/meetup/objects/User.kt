@@ -1,6 +1,6 @@
-package com.example.meetup.Objects
+package com.example.meetup.objects
 
-open class User (var name : String? = null,
+data class User (var name : String? = null,
                  var email : String? = null,
                  var userID: String? = null) {
 

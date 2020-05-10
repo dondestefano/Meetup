@@ -1,4 +1,4 @@
-package com.example.meetup.RecycleAdapters
+package com.example.meetup.recycle_adapters
 
 import android.content.Context
 import android.content.Intent
@@ -9,9 +9,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.meetup.Activites.AddAndEditEventActivity
-import com.example.meetup.Objects.AdapterItem
-import com.example.meetup.DataManagers.EventDataManager
+import com.example.meetup.activites.AddAndEditEventActivity
+import com.example.meetup.objects.AdapterItem
+import com.example.meetup.data_managers.EventDataManager
 import com.example.meetup.R
 
 class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -32,12 +32,12 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         when (viewType) {
             TYPE_ACCEPT_HEADER -> {
-                val itemView = layoutInflater.inflate(R.layout.event_header_card_layout, parent, false)
+                val itemView = layoutInflater.inflate(R.layout.header_card_layout, parent, false)
                 return HeaderViewHolder(itemView, "Attending events")
             }
 
             TYPE_DECLINE_HEADER -> {
-                val itemView = layoutInflater.inflate(R.layout.event_header_card_layout, parent, false)
+                val itemView = layoutInflater.inflate(R.layout.header_card_layout, parent, false)
                 return HeaderViewHolder(itemView, "Declined events")
             }
 
