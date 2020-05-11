@@ -1,5 +1,7 @@
 package com.example.meetup.data_managers
 
+import android.content.Context
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.meetup.objects.AdapterItem
 import com.example.meetup.objects.Friend
@@ -8,6 +10,7 @@ import com.example.meetup.recycle_adapters.FriendRecycleAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FieldValue.delete
 import com.google.firebase.firestore.FirebaseFirestore
 
 object FriendDataManager {
@@ -93,5 +96,19 @@ object FriendDataManager {
     fun addFriend(user: User) {
         val newFriend = Friend(user.name, user.email, user.userID, false)
         newFriend.userID?.let { friendsRef?.document(it)?.set(newFriend) }
+    }
+
+    fun removeFriend(context: Context, user: User) {
+        user.userID?.let { friendsRef?.document(it)
+            ?.delete()
+            .addOnSuccessListener {
+                Toast.makeText(context, "Removed ${user.name} from friends.", Toast.LENGTH_SHORT)
+                    .show()
+            }
+            .addOnFailureListener{
+                Toast.makeText(context, "Error. Cant't remove ${user.name} from friends..", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
     }
 }
