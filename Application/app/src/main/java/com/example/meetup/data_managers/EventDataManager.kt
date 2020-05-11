@@ -1,24 +1,25 @@
-package com.example.meetup.DataManagers
+package com.example.meetup.data_managers
 
 import androidx.recyclerview.widget.RecyclerView
-import com.example.meetup.Objects.AdapterItem
-import com.example.meetup.Objects.Event
-import com.example.meetup.Objects.User
-import com.example.meetup.RecycleAdapters.EventRecycleAdapter
+import com.example.meetup.objects.AdapterItem
+import com.example.meetup.objects.Event
+import com.example.meetup.recycle_adapters.EventRecycleAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 
 
 object EventDataManager {
+    // List //
     val itemsList = mutableListOf<AdapterItem>()
 
+    // Dateformatters //
     val dateFormat = SimpleDateFormat("E dd-MMM-yyyy")
     val timeFormat = SimpleDateFormat("HH:mm")
 
+    // Datebase-helpers
     var db = FirebaseFirestore.getInstance()
     private lateinit var currentUser : FirebaseUser
     private lateinit var eventRef : CollectionReference
@@ -33,11 +34,12 @@ object EventDataManager {
                 val attendList = mutableListOf<AdapterItem>()
                 val declineList = mutableListOf<AdapterItem>()
 
+                // Search for events with status attending.
                 for (document in snapshot.documents) {
                     val loadEvent = document.toObject(Event::class.java)
                     if (loadEvent != null && loadEvent.attend == true) {
                         val item = AdapterItem(
-                            loadEvent,
+                            loadEvent, null,
                             EventRecycleAdapter.TYPE_EVENT
                         )
                         attendList.add(item)
@@ -47,7 +49,7 @@ object EventDataManager {
                 if(attendList.isNotEmpty()) {
                     // Add attend header
                     val attendHeader = AdapterItem(
-                        null,
+                        null, null,
                         EventRecycleAdapter.TYPE_ACCEPT_HEADER
                     )
                     itemsList.add(attendHeader)
@@ -56,20 +58,22 @@ object EventDataManager {
                     itemsList.addAll(attendList)
                 }
 
+                //Search for events with status not attending
                 for (document in snapshot.documents) {
                     val loadEvent = document.toObject(Event::class.java)
                     if (loadEvent != null && loadEvent.attend == false) {
                         val item = AdapterItem(
-                            loadEvent,
+                            loadEvent, null,
                             EventRecycleAdapter.TYPE_EVENT
                         )
                         declineList.add(item)
                     }
                 }
+
                 if(declineList.isNotEmpty()) {
                     // Add decline header
                     val declineHeader = AdapterItem(
-                        null,
+                        null, null,
                         EventRecycleAdapter.TYPE_DECLINE_HEADER
                     )
                     itemsList.add(declineHeader)
@@ -88,9 +92,8 @@ object EventDataManager {
     }
 
     fun resetEventDataManagerUser() {
+        // Get the current users information for the EventDataManager
         currentUser = FirebaseAuth.getInstance().currentUser!!
         currentUser?.let { eventRef = db.collection("users").document(it.uid).collection("userEvents") }
     }
-
 }
-

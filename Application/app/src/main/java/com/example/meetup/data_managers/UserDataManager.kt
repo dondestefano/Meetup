@@ -1,20 +1,21 @@
-package com.example.meetup.DataManagers
+package com.example.meetup.data_managers
 
 import androidx.recyclerview.widget.RecyclerView
-import com.example.meetup.Objects.User
+import com.example.meetup.objects.User
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 
 object UserDataManager {
-
+    // Lists //
     var loggedInUser = User(null, null, null)
     val allUsersList = mutableListOf<User>()
     val inviteList = mutableListOf<User>()
-    private val auth : FirebaseAuth = FirebaseAuth.getInstance()
+
+    // Database-helpers //
     var db = FirebaseFirestore.getInstance()
     val allUsersRef = db.collection("users")
+    private val auth : FirebaseAuth = FirebaseAuth.getInstance()
     lateinit var userDataRef : DocumentReference //QUESTION: Do I need this?
 
     fun getLoggedInUser() {
@@ -22,12 +23,11 @@ object UserDataManager {
         userDataRef = loggedInUserID?.let { allUsersRef.document(it) }!!
         if(loggedInUserID != null) {
             userDataRef?.addSnapshotListener { snapshot, e ->
-                // Load user with teh correct
+                // Load user with the correct id from Firebase
                 if (snapshot != null) {
                     loggedInUser = snapshot.toObject(User::class.java)!!
-                    println("!!! ${loggedInUser.name}")
                 } else {
-                    println("!!! $e")
+
                 }
             }
         }
@@ -43,6 +43,7 @@ object UserDataManager {
                     val loadUser = document.toObject(User::class.java)
                     loadUser?.let { allUsersList.add(it) }
                     userRecyclerView.adapter?.notifyDataSetChanged()
+                    println("!!! ${loadUser?.name}")
                 }
             }
         }

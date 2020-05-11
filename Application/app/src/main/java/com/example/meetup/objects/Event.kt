@@ -1,9 +1,6 @@
-package com.example.meetup.Objects
+package com.example.meetup.objects
 
-import android.content.Context
-import android.content.Intent
-import com.example.meetup.Activites.InviteActivity
-import com.example.meetup.DataManagers.EventDataManager
+import com.example.meetup.data_managers.EventDataManager
 import java.io.Serializable
 import java.util.*
 

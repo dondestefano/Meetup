@@ -1,7 +1,6 @@
-package com.example.meetup.RecycleAdapters
+package com.example.meetup.recycle_adapters
 
 import android.content.Context
-import android.service.autofill.UserData
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +8,9 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.meetup.DataManagers.UserDataManager
+import com.example.meetup.data_managers.UserDataManager
 import com.example.meetup.R
-import com.example.meetup.Objects.User
+import com.example.meetup.objects.User
 
 class UserRecycleAdapter(private val context: Context) : RecyclerView.Adapter<UserRecycleAdapter.UserViewHolder>() {
 
@@ -37,11 +36,10 @@ class UserRecycleAdapter(private val context: Context) : RecyclerView.Adapter<Us
             if(holder.userInviteCheckBox.isChecked){
                 UserDataManager.inviteList.add(currentUser)
                 for (users in UserDataManager.inviteList) {
-                    println("!!! ${users.userID.toString()}")
                 }
+
             } else { UserDataManager.inviteList.remove(currentUser)
                 for (users in UserDataManager.inviteList) {
-                    println("!!! ${users.userID.toString()}")
                 }
             }
         }
@@ -52,6 +50,4 @@ class UserRecycleAdapter(private val context: Context) : RecyclerView.Adapter<Us
         val imageView : ImageView = itemView.findViewById<ImageView>(R.id.userSearchImage)
         val userInviteCheckBox : CheckBox = itemView.findViewById<CheckBox>(R.id.inviteCheckBox)
     }
-
-
 }

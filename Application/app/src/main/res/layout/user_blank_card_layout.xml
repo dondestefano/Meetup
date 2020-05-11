@@ -8,9 +8,11 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="1dp"
+        app:cardUseCompatPadding="true"
+        app:contentPadding="10dp">
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,22 +20,22 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/userSearchImage"
+                android:id="@+id/friendImage"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
+                android:background="@drawable/drawable_rounded_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:background="@drawable/drawable_rounded_button"
                 android:src="@drawable/ic_person_black_24dp"
                 android:tint="@color/colorWhite"
                 />
 
             <TextView
-                android:id="@+id/userSearchName"
+                android:id="@+id/friendName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -41,22 +43,9 @@
                 android:layout_marginBottom="16dp"
                 android:text="Hej"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/userSearchImage"
+                app:layout_constraintStart_toEndOf="@id/friendImage"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <CheckBox
-                android:id="@+id/inviteCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Invite"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

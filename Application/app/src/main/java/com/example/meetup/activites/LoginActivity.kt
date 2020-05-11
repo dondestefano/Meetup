@@ -1,4 +1,4 @@
-package com.example.meetup.Activites
+package com.example.meetup.activites
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -7,9 +7,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import com.example.meetup.DataManagers.EventDataManager
-import com.example.meetup.DataManagers.UserDataManager
-import com.example.meetup.Objects.Event
+import com.example.meetup.data_managers.EventDataManager
+import com.example.meetup.data_managers.FriendDataManager
+import com.example.meetup.data_managers.UserDataManager
 import com.example.meetup.R
 import com.google.firebase.auth.FirebaseAuth
 
@@ -42,12 +42,13 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun login() {
+    private fun login() {
         auth.signInWithEmailAndPassword(textEmail.text.toString(), passwordText.text.toString())
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     UserDataManager.getLoggedInUser()
                     EventDataManager.resetEventDataManagerUser()
+                    FriendDataManager.resetFriendDataManagerUser()
                     goToListActivity()
                     Toast.makeText(this, "Welcome ${UserDataManager.loggedInUser.name}!", Toast.LENGTH_SHORT)
                         .show()
@@ -59,13 +60,12 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
-
-    fun goToListActivity() {
+    private fun goToListActivity() {
         val intent = Intent(this, ListActivity::class.java)
         startActivity(intent)
     }
 
-    fun goToCreateAccountActivity() {
+    private fun goToCreateAccountActivity() {
         val intent = Intent(this, CreateAccountActivity::class.java)
         startActivity(intent)
     }
