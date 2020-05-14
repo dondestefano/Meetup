@@ -20,8 +20,10 @@ const val FRIEND_REQUEST_PATH = "friendRequests"
 const val REQUEST_PATH = "requests"
 
 object FriendDataManager {
-    // List //
+    // Lists //
     val itemsList = mutableListOf<AdapterItem>()
+    val friendsList = mutableListOf<User>()
+    val inviteList = mutableListOf<User>()
 
     // Database-helpers //
     private var db = FirebaseFirestore.getInstance()
@@ -34,17 +36,55 @@ object FriendDataManager {
     fun setFirebaseListenerForFriends(friendRecyclerView: RecyclerView) {
         userReqRef.addSnapshotListener { snapshot, e ->
             itemsList.clear()
-            // Load confirmed friends from database
+            friendsList.clear()
             if (snapshot != null) {
-                // Create temporary sortable lists for confirmed and not confirmed friends
+                // Create temporary sortable lists for requested, confirmed and not confirmed friends
+                val newRequestList = mutableListOf<AdapterItem>()
                 val friendList = mutableListOf<AdapterItem>()
                 val requestList = mutableListOf<AdapterItem>()
 
-                // Search for friends with friendStatus confirmed.
+                ///    Load new friend requests from database   ///
+
+                // Search for friends with friendStatus confirmed in Firebase.
+                for (document in snapshot.documents) {
+                    val status = document.data?.getValue("status")
+                    if (status == REQUEST_RECEIVED) {
+                        // Find the friend with the correct ID from UserDataManager
+                        // and add it to to friendList as a  ListItem.
+                        val friend = UserDataManager.getUser(document.id)
+                        val item = AdapterItem(
+                            null, friend,
+                            FriendRecycleAdapter.TYPE_FRIEND
+                        )
+                        newRequestList.add(item)
+                    }
+                }
+
+                if(newRequestList.isNotEmpty()) {
+                    // Add friends header
+                    val newRequestHeader = AdapterItem(
+                        null, null,
+                        FriendRecycleAdapter.TYPE_REQUESTED_HEADER
+                    )
+                    itemsList.add(newRequestHeader)
+                    // Sort friend list before adding it to itemsList
+                    newRequestList.sortBy { it.user?.name }
+                    itemsList.addAll(newRequestList)
+                }
+
+                ///    Load accepted friends from database   ///
+
+                // Search for friends with friendStatus confirmed in Firebase.
                 for (document in snapshot.documents) {
                     val status = document.data?.getValue("status")
                     if (status == REQUEST_ACCEPTED) {
+                        // Find the friend with the correct ID from UserDataManager
+                        // and add it to to friendList as a  ListItem.
                         val friend = UserDataManager.getUser(document.id)
+
+                        // Save confirmed friends in a separate list for invite uses.
+                        friend?.let { friendsList.add(it) }
+
                         val item = AdapterItem(
                             null, friend,
                             FriendRecycleAdapter.TYPE_FRIEND
@@ -55,37 +95,40 @@ object FriendDataManager {
 
                 if(friendList.isNotEmpty()) {
                     // Add friends header
-                    val requestHeader = AdapterItem(
+                    val friendHeader = AdapterItem(
                         null, null,
                         FriendRecycleAdapter.TYPE_FRIEND_HEADER
                     )
-                    itemsList.add(requestHeader)
+                    itemsList.add(friendHeader)
                     // Sort friend list before adding it to itemsList
                     friendList.sortBy { it.user?.name }
                     itemsList.addAll(friendList)
                 }
 
-                //Search for friends who have not yet responded to a request
+                ///    Load pending friend requests from database   ///
+
+                //Search for friends who have not yet responded to a request in Firebase.
                 for (document in snapshot.documents) {
                     val status = document.data?.getValue("status")
-                    if (status == REQUEST_SENT || status == REQUEST_RECEIVED) {
+                    if (status == REQUEST_SENT) {
+                        // Find the friend with the correct ID from UserDataManager
+                        // and add it to requestList as a  ListItem.
                         val friend = UserDataManager.getUser(document.id)
                         val item = AdapterItem(
                             null, friend,
                             FriendRecycleAdapter.TYPE_FRIEND
                         )
                         requestList.add(item)
-                        println("!!! name here yo ${item.user?.name}")
                     }
                 }
 
                 if(requestList.isNotEmpty()) {
                     // Add pending header
-                    val declineHeader = AdapterItem(
+                    val pendingHeader = AdapterItem(
                         null, null,
                         FriendRecycleAdapter.TYPE_WAITING_HEADER
                     )
-                    itemsList.add(declineHeader)
+                    itemsList.add(pendingHeader)
                     // Sort pending list before adding it to itemsList
                     requestList.sortBy { it.user?.name }
                     itemsList.addAll(requestList)
@@ -105,14 +148,14 @@ object FriendDataManager {
     }
 
     fun sendFriendRequest(friend: User) {
-        // Send request to friend
+        // Send request to friend and upload to friends friendRequests collection in Firebase
         friend.userID?.let { friendReqRef = db.collection(FRIEND_REQUEST_PATH).document(it).collection(REQUEST_PATH) }
         val requestReceived = hashMapOf(
             "status" to REQUEST_RECEIVED
         )
         UserDataManager.loggedInUser.userID?.let { friendReqRef?.document(it)?.set(requestReceived as Map<String, String>) }
 
-        // Add request to user
+        // Add request to user and upload to the users friendRequests collection in Firebase
         val request = hashMapOf(
             "status" to REQUEST_SENT
         )
@@ -120,14 +163,14 @@ object FriendDataManager {
     }
 
     fun acceptFriendRequest(friend: User) {
-        // Send acceptance to friend
+        // Send acceptance to friend and upload to friends friendRequests collection in Firebase
         friend.userID?.let { friendReqRef = db.collection(FRIEND_REQUEST_PATH).document(it).collection(REQUEST_PATH) }
         val requestAccepted = hashMapOf(
             "status" to REQUEST_ACCEPTED
         )
         UserDataManager.loggedInUser.userID?.let { friendReqRef.document(it).set(requestAccepted as Map<String, String>) }
 
-        // Set request as accepted
+        // Set request as accepted and upload to the users friendRequests collection in Firebase
         val request = hashMapOf(
             "status" to REQUEST_ACCEPTED
         )
@@ -135,12 +178,12 @@ object FriendDataManager {
     }
 
     fun removeFriend(context: Context, friend: User) {
-        // Remove request from friend
+        // Remove request from friend and upload to friends friendRequests collection in Firebase
         friend.userID?.let { friendReqRef = db.collection(FRIEND_REQUEST_PATH).document(it).collection(REQUEST_PATH) }
         UserDataManager.loggedInUser.userID?.let { friendReqRef?.document(it)}
             ?.delete()
 
-        // Remove request from user
+        // Remove request from user and upload to the users friendRequests collection in Firebase
         friend.userID?.let { userReqRef?.document(it) }
             ?.delete()
             ?.addOnSuccessListener {

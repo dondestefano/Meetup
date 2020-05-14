@@ -7,10 +7,9 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 
 object UserDataManager {
-    // Lists //
+    // All users //
     var loggedInUser = User(null, null, null)
     val allUsersList = mutableListOf<User>()
-    val inviteList = mutableListOf<User>()
 
     // Database-helpers //
     var db = FirebaseFirestore.getInstance()
@@ -43,7 +42,6 @@ object UserDataManager {
                     val loadUser = document.toObject(User::class.java)
                     loadUser?.let { allUsersList.add(it) }
                     userRecyclerView?.adapter?.notifyDataSetChanged()
-                    println("!!! ${loadUser?.name}")
                 }
             }
         }

@@ -48,9 +48,9 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     UserDataManager.getLoggedInUser()
-                    UserDataManager.setFirebaseListenerForUsers(null)
                     EventDataManager.resetEventDataManagerUser()
                     FriendDataManager.resetFriendDataManagerUser()
+                    UserDataManager.setFirebaseListenerForUsers(null)
                     goToListActivity()
                     Toast.makeText(this, "Welcome ${UserDataManager.loggedInUser.name}!", Toast.LENGTH_SHORT)
                         .show()

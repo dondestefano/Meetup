@@ -18,8 +18,9 @@ class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
 
     companion object {
         const val TYPE_FRIEND_HEADER = 0
-        const val TYPE_WAITING_HEADER = 1
-        const val TYPE_FRIEND = 2
+        const val TYPE_REQUESTED_HEADER = 1
+        const val TYPE_WAITING_HEADER = 2
+        const val TYPE_FRIEND = 3
     }
 
 
@@ -27,12 +28,17 @@ class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
         when (viewType) {
             TYPE_FRIEND_HEADER -> {
                 val itemView = layoutInflater.inflate(R.layout.header_card_layout, parent, false)
-                return HeaderViewHolder(itemView, "Friends")
+                return HeaderViewHolder(itemView, "Friends.")
+            }
+
+            TYPE_REQUESTED_HEADER -> {
+                val itemView = layoutInflater.inflate(R.layout.header_card_layout, parent, false)
+                return HeaderViewHolder(itemView, "New friend requests.")
             }
 
             TYPE_WAITING_HEADER -> {
                 val itemView = layoutInflater.inflate(R.layout.header_card_layout, parent, false)
-                return HeaderViewHolder(itemView, "Pending Requests")
+                return HeaderViewHolder(itemView, "Requests sent.")
             }
 
             else -> {
@@ -55,7 +61,7 @@ class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
             is FriendViewHolder -> {
                 val currentItem = listItems[position]
                 val currentFriend = currentItem.user
-                holder.friendPosition = position
+                holder.userID = currentFriend?.userID
                 currentFriend?.name.let {holder.nameView.text = it}
             }
         }
@@ -69,11 +75,11 @@ class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
     inner class FriendViewHolder(userView: View) : RecyclerView.ViewHolder(userView) {
         val nameView: TextView = itemView.findViewById<TextView>(R.id.friendName)
         val imageView: ImageView = itemView.findViewById<ImageView>(R.id.friendImage)
-        var friendPosition = 0
+        var userID: String? = null
         init {
             itemView.setOnClickListener {
                 val intent = Intent(context, UserProfileActivity::class.java)
-                intent.putExtra("USER_POSITION", friendPosition)
+                intent.putExtra("USER_ID", userID)
                 context.startActivity(intent)
             }
         }

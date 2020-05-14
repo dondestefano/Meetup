@@ -11,7 +11,7 @@ import com.example.meetup.data_managers.UserDataManager
 import com.example.meetup.R
 import com.example.meetup.objects.User
 
-const val USER_POSITION = "USER_POSITION"
+const val USER_ID = "USER_ID"
 const val STRANGER_STATE = "STRANGER_STATE"
 const val USER_STATE = "USER_STATE"
 const val SENT_STATE = "sent"
@@ -30,7 +30,7 @@ class UserProfileActivity : AppCompatActivity() {
 
 
     // Put extra helpers.
-    private var userPosition = 0
+    private lateinit var userID: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,9 +45,9 @@ class UserProfileActivity : AppCompatActivity() {
     }
 
     private fun getExtraFromIntent() {
-        // Get the event's position
-        userPosition = intent.getIntExtra(USER_POSITION, userPosition)
-        user = UserDataManager.allUsersList[userPosition]
+        // Get users ID and find correct user
+        userID = intent.getStringExtra("USER_ID")
+        user = UserDataManager.getUser(userID)
     }
 
     private fun determineState() {
@@ -72,7 +72,7 @@ class UserProfileActivity : AppCompatActivity() {
         when (currentState) {
             FRIEND_STATE -> {
                 addFriendButton = findViewById(R.id.sendFriendRequestButton)
-                addFriendButton.text = "Remove friend"
+                addFriendButton.text = "Unfriend"
                 addFriendButton.setOnClickListener {
                     user?.let { FriendDataManager.removeFriend(this, it) }
                     currentState = STRANGER_STATE

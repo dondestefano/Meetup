@@ -10,6 +10,7 @@ import com.example.meetup.data_managers.EventDataManager
 import com.example.meetup.data_managers.UserDataManager
 import com.example.meetup.objects.Event
 import com.example.meetup.R
+import com.example.meetup.data_managers.FriendDataManager
 import com.example.meetup.recycle_adapters.InviteRecycleAdapter
 
 const val EVENT_EXTRA = "EVENT"
@@ -31,16 +32,15 @@ class InviteActivity : AppCompatActivity() {
         setOnclickListeners()
 
         setInviteUserRecycleAdapter()
-        userRecyclerView?.let { UserDataManager.setFirebaseListenerForUsers(it) }
+        userRecyclerView?.let { FriendDataManager.setFirebaseListenerForFriends(it) }
     }
 
-    fun setOnclickListeners() {
+    private fun setOnclickListeners() {
         inviteButton.setOnClickListener {
             event.keyName?.let { inviteUserToEvent(it, event) }
             finish()
         }
     }
-
 
     private fun setInviteUserRecycleAdapter() {
         userRecyclerView = findViewById<RecyclerView>(R.id.userInviteRecycleView)
@@ -48,7 +48,7 @@ class InviteActivity : AppCompatActivity() {
 
         val userAdapter = InviteRecycleAdapter(this)
         userRecyclerView?.adapter = userAdapter
-        userAdapter.updateItemsToList(UserDataManager.allUsersList)
+        userAdapter.updateItemsToList(FriendDataManager.friendsList)
     }
 
     private fun getExtraFromIntent() {
@@ -60,15 +60,13 @@ class InviteActivity : AppCompatActivity() {
         // Set not attend as a default for new invites.
         event.attend = false
         // Go through the list of invites and get a collection path with their userID.
-        val inviteList = UserDataManager.inviteList
+        val inviteList = FriendDataManager.inviteList
         for (user in inviteList){
             val inviteRef = user.userID?.let {
                 EventDataManager.db.collection("users").document(it).collection("userEvents")
             }
             // When the collection path is set add a new document with the event.
-            if (inviteRef != null) {
-                inviteRef.document(eventKeyName).set(event)
-            }
+            inviteRef?.document(eventKeyName)?.set(event)
         }
         inviteList.clear()
     }
