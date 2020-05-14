@@ -11,6 +11,7 @@ import com.example.meetup.data_managers.EventDataManager
 import com.example.meetup.data_managers.FriendDataManager
 import com.example.meetup.data_managers.UserDataManager
 import com.example.meetup.R
+import com.example.meetup.objects.User
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
@@ -49,6 +50,7 @@ class LoginActivity : AppCompatActivity() {
                     UserDataManager.getLoggedInUser()
                     EventDataManager.resetEventDataManagerUser()
                     FriendDataManager.resetFriendDataManagerUser()
+                    UserDataManager.setFirebaseListenerForUsers(null)
                     goToListActivity()
                     Toast.makeText(this, "Welcome ${UserDataManager.loggedInUser.name}!", Toast.LENGTH_SHORT)
                         .show()

@@ -11,12 +11,12 @@ import com.example.meetup.data_managers.UserDataManager
 import com.example.meetup.R
 import com.example.meetup.objects.User
 
-const val USER_POSITION = "USER_POSITION"
+const val USER_ID = "USER_ID"
 const val STRANGER_STATE = "STRANGER_STATE"
 const val USER_STATE = "USER_STATE"
-const val SENT_STATE = "SENT_STATE"
-const val RECEIVED_STATE = "RECEIVED_STATE"
-const val FRIEND_STATE = "FRIEND STATE"
+const val SENT_STATE = "sent"
+const val RECEIVED_STATE = "received"
+const val FRIEND_STATE = "accepted"
 
 
 class UserProfileActivity : AppCompatActivity() {
@@ -30,7 +30,7 @@ class UserProfileActivity : AppCompatActivity() {
 
 
     // Put extra helpers.
-    private var userPosition = 0
+    private lateinit var userID: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,30 +41,38 @@ class UserProfileActivity : AppCompatActivity() {
 
         getExtraFromIntent()
         determineState()
-        setUpFromState()
         setupUser()
     }
 
     private fun getExtraFromIntent() {
-        // Get the event's position
-        userPosition = intent.getIntExtra(USER_POSITION, userPosition)
-        user = UserDataManager.allUsersList[userPosition]
+        // Get users ID and find correct user
+        userID = intent.getStringExtra("USER_ID")
+        user = UserDataManager.getUser(userID)
     }
 
     private fun determineState() {
         if (user?.userID == UserDataManager.loggedInUser.userID) {
             currentState = USER_STATE
+            setUpFromState()
         }
+
         else {
-            STRANGER_STATE
+            println("!!! Sending")
+            user?.userID?.let { currentState = FriendDataManager.checkStatus(it, this).toString() }
         }
+    }
+
+    fun stateDetermined(state: String) {
+        currentState = state
+        print("!!! $state")
+        setUpFromState()
     }
 
     private fun setUpFromState() {
         when (currentState) {
             FRIEND_STATE -> {
                 addFriendButton = findViewById(R.id.sendFriendRequestButton)
-                addFriendButton.text = "Remove friend"
+                addFriendButton.text = "Unfriend"
                 addFriendButton.setOnClickListener {
                     user?.let { FriendDataManager.removeFriend(this, it) }
                     currentState = STRANGER_STATE
@@ -75,7 +83,7 @@ class UserProfileActivity : AppCompatActivity() {
                 addFriendButton = findViewById(R.id.sendFriendRequestButton)
                 addFriendButton.text = "Add friend"
                 addFriendButton.setOnClickListener {
-                    user?.let { FriendDataManager.addFriend(it) }
+                    user?.let { FriendDataManager.sendFriendRequest(it) }
                     currentState = SENT_STATE
                     setUpFromState()
                 }
@@ -93,7 +101,7 @@ class UserProfileActivity : AppCompatActivity() {
                 addFriendButton = findViewById(R.id.sendFriendRequestButton)
                 addFriendButton.text = "Accept friend request"
                 addFriendButton.setOnClickListener {
-                    user?.let { FriendDataManager.addFriend(it) }
+                    user?.let { FriendDataManager.acceptFriendRequest(it) }
                     currentState = FRIEND_STATE
                     setUpFromState()
                 }
@@ -107,12 +115,5 @@ class UserProfileActivity : AppCompatActivity() {
 
     private fun setupUser() {
         userNameText.text = user?.name
-    }
-
-    private fun setOnClickListenerAddFriend() {
-        addFriendButton = findViewById(R.id.sendFriendRequestButton)
-        addFriendButton.setOnClickListener{
-            user?.let { FriendDataManager.addFriend(it) }
-        }
     }
 }

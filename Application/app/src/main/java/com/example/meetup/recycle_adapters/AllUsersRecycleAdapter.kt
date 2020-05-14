@@ -12,7 +12,7 @@ import com.example.meetup.activites.UserProfileActivity
 import com.example.meetup.objects.User
 import com.example.meetup.R
 
-class SearchUserRecycleAdapter(private val context: Context) : RecyclerView.Adapter<SearchUserRecycleAdapter.SearchUserViewHolder>() {
+class AllUsersRecycleAdapter(private val context: Context) : RecyclerView.Adapter<AllUsersRecycleAdapter.SearchUserViewHolder>() {
 
     private val layoutInflater = LayoutInflater.from(context)
     private var users = listOf<User>()
@@ -32,18 +32,18 @@ class SearchUserRecycleAdapter(private val context: Context) : RecyclerView.Adap
     override fun onBindViewHolder(holder: SearchUserViewHolder, position: Int) {
         val currentUser = users[position]
         holder.nameSearchView.text = currentUser.name
-        holder.userPosition = position
+        holder.userID = currentUser.userID
     }
 
     inner class SearchUserViewHolder(userView: View) : RecyclerView.ViewHolder(userView) {
         val nameSearchView: TextView = itemView.findViewById<TextView>(R.id.friendName)
         val imageView: ImageView = itemView.findViewById<ImageView>(R.id.friendImage)
-        var userPosition = 0
+        var userID: String? = null
 
         init {
             itemView.setOnClickListener {
                 val intent = Intent(context, UserProfileActivity::class.java)
-                intent.putExtra("USER_POSITION", userPosition)
+                intent.putExtra("USER_ID", userID)
                 context.startActivity(intent)
             }
         }

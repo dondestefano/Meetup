@@ -23,7 +23,6 @@ class ListActivity : AppCompatActivity() {
 
         setEventRecycleAdapters()
         setFabButtons()
-        eventRecyclerView?.let { EventDataManager.setFirebaseListener(it) }
     }
 
     override fun onResume() {
@@ -40,6 +39,7 @@ class ListActivity : AppCompatActivity() {
         eventAdapter.updateItemsToList(EventDataManager.itemsList)
         eventRecyclerView?.adapter = eventAdapter
 
+        eventRecyclerView?.let { EventDataManager.setFirebaseListener(it) }
     }
 
     private fun setFabButtons() {

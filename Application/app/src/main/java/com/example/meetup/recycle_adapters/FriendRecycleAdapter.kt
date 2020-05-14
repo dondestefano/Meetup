@@ -1,6 +1,7 @@
 package com.example.meetup.recycle_adapters
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.meetup.objects.AdapterItem
 import com.example.meetup.R
+import com.example.meetup.activites.UserProfileActivity
 
 class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val layoutInflater = LayoutInflater.from(context)
@@ -16,8 +18,9 @@ class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
 
     companion object {
         const val TYPE_FRIEND_HEADER = 0
-        const val TYPE_WAITING_HEADER = 1
-        const val TYPE_FRIEND = 2
+        const val TYPE_REQUESTED_HEADER = 1
+        const val TYPE_WAITING_HEADER = 2
+        const val TYPE_FRIEND = 3
     }
 
 
@@ -25,17 +28,22 @@ class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
         when (viewType) {
             TYPE_FRIEND_HEADER -> {
                 val itemView = layoutInflater.inflate(R.layout.header_card_layout, parent, false)
-                return HeaderViewHolder(itemView, "Friends")
+                return HeaderViewHolder(itemView, "Friends.")
+            }
+
+            TYPE_REQUESTED_HEADER -> {
+                val itemView = layoutInflater.inflate(R.layout.header_card_layout, parent, false)
+                return HeaderViewHolder(itemView, "New friend requests.")
             }
 
             TYPE_WAITING_HEADER -> {
                 val itemView = layoutInflater.inflate(R.layout.header_card_layout, parent, false)
-                return HeaderViewHolder(itemView, "Pending Requests")
+                return HeaderViewHolder(itemView, "Requests sent.")
             }
 
             else -> {
                 val itemView = layoutInflater.inflate(R.layout.user_blank_card_layout, parent, false)
-                return UserViewHolder(itemView)
+                return FriendViewHolder(itemView)
             }
         }
     }
@@ -50,9 +58,10 @@ class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
                 holder.headerNameTextView.text = holder.text
             }
 
-            is UserViewHolder -> {
+            is FriendViewHolder -> {
                 val currentItem = listItems[position]
-                val currentFriend = currentItem.friend
+                val currentFriend = currentItem.user
+                holder.userID = currentFriend?.userID
                 currentFriend?.name.let {holder.nameView.text = it}
             }
         }
@@ -63,9 +72,17 @@ class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
         notifyDataSetChanged()
     }
 
-    inner class UserViewHolder(userView: View) : RecyclerView.ViewHolder(userView) {
+    inner class FriendViewHolder(userView: View) : RecyclerView.ViewHolder(userView) {
         val nameView: TextView = itemView.findViewById<TextView>(R.id.friendName)
         val imageView: ImageView = itemView.findViewById<ImageView>(R.id.friendImage)
+        var userID: String? = null
+        init {
+            itemView.setOnClickListener {
+                val intent = Intent(context, UserProfileActivity::class.java)
+                intent.putExtra("USER_ID", userID)
+                context.startActivity(intent)
+            }
+        }
     }
 
     inner class HeaderViewHolder(itemView: View, text: String) :

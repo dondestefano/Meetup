@@ -24,6 +24,7 @@ class SplashActivity : AppCompatActivity() {
         } else {
             // Go directly to ListActivity if the user is already logged in.
             UserDataManager.getLoggedInUser()
+            UserDataManager.setFirebaseListenerForUsers(null)
             EventDataManager.resetEventDataManagerUser()
             FriendDataManager.resetFriendDataManagerUser()
             startActivity(loggedInIntent)
