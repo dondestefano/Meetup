@@ -10,7 +10,7 @@ import com.example.meetup.data_managers.EventDataManager
 import com.example.meetup.data_managers.UserDataManager
 import com.example.meetup.objects.Event
 import com.example.meetup.R
-import com.example.meetup.recycle_adapters.UserRecycleAdapter
+import com.example.meetup.recycle_adapters.InviteRecycleAdapter
 
 const val EVENT_EXTRA = "EVENT"
 
@@ -46,7 +46,7 @@ class InviteActivity : AppCompatActivity() {
         userRecyclerView = findViewById<RecyclerView>(R.id.userInviteRecycleView)
         userRecyclerView?.layoutManager = LinearLayoutManager(this)
 
-        val userAdapter = UserRecycleAdapter(this)
+        val userAdapter = InviteRecycleAdapter(this)
         userRecyclerView?.adapter = userAdapter
         userAdapter.updateItemsToList(UserDataManager.allUsersList)
     }

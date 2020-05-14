@@ -1,30 +1,38 @@
 package com.example.meetup.data_managers
 
 import android.content.Context
+import android.service.autofill.UserData
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.meetup.activites.*
 import com.example.meetup.objects.AdapterItem
-import com.example.meetup.objects.Friend
 import com.example.meetup.objects.User
 import com.example.meetup.recycle_adapters.FriendRecycleAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FieldValue.delete
 import com.google.firebase.firestore.FirebaseFirestore
+
+const val REQUEST_SENT = "sent"
+const val REQUEST_RECEIVED = "received"
+const val REQUEST_ACCEPTED = "accepted"
+const val FRIEND_REQUEST_PATH = "friendRequests"
+const val REQUEST_PATH = "requests"
 
 object FriendDataManager {
     // List //
     val itemsList = mutableListOf<AdapterItem>()
 
-    // Datebase-helpers
-    var db = FirebaseFirestore.getInstance()
+    // Database-helpers //
+    private var db = FirebaseFirestore.getInstance()
     private lateinit var currentUser : FirebaseUser
-    private lateinit var friendsRef : CollectionReference
+    private lateinit var userReqRef : CollectionReference
+    private lateinit var friendReqRef : CollectionReference
+
 
 
     fun setFirebaseListenerForFriends(friendRecyclerView: RecyclerView) {
-        friendsRef.addSnapshotListener { snapshot, e ->
+        userReqRef.addSnapshotListener { snapshot, e ->
             itemsList.clear()
             // Load confirmed friends from database
             if (snapshot != null) {
@@ -34,10 +42,11 @@ object FriendDataManager {
 
                 // Search for friends with friendStatus confirmed.
                 for (document in snapshot.documents) {
-                    val loadFriend = document.toObject(Friend::class.java)
-                    if (loadFriend != null && loadFriend.friendStatus == true) {
+                    val status = document.data?.getValue("status")
+                    if (status == REQUEST_ACCEPTED) {
+                        val friend = UserDataManager.getUser(document.id)
                         val item = AdapterItem(
-                            null, loadFriend,
+                            null, friend,
                             FriendRecycleAdapter.TYPE_FRIEND
                         )
                         friendList.add(item)
@@ -52,19 +61,21 @@ object FriendDataManager {
                     )
                     itemsList.add(requestHeader)
                     // Sort friend list before adding it to itemsList
-                    friendList.sortBy { it.friend?.name }
+                    friendList.sortBy { it.user?.name }
                     itemsList.addAll(friendList)
                 }
 
-                //Search for firends with status not pending
+                //Search for friends who have not yet responded to a request
                 for (document in snapshot.documents) {
-                    val loadFriend = document.toObject(Friend::class.java)
-                    if (loadFriend != null && loadFriend.friendStatus == false) {
+                    val status = document.data?.getValue("status")
+                    if (status == REQUEST_SENT || status == REQUEST_RECEIVED) {
+                        val friend = UserDataManager.getUser(document.id)
                         val item = AdapterItem(
-                            null, loadFriend,
+                            null, friend,
                             FriendRecycleAdapter.TYPE_FRIEND
                         )
                         requestList.add(item)
+                        println("!!! name here yo ${item.user?.name}")
                     }
                 }
 
@@ -76,7 +87,7 @@ object FriendDataManager {
                     )
                     itemsList.add(declineHeader)
                     // Sort pending list before adding it to itemsList
-                    requestList.sortBy { it.friend?.name }
+                    requestList.sortBy { it.user?.name }
                     itemsList.addAll(requestList)
                 }
                 // Notify changes to the adapter when the async data has been loaded
@@ -90,25 +101,75 @@ object FriendDataManager {
     fun resetFriendDataManagerUser() {
         // Get the current users information for the EventDataManager
         currentUser = FirebaseAuth.getInstance().currentUser!!
-        currentUser?.let { friendsRef = db.collection("users").document(it.uid).collection("friends") }
+        currentUser?.uid.let { userReqRef = db.collection(FRIEND_REQUEST_PATH).document(it).collection(REQUEST_PATH) }
     }
 
-    fun addFriend(user: User) {
-        val newFriend = Friend(user.name, user.email, user.userID, false)
-        newFriend.userID?.let { friendsRef?.document(it)?.set(newFriend) }
+    fun sendFriendRequest(friend: User) {
+        // Send request to friend
+        friend.userID?.let { friendReqRef = db.collection(FRIEND_REQUEST_PATH).document(it).collection(REQUEST_PATH) }
+        val requestReceived = hashMapOf(
+            "status" to REQUEST_RECEIVED
+        )
+        UserDataManager.loggedInUser.userID?.let { friendReqRef?.document(it)?.set(requestReceived as Map<String, String>) }
+
+        // Add request to user
+        val request = hashMapOf(
+            "status" to REQUEST_SENT
+        )
+        friend.userID?.let { userReqRef?.document(it)?.set(request as Map<String, String>) }
     }
 
-    fun removeFriend(context: Context, user: User) {
-        user.userID?.let { friendsRef?.document(it)
+    fun acceptFriendRequest(friend: User) {
+        // Send acceptance to friend
+        friend.userID?.let { friendReqRef = db.collection(FRIEND_REQUEST_PATH).document(it).collection(REQUEST_PATH) }
+        val requestAccepted = hashMapOf(
+            "status" to REQUEST_ACCEPTED
+        )
+        UserDataManager.loggedInUser.userID?.let { friendReqRef.document(it).set(requestAccepted as Map<String, String>) }
+
+        // Set request as accepted
+        val request = hashMapOf(
+            "status" to REQUEST_ACCEPTED
+        )
+        friend.userID?.let { userReqRef?.document(it)?.set(request as Map<String, String>) }
+    }
+
+    fun removeFriend(context: Context, friend: User) {
+        // Remove request from friend
+        friend.userID?.let { friendReqRef = db.collection(FRIEND_REQUEST_PATH).document(it).collection(REQUEST_PATH) }
+        UserDataManager.loggedInUser.userID?.let { friendReqRef?.document(it)}
             ?.delete()
-            .addOnSuccessListener {
-                Toast.makeText(context, "Removed ${user.name} from friends.", Toast.LENGTH_SHORT)
+
+        // Remove request from user
+        friend.userID?.let { userReqRef?.document(it) }
+            ?.delete()
+            ?.addOnSuccessListener {
+                Toast.makeText(context, "Removed ${friend.name} from friends.", Toast.LENGTH_SHORT)
+                        .show()
+            }
+            ?.addOnFailureListener{
+                Toast.makeText(context, "Error. Cant't remove ${friend.name} from friend list.", Toast.LENGTH_SHORT)
                     .show()
             }
-            .addOnFailureListener{
-                Toast.makeText(context, "Error. Cant't remove ${user.name} from friends..", Toast.LENGTH_SHORT)
-                    .show()
+    }
+
+    fun checkStatus(friendID : String, activity: UserProfileActivity) {
+        var status: String
+        userReqRef.document(friendID).get()
+            .addOnSuccessListener { document ->
+                // If the document exist get its state and send it back.
+                status = document.data?.getValue("status")?.toString().toString()
+                if (status != "null") {
+                    println("!!! state is: $status")
+                    activity.stateDetermined(status)
+                } else {
+                    status = STRANGER_STATE
+                    println("!!! state is: $status")
+                    activity.stateDetermined(status)
+                }
             }
-        }
+            .addOnFailureListener {
+            println("!!! error")
+            }
     }
 }

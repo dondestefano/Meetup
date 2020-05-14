@@ -12,7 +12,7 @@ import com.example.meetup.activites.UserProfileActivity
 import com.example.meetup.objects.User
 import com.example.meetup.R
 
-class SearchUserRecycleAdapter(private val context: Context) : RecyclerView.Adapter<SearchUserRecycleAdapter.SearchUserViewHolder>() {
+class AllUsersRecycleAdapter(private val context: Context) : RecyclerView.Adapter<AllUsersRecycleAdapter.SearchUserViewHolder>() {
 
     private val layoutInflater = LayoutInflater.from(context)
     private var users = listOf<User>()

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.meetup.data_managers.UserDataManager
 import com.example.meetup.R
-import com.example.meetup.recycle_adapters.SearchUserRecycleAdapter
+import com.example.meetup.recycle_adapters.AllUsersRecycleAdapter
 import com.google.firebase.auth.FirebaseAuth
 
 class SearchUsersActivity : AppCompatActivity() {
@@ -29,7 +29,7 @@ class SearchUsersActivity : AppCompatActivity() {
         searchUsersRecyclerView?.layoutManager = LinearLayoutManager(this)
 
         val allUsersAdapter =
-            SearchUserRecycleAdapter(this)
+            AllUsersRecycleAdapter(this)
         allUsersAdapter.updateItemsToList(UserDataManager.allUsersList)
         searchUsersRecyclerView?.adapter = allUsersAdapter
 

@@ -33,7 +33,7 @@ object UserDataManager {
         }
     }
 
-    fun setFirebaseListenerForUsers(userRecyclerView: RecyclerView) {
+    fun setFirebaseListenerForUsers(userRecyclerView: RecyclerView?) {
         allUsersRef.addSnapshotListener { snapshot, e ->
             // Clear list
             allUsersList.clear()
@@ -42,10 +42,20 @@ object UserDataManager {
                 for (document in snapshot.documents) {
                     val loadUser = document.toObject(User::class.java)
                     loadUser?.let { allUsersList.add(it) }
-                    userRecyclerView.adapter?.notifyDataSetChanged()
+                    userRecyclerView?.adapter?.notifyDataSetChanged()
                     println("!!! ${loadUser?.name}")
                 }
             }
         }
+    }
+
+    fun getUser(userID : String): User?  {
+        for (user in allUsersList) {
+            if (user.userID == userID) {
+                return user
+                break
+            }
+        }
+        return null
     }
 }

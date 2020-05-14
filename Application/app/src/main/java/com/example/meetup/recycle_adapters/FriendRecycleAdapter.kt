@@ -1,6 +1,7 @@
 package com.example.meetup.recycle_adapters
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.meetup.objects.AdapterItem
 import com.example.meetup.R
+import com.example.meetup.activites.UserProfileActivity
 
 class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val layoutInflater = LayoutInflater.from(context)
@@ -35,7 +37,7 @@ class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
 
             else -> {
                 val itemView = layoutInflater.inflate(R.layout.user_blank_card_layout, parent, false)
-                return UserViewHolder(itemView)
+                return FriendViewHolder(itemView)
             }
         }
     }
@@ -50,9 +52,10 @@ class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
                 holder.headerNameTextView.text = holder.text
             }
 
-            is UserViewHolder -> {
+            is FriendViewHolder -> {
                 val currentItem = listItems[position]
-                val currentFriend = currentItem.friend
+                val currentFriend = currentItem.user
+                holder.friendPosition = position
                 currentFriend?.name.let {holder.nameView.text = it}
             }
         }
@@ -63,9 +66,17 @@ class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
         notifyDataSetChanged()
     }
 
-    inner class UserViewHolder(userView: View) : RecyclerView.ViewHolder(userView) {
+    inner class FriendViewHolder(userView: View) : RecyclerView.ViewHolder(userView) {
         val nameView: TextView = itemView.findViewById<TextView>(R.id.friendName)
         val imageView: ImageView = itemView.findViewById<ImageView>(R.id.friendImage)
+        var friendPosition = 0
+        init {
+            itemView.setOnClickListener {
+                val intent = Intent(context, UserProfileActivity::class.java)
+                intent.putExtra("USER_POSITION", friendPosition)
+                context.startActivity(intent)
+            }
+        }
     }
 
     inner class HeaderViewHolder(itemView: View, text: String) :

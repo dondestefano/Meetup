@@ -12,7 +12,7 @@ import com.example.meetup.data_managers.UserDataManager
 import com.example.meetup.R
 import com.example.meetup.objects.User
 
-class UserRecycleAdapter(private val context: Context) : RecyclerView.Adapter<UserRecycleAdapter.UserViewHolder>() {
+class InviteRecycleAdapter(private val context: Context) : RecyclerView.Adapter<InviteRecycleAdapter.UserViewHolder>() {
 
     private val layoutInflater = LayoutInflater.from(context)
     private var users = listOf<User>()

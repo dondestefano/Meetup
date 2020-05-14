@@ -11,6 +11,7 @@ import com.example.meetup.data_managers.EventDataManager
 import com.example.meetup.data_managers.FriendDataManager
 import com.example.meetup.data_managers.UserDataManager
 import com.example.meetup.R
+import com.example.meetup.objects.User
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
@@ -47,6 +48,7 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     UserDataManager.getLoggedInUser()
+                    UserDataManager.setFirebaseListenerForUsers(null)
                     EventDataManager.resetEventDataManagerUser()
                     FriendDataManager.resetFriendDataManagerUser()
                     goToListActivity()

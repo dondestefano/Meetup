@@ -21,7 +21,7 @@ object EventDataManager {
 
     // Datebase-helpers
     var db = FirebaseFirestore.getInstance()
-    private lateinit var currentUser : FirebaseUser
+    private var currentUser : FirebaseUser? = null
     private lateinit var eventRef : CollectionReference
 
     fun setFirebaseListener(eventRecyclerView: RecyclerView) {
@@ -93,7 +93,7 @@ object EventDataManager {
 
     fun resetEventDataManagerUser() {
         // Get the current users information for the EventDataManager
-        currentUser = FirebaseAuth.getInstance().currentUser!!
+        currentUser = FirebaseAuth.getInstance().currentUser
         currentUser?.let { eventRef = db.collection("users").document(it.uid).collection("userEvents") }
     }
 }
