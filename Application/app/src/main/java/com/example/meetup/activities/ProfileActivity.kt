@@ -1,8 +1,15 @@
-package com.example.meetup.activites
+package com.example.meetup.activities
 
+import android.app.Activity
+import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
+import android.service.autofill.UserData
 import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -10,6 +17,8 @@ import com.example.meetup.data_managers.FriendDataManager
 import com.example.meetup.data_managers.UserDataManager
 import com.example.meetup.R
 import com.example.meetup.objects.User
+import com.squareup.picasso.Picasso
+import java.net.URI
 
 const val USER_ID = "USER_ID"
 const val STRANGER_STATE = "STRANGER_STATE"
@@ -28,6 +37,8 @@ class UserProfileActivity : AppCompatActivity() {
     // User being displayed
     private var user: User? = null
 
+    // Image
+    var selectedPhotoUri : Uri? = null
 
     // Put extra helpers.
     private lateinit var userID: String
@@ -57,14 +68,12 @@ class UserProfileActivity : AppCompatActivity() {
         }
 
         else {
-            println("!!! Sending")
             user?.userID?.let { currentState = FriendDataManager.checkStatus(it, this).toString() }
         }
     }
 
     fun stateDetermined(state: String) {
         currentState = state
-        print("!!! $state")
         setUpFromState()
     }
 
@@ -108,12 +117,39 @@ class UserProfileActivity : AppCompatActivity() {
             }
             USER_STATE -> {
                 addFriendButton = findViewById(R.id.sendFriendRequestButton)
-                addFriendButton.visibility = GONE;
+                addFriendButton.visibility = GONE
+                userImageView.setOnClickListener {
+                    val intent = Intent(Intent.ACTION_PICK)
+                    intent.type = "image/*"
+                    startActivityForResult(intent, 0)
+                }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
+            selectedPhotoUri = data.data
+            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
+
+            /*val bitmapDrawable = BitmapDrawable(bitmap)*/
+            userImageView.setImageBitmap(bitmap)
+
+            addFriendButton.visibility = VISIBLE
+
+            addFriendButton.text = "Save changes"
+            addFriendButton.setOnClickListener {
+                selectedPhotoUri?.let { UserDataManager.uploadImageToFirebaseStorage(it)}
+                setupUser()
             }
         }
     }
 
     private fun setupUser() {
         userNameText.text = user?.name
+        val uri = user?.profileImageURL
+        Picasso.get().load(uri).into(userImageView)
     }
 }

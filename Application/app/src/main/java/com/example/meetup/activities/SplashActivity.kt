@@ -1,4 +1,4 @@
-package com.example.meetup.activites
+package com.example.meetup.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -21,17 +21,14 @@ class SplashActivity : AppCompatActivity() {
         // Go to login screen if there's no logged in user.
         if (FirebaseAuth.getInstance().currentUser == null) {
             startActivity(notLoggedInIntent)
+            finish()
         } else {
             // Go directly to ListActivity if the user is already logged in.
-            UserDataManager.getLoggedInUser()
+            UserDataManager.getLoggedInUser(this)
             UserDataManager.setFirebaseListenerForUsers(null)
             EventDataManager.resetEventDataManagerUser()
             FriendDataManager.resetFriendDataManagerUser()
             startActivity(loggedInIntent)
-
-            Toast.makeText(this, "Welcome! ${UserDataManager.loggedInUser.name}!", Toast.LENGTH_SHORT)
-                .show()
-
             finish()
         }
     }

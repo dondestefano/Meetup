@@ -1,10 +1,16 @@
 package com.example.meetup.data_managers
 
+import android.content.Context
+import android.net.Uri
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.meetup.objects.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+
+import java.util.*
 
 object UserDataManager {
     // All users //
@@ -17,7 +23,7 @@ object UserDataManager {
     private val auth : FirebaseAuth = FirebaseAuth.getInstance()
     lateinit var userDataRef : DocumentReference //QUESTION: Do I need this?
 
-    fun getLoggedInUser() {
+    fun getLoggedInUser(context: Context) {
         val loggedInUserID = auth.currentUser?.uid
         userDataRef = loggedInUserID?.let { allUsersRef.document(it) }!!
         if(loggedInUserID != null) {
@@ -25,7 +31,11 @@ object UserDataManager {
                 // Load user with the correct id from Firebase
                 if (snapshot != null) {
                     loggedInUser = snapshot.toObject(User::class.java)!!
+                    Toast.makeText(context, "Welcome ${UserDataManager.loggedInUser.name}!", Toast.LENGTH_SHORT)
+                        .show()
                 } else {
+                    Toast.makeText(context, "Error fetching user", Toast.LENGTH_SHORT)
+                        .show()
 
                 }
             }
@@ -51,9 +61,26 @@ object UserDataManager {
         for (user in allUsersList) {
             if (user.userID == userID) {
                 return user
-                break
             }
         }
         return null
+    }
+
+    fun uploadImageToFirebaseStorage(selectedPhotoUri: Uri) {
+        val filename = UUID.randomUUID().toString()
+        val imageRef = FirebaseStorage.getInstance().getReference("/images/$filename")
+        imageRef.putFile(selectedPhotoUri).addOnSuccessListener {
+            imageRef.downloadUrl.addOnSuccessListener {
+                userDataRef.update("profileImageURL", it.toString())
+            }
+        }
+    }
+
+    // Might be of use
+    fun downloadImageFromFirebaseStorage(filename: String) {
+        val imageRef = FirebaseStorage.getInstance().getReference("/images/$filename")
+        imageRef.downloadUrl.addOnSuccessListener {
+
+        }
     }
 }

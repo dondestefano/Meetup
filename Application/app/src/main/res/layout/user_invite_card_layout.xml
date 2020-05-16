@@ -29,7 +29,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:background="@drawable/drawable_rounded_button"
                 android:src="@drawable/ic_person_black_24dp"
-                android:tint="@color/colorWhite"
+                android:tint="@color/colorPrimaryText"
                 />
 
             <TextView

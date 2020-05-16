@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.meetup.activites.UserProfileActivity
+import com.example.meetup.activities.UserProfileActivity
 import com.example.meetup.objects.User
 import com.example.meetup.R
 

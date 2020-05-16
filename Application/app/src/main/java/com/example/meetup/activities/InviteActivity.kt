@@ -1,4 +1,4 @@
-package com.example.meetup.activites
+package com.example.meetup.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,7 +7,6 @@ import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.meetup.data_managers.EventDataManager
-import com.example.meetup.data_managers.UserDataManager
 import com.example.meetup.objects.Event
 import com.example.meetup.R
 import com.example.meetup.data_managers.FriendDataManager

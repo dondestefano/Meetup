@@ -1,4 +1,4 @@
-package com.example.meetup.activites
+package com.example.meetup.activities
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog

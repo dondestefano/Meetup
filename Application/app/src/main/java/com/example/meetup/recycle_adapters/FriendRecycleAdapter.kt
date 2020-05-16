@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.meetup.objects.AdapterItem
 import com.example.meetup.R
-import com.example.meetup.activites.UserProfileActivity
+import com.example.meetup.activities.UserProfileActivity
 
 class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val layoutInflater = LayoutInflater.from(context)
