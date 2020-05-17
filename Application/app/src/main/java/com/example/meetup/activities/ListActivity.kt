@@ -77,8 +77,8 @@ class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val toggle = ActionBarDrawerToggle(
             this, drawerLayout, toolbar, 0, 0
-
         )
+
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
@@ -90,17 +90,21 @@ class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
         eventRecyclerView?.adapter?.notifyDataSetChanged()
-        setupProfileImage()
     }
 
+    // Hate this. Need it.
     private fun getLoggedInUser() {
         val loggedInUserID = auth.currentUser?.uid
         UserDataManager.userDataRef = loggedInUserID?.let { UserDataManager.allUsersRef.document(it) }!!
         UserDataManager.userDataRef.addSnapshotListener { snapshot, e ->
-            // Load user with the correct id from Firebase
             if (snapshot != null) {
                 UserDataManager.loggedInUser = snapshot.toObject(com.example.meetup.objects.User::class.java)!!
-                setUpProfile()
+
+                navView.getHeaderView(0).nav_textview_username.text = UserDataManager.loggedInUser.name
+
+                val uri = UserDataManager.loggedInUser.profileImageURL
+                println("!!! $uri")
+                Picasso.get().load(uri).into(navView.getHeaderView(0).nav_profile_image)
             }
         }
     }
@@ -137,33 +141,5 @@ class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         startActivity(intent)
     }
 
-    fun setUpProfile() {
-        setupProfileWindow()
-        setupProfileImage()
-    }
 
-    private fun setupProfileWindow() {
-        GlobalScope.async(Dispatchers.IO) {
-            // Set an async search for navView.nav_textview_username
-            if (navView.nav_textview_username != null) {
-                navView.nav_textview_username.text = UserDataManager.loggedInUser.name
-            } else {
-                // Repeat until it isn't null
-                setupProfileWindow()
-            }
-        }
-    }
-
-    private fun setupProfileImage() {
-        GlobalScope.async(Dispatchers.IO) {
-            // Set an async search for navView.nav_textview_username
-            if (navView.nav_profile_image != null){
-                val uri = UserDataManager.loggedInUser.profileImageURL
-                Picasso.get().load(uri).into(navView.nav_profile_image)
-            } else {
-                // Repeat until it isn't null
-                setupProfileImage()
-            }
-        }
-    }
 }

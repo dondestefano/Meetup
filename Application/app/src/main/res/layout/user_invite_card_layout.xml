@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/userSearchImage"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
@@ -30,6 +30,8 @@
                 android:background="@drawable/drawable_rounded_button"
                 android:src="@drawable/ic_person_black_24dp"
                 android:tint="@color/colorPrimaryText"
+                app:civ_border_width="2dp"
+                app:civ_border_color="@color/colorPrimary"
                 />
 
             <TextView

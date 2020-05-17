@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.meetup.activities.UserProfileActivity
 import com.example.meetup.objects.User
 import com.example.meetup.R
+import com.squareup.picasso.Picasso
 
 class AllUsersRecycleAdapter(private val context: Context) : RecyclerView.Adapter<AllUsersRecycleAdapter.SearchUserViewHolder>() {
 
@@ -33,6 +34,8 @@ class AllUsersRecycleAdapter(private val context: Context) : RecyclerView.Adapte
         val currentUser = users[position]
         holder.nameSearchView.text = currentUser.name
         holder.userID = currentUser.userID
+        val uri = currentUser.profileImageURL
+        Picasso.get().load(uri).into(holder.imageView)
     }
 
     inner class SearchUserViewHolder(userView: View) : RecyclerView.ViewHolder(userView) {

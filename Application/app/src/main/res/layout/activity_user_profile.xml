@@ -7,6 +7,16 @@
     tools:context=".activities.UserProfileActivity">
 
 
+    <ImageView
+        android:layout_width="208dp"
+        android:layout_height="208dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/drawable_rounded_button"/>
+
+
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profilePictureImageView"
         android:layout_width="208dp"

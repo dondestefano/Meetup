@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.meetup.objects.AdapterItem
 import com.example.meetup.R
 import com.example.meetup.activities.UserProfileActivity
+import com.squareup.picasso.Picasso
 
 class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val layoutInflater = LayoutInflater.from(context)
@@ -63,6 +64,8 @@ class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
                 val currentFriend = currentItem.user
                 holder.userID = currentFriend?.userID
                 currentFriend?.name.let {holder.nameView.text = it}
+                val uri = currentFriend?.profileImageURL
+                Picasso.get().load(uri).into(holder.imageView)
             }
         }
     }
