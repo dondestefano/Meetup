@@ -12,6 +12,7 @@ import com.example.meetup.data_managers.UserDataManager
 import com.example.meetup.R
 import com.example.meetup.data_managers.FriendDataManager
 import com.example.meetup.objects.User
+import com.squareup.picasso.Picasso
 
 class InviteRecycleAdapter(private val context: Context) : RecyclerView.Adapter<InviteRecycleAdapter.UserViewHolder>() {
 
@@ -33,6 +34,8 @@ class InviteRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val currentUser = users[position]
         holder.nameSearchView.text = currentUser.name
+        val uri = currentUser.profileImageURL
+        Picasso.get().load(uri).into(holder.imageView)
         holder.userInviteCheckBox.setOnClickListener() {
             if(holder.userInviteCheckBox.isChecked){
                 FriendDataManager.inviteList.add(currentUser)

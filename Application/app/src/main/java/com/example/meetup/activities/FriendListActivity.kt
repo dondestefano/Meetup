@@ -1,4 +1,4 @@
-package com.example.meetup.activites
+package com.example.meetup.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity

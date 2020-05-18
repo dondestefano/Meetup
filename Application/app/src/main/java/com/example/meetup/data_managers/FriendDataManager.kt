@@ -1,10 +1,9 @@
 package com.example.meetup.data_managers
 
 import android.content.Context
-import android.service.autofill.UserData
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.example.meetup.activites.*
+import com.example.meetup.activities.*
 import com.example.meetup.objects.AdapterItem
 import com.example.meetup.objects.User
 import com.example.meetup.recycle_adapters.FriendRecycleAdapter
@@ -203,11 +202,9 @@ object FriendDataManager {
                 // If the document exist get its state and send it back.
                 status = document.data?.getValue("status")?.toString().toString()
                 if (status != "null") {
-                    println("!!! state is: $status")
                     activity.stateDetermined(status)
                 } else {
                     status = STRANGER_STATE
-                    println("!!! state is: $status")
                     activity.stateDetermined(status)
                 }
             }

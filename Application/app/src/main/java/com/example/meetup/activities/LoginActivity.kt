@@ -1,4 +1,4 @@
-package com.example.meetup.activites
+package com.example.meetup.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -11,7 +11,6 @@ import com.example.meetup.data_managers.EventDataManager
 import com.example.meetup.data_managers.FriendDataManager
 import com.example.meetup.data_managers.UserDataManager
 import com.example.meetup.R
-import com.example.meetup.objects.User
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
@@ -47,13 +46,15 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(textEmail.text.toString(), passwordText.text.toString())
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    UserDataManager.getLoggedInUser()
-                    EventDataManager.resetEventDataManagerUser()
-                    FriendDataManager.resetFriendDataManagerUser()
+                    // Get users from database
+                    UserDataManager.getLoggedInUser(this)
                     UserDataManager.setFirebaseListenerForUsers(null)
+                    // Get friends from database
+                    EventDataManager.resetEventDataManagerUser()
+                    // Get Events from database
+                    FriendDataManager.resetFriendDataManagerUser()
+
                     goToListActivity()
-                    Toast.makeText(this, "Welcome ${UserDataManager.loggedInUser.name}!", Toast.LENGTH_SHORT)
-                        .show()
                     finish()
                 } else {
                     Toast.makeText(this, "Wrong e-mail or password.", Toast.LENGTH_SHORT)
