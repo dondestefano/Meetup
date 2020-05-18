@@ -49,16 +49,27 @@
         android:layout_marginTop="16dp"
         android:text="Invite"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/saveButton"
         app:layout_constraintTop_toBottomOf="@+id/timeEditText" />
 
     <Button
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toStartOf="@id/inviteButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timeEditText"/>
+
+    <Button
+        android:id="@+id/cancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Cancel event"
+        app:layout_constraintTop_toBottomOf="@id/inviteButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/inviteButton" />
+        android:backgroundTint="@color/design_default_color_error"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

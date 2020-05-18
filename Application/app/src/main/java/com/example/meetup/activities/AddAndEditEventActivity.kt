@@ -1,9 +1,13 @@
 package com.example.meetup.activities
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.view.View.GONE
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -11,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.meetup.data_managers.EventDataManager
 import com.example.meetup.objects.Event
 import com.example.meetup.R
+import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
 const val EVENT_POSITION_NOT_SET = -1
@@ -23,6 +28,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
     private lateinit var nameEditText : EditText
     private lateinit var inviteButton : Button
     private lateinit var saveButton : Button
+    private lateinit var cancelButton : Button
 
     // New/editable event and calendar.
     private var event : Event? = null
@@ -41,6 +47,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
         nameEditText = findViewById(R.id.nameEditText)
         inviteButton = findViewById(R.id.inviteButton)
         saveButton = findViewById(R.id.saveButton)
+        cancelButton = findViewById(R.id.cancelButton)
 
         getExtraFromIntent()
         setOnClickListeners()
@@ -64,15 +71,23 @@ class AddAndEditEventActivity : AppCompatActivity() {
             goToInvite()
         }
 
-        // Determine if the saveButton should create a new event or edit an existing event.
         saveButton.setOnClickListener{
-            if (eventPosition != EVENT_POSITION_NOT_SET) {
-                editEvent(eventPosition)
-                saveButton.text = "Save"
-            } else {
-                saveButton.text = "Add"
-                addEvent()
-            }
+            editEvent(eventPosition)
+        }
+
+        cancelButton.setOnClickListener{
+            val dialogBuilder = AlertDialog.Builder(this)
+            dialogBuilder.setTitle("Cancel this event?")
+                .setMessage("Are you sure you want to cancel and remove this event?")
+                .setPositiveButton("Remove", DialogInterface.OnClickListener { dialog, id ->
+                    event?.keyName?.let { EventDataManager.removeEvent(it) }
+                    Snackbar.make(it, "${event?.name} has been cenceled", Snackbar.LENGTH_LONG).show()
+                    finish()
+                })
+                .setNegativeButton("Cancel", DialogInterface.OnClickListener {
+                        dialog, id -> dialog.cancel()
+                })
+                .show()
         }
     }
 
@@ -82,10 +97,11 @@ class AddAndEditEventActivity : AppCompatActivity() {
         if (name.isNotEmpty()) {
             val date : Date = calendar.time
             event?.let { event ->
+                val eventKey = UUID.randomUUID().toString()
                 event.date = date
-                event.keyName = name
+                event.keyName = eventKey
                 event.name = name
-                event.name?.let { EventDataManager.updateEventToFirebase(it, event) }
+                event.keyName?.let { EventDataManager.updateEventToFirebase(it, event) }
                 finish()
             }
         } else {
@@ -176,10 +192,11 @@ class AddAndEditEventActivity : AppCompatActivity() {
             time = EventDataManager.timeFormat.format(currentDate)
             dateEditText.setText(date)
             timeEditText.setText(time)
+            saveButton.visibility = GONE
+            cancelButton.visibility = GONE
 
             // Set base data for a new event
             event = Event("name", currentDate, true)
-            saveButton.text = "Add"
         }
     }
 

@@ -24,6 +24,15 @@ object EventDataManager {
     private var currentUser : FirebaseUser? = null
     private lateinit var eventRef : CollectionReference
 
+
+    // Data listeners //
+
+    fun resetEventDataManagerUser() {
+        // Get the current users information for the EventDataManager
+        currentUser = FirebaseAuth.getInstance().currentUser
+        currentUser?.let { eventRef = db.collection("users").document(it.uid).collection("userEvents") }
+    }
+
     fun setFirebaseListener(eventRecyclerView: RecyclerView) {
         eventRef?.addSnapshotListener { snapshot, e ->
             // Clear list
@@ -87,13 +96,14 @@ object EventDataManager {
         }
     }
 
-    fun updateEventToFirebase(eventKeyName : String, event : Event) {
-        eventRef?.document(eventKeyName)?.set(event)
+
+    // Add and remove events //
+
+    fun updateEventToFirebase(eventKey : String, event : Event) {
+        eventRef?.document(eventKey)?.set(event)
     }
 
-    fun resetEventDataManagerUser() {
-        // Get the current users information for the EventDataManager
-        currentUser = FirebaseAuth.getInstance().currentUser
-        currentUser?.let { eventRef = db.collection("users").document(it.uid).collection("userEvents") }
+    fun removeEvent(eventKey: String) {
+        eventRef?.document(eventKey)?.delete()
     }
 }
