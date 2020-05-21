@@ -36,7 +36,7 @@ class InviteActivity : AppCompatActivity() {
 
     private fun setOnclickListeners() {
         inviteButton.setOnClickListener {
-            event.keyName?.let { inviteUserToEvent(it, event) }
+            event.keyName?.let { inviteUserToEvent(event) }
             finish()
         }
     }
@@ -55,7 +55,12 @@ class InviteActivity : AppCompatActivity() {
         event = intent.getSerializableExtra(EVENT_EXTRA) as Event
     }
 
-    private fun inviteUserToEvent(eventKeyName : String, event : Event) {
+    private fun inviteUserToEvent(event : Event) {
+        EventDataManager.inviteFriends(event)
+        finish()
+    }
+
+/*    private fun inviteUserToEvent(eventKeyName : String, event : Event) {
         // Set not attend as a default for new invites.
         event.attend = false
         // Go through the list of invites and get a collection path with their userID.
@@ -68,5 +73,5 @@ class InviteActivity : AppCompatActivity() {
             inviteRef?.document(eventKeyName)?.set(event)
         }
         inviteList.clear()
-    }
+    }*/
 }

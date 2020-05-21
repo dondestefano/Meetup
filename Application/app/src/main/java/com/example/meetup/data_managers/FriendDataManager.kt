@@ -22,7 +22,6 @@ object FriendDataManager {
     // Lists //
     val itemsList = mutableListOf<AdapterItem>()
     val friendsList = mutableListOf<User>()
-    val inviteList = mutableListOf<User>()
 
     // Database-helpers //
     private var db = FirebaseFirestore.getInstance()
@@ -137,8 +136,6 @@ object FriendDataManager {
             }
         }
     }
-
-
 
     fun resetFriendDataManagerUser() {
         // Get the current users information for the EventDataManager

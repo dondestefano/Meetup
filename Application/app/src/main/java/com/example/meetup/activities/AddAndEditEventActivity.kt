@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.meetup.data_managers.EventDataManager
 import com.example.meetup.objects.Event
 import com.example.meetup.R
+import com.example.meetup.data_managers.UserDataManager
 import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
@@ -68,7 +69,10 @@ class AddAndEditEventActivity : AppCompatActivity() {
         }
 
         inviteButton.setOnClickListener{
-            goToInvite()
+            if (eventPosition != EVENT_POSITION_NOT_SET) {
+                inviteAdditional()
+
+            } else { goToInvite() }
         }
 
         saveButton.setOnClickListener{
@@ -80,7 +84,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
             dialogBuilder.setTitle("Cancel this event?")
                 .setMessage("Are you sure you want to cancel and remove this event?")
                 .setPositiveButton("Remove", DialogInterface.OnClickListener { dialog, id ->
-                    event?.keyName?.let { EventDataManager.removeEvent(it) }
+                    event?.let { EventDataManager.removeEvent(it) }
                     Snackbar.make(it, "${event?.name} has been cenceled", Snackbar.LENGTH_LONG).show()
                     finish()
                 })
@@ -134,6 +138,13 @@ class AddAndEditEventActivity : AppCompatActivity() {
         }
     }
 
+    private fun inviteAdditional() {
+        val intent = Intent(this, InviteActivity::class.java)
+        intent.putExtra("EVENT", event)
+
+        startActivity(intent)
+    }
+
     private fun pickDate() {
         // Get the calendars date so that it can be used with the datepicker.
         val year = calendar.get(Calendar.YEAR)
@@ -182,7 +193,6 @@ class AddAndEditEventActivity : AppCompatActivity() {
                 calendar.time = event.date
                 setDateForEventToEdit()
             }
-
         }
 
         // Get the current time and date if the user wants to add a new event.
@@ -196,7 +206,14 @@ class AddAndEditEventActivity : AppCompatActivity() {
             cancelButton.visibility = GONE
 
             // Set base data for a new event
-            event = Event("name", currentDate, true)
+            val list = mutableListOf<String>()
+            event = Event(
+                "name",
+                currentDate,
+                true,
+                null,
+                UserDataManager.loggedInUser.userID,
+                list)
         }
     }
 

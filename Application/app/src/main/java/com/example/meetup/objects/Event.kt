@@ -7,7 +7,9 @@ import java.util.*
 data class Event(var name: String? = null,
                  var date: Date? = null,
                  var attend: Boolean? = null,
-                 var keyName: String? = null) : Serializable  {
+                 var keyName: String? = null,
+                 var host: String? = null,
+                 var invitedUsers: MutableList<String>? = null ): Serializable {
 
     fun changeAttend() {
         attend = !attend!!

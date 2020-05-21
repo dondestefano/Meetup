@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.meetup.data_managers.UserDataManager
 import com.example.meetup.R
+import com.example.meetup.data_managers.EventDataManager
 import com.example.meetup.data_managers.FriendDataManager
 import com.example.meetup.objects.User
 import com.squareup.picasso.Picasso
@@ -38,14 +39,8 @@ class InviteRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
         Picasso.get().load(uri).into(holder.imageView)
         holder.userInviteCheckBox.setOnClickListener() {
             if(holder.userInviteCheckBox.isChecked){
-                FriendDataManager.inviteList.add(currentUser)
-                for (users in FriendDataManager.inviteList) {
-                }
-
-            } else { FriendDataManager.inviteList.remove(currentUser)
-                for (users in FriendDataManager.inviteList) {
-                }
-            }
+                currentUser.userID?.let { EventDataManager.inviteList.add(it) }
+            } else { EventDataManager.inviteList.remove(currentUser.userID) }
         }
     }
 
