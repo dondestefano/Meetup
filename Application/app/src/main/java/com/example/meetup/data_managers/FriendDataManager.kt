@@ -159,18 +159,12 @@ object FriendDataManager {
     }
 
     fun acceptFriendRequest(friend: User) {
-        // Send acceptance to friend and upload to friends friendRequests collection in Firebase
+        // Send acceptance to friend and update friendRequests document in Firebase
         friend.userID?.let { friendReqRef = db.collection(FRIEND_REQUEST_PATH).document(it).collection(REQUEST_PATH) }
-        val requestAccepted = hashMapOf(
-            "status" to REQUEST_ACCEPTED
-        )
-        UserDataManager.loggedInUser.userID?.let { friendReqRef.document(it).set(requestAccepted as Map<String, String>) }
+        UserDataManager.loggedInUser.userID?.let { friendReqRef.document(it).update("status", REQUEST_ACCEPTED) }
 
-        // Set request as accepted and upload to the users friendRequests collection in Firebase
-        val request = hashMapOf(
-            "status" to REQUEST_ACCEPTED
-        )
-        friend.userID?.let { userReqRef?.document(it)?.set(request as Map<String, String>) }
+        // Update request as accepted in firebase
+        friend.userID?.let { userReqRef?.document(it)?.update("status", REQUEST_ACCEPTED)}
     }
 
     fun removeFriend(context: Context, friend: User) {
