@@ -37,7 +37,6 @@ class InviteActivity : AppCompatActivity() {
     private fun setOnclickListeners() {
         inviteButton.setOnClickListener {
             event.keyName?.let { inviteUserToEvent(event) }
-            finish()
         }
     }
 

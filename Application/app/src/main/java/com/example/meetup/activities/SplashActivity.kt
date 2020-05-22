@@ -3,11 +3,13 @@ package com.example.meetup.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.service.autofill.UserData
 import android.widget.Toast
 import com.example.meetup.data_managers.EventDataManager
 import com.example.meetup.data_managers.FriendDataManager
 import com.example.meetup.data_managers.UserDataManager
 import com.example.meetup.R
+import com.example.meetup.objects.User
 import com.google.firebase.auth.FirebaseAuth
 
 class SplashActivity : AppCompatActivity() {

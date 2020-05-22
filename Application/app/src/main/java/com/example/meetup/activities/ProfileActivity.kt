@@ -72,6 +72,7 @@ class UserProfileActivity : AppCompatActivity() {
         }
     }
 
+    // Call this function from UserDataManager when the appropriate data has been loaded.
     fun stateDetermined(state: String) {
         currentState = state
         setUpFromState()
@@ -118,6 +119,8 @@ class UserProfileActivity : AppCompatActivity() {
             USER_STATE -> {
                 addFriendButton = findViewById(R.id.sendFriendRequestButton)
                 addFriendButton.visibility = GONE
+
+                // Use ActivityForResult to upload images.
                 userImageView.setOnClickListener {
                     val intent = Intent(Intent.ACTION_PICK)
                     intent.type = "image/*"
@@ -134,7 +137,6 @@ class UserProfileActivity : AppCompatActivity() {
             selectedPhotoUri = data.data
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
 
-            /*val bitmapDrawable = BitmapDrawable(bitmap)*/
             userImageView.setImageBitmap(bitmap)
 
             addFriendButton.visibility = VISIBLE

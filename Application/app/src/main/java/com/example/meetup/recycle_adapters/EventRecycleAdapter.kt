@@ -19,18 +19,28 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
     private val layoutInflater = LayoutInflater.from(context)
     private var listItems = listOf<AdapterItem>()
     companion object {
-        const val TYPE_ACCEPT_HEADER = 0
-        const val TYPE_DECLINE_HEADER = 1
-        const val TYPE_EVENT = 2
+        const val TYPE_NEW_HEADER = 0
+        const val TYPE_ACCEPT_HEADER = 1
+        const val TYPE_DECLINE_HEADER = 2
+        const val TYPE_EVENT = 3
     }
 
     fun updateItemsToList(list : List<AdapterItem>) {
         listItems = list
+        for(item in list) {
+            val name = item.event?.name
+            println("!!! event")
+        }
         notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         when (viewType) {
+            TYPE_NEW_HEADER -> {
+                val itemView = layoutInflater.inflate(R.layout.header_card_layout, parent, false)
+                return HeaderViewHolder(itemView, "New invites!")
+            }
+
             TYPE_ACCEPT_HEADER -> {
                 val itemView = layoutInflater.inflate(R.layout.header_card_layout, parent, false)
                 return HeaderViewHolder(itemView, "Attending events")
@@ -78,7 +88,11 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
                     }
                 }
 
-                if (event?.attend!!) {
+                if (event?.new!!) {
+                    holder.attendButton.setBackgroundColor(Color.GRAY)
+                    holder.attendButton.setText("U GAME?")
+                }
+                else if (event?.attend!!) {
                     holder.attendButton.setBackgroundColor(Color.GREEN)
                     holder.attendButton.setText("Yes")
                 } else {holder.attendButton.setBackgroundColor(Color.RED)

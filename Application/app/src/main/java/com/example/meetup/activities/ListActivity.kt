@@ -52,6 +52,10 @@ class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 logout()
             }
 
+            R.id.nav_events -> {
+                eventRecyclerView?.adapter?.notifyDataSetChanged()
+            }
+
             R.id.nav_friends -> {
                 goToFriends()
             }
@@ -90,6 +94,7 @@ class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
         eventRecyclerView?.adapter?.notifyDataSetChanged()
+        println("!!! Items in list: ${EventDataManager.itemsList.size}")
     }
 
     // Hate this. Need it.
@@ -103,7 +108,6 @@ class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 navView.getHeaderView(0).nav_textview_username.text = UserDataManager.loggedInUser.name
 
                 val uri = UserDataManager.loggedInUser.profileImageURL
-                println("!!! $uri")
                 Picasso.get().load(uri).into(navView.getHeaderView(0).nav_profile_image)
             }
         }
@@ -140,6 +144,4 @@ class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val intent = Intent(this, FriendListActivity::class.java)
         startActivity(intent)
     }
-
-
 }

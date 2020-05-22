@@ -50,10 +50,9 @@ class LoginActivity : AppCompatActivity() {
                     UserDataManager.getLoggedInUser(this)
                     UserDataManager.setFirebaseListenerForUsers(null)
                     // Get friends from database
-                    EventDataManager.resetEventDataManagerUser()
-                    // Get Events from database
                     FriendDataManager.resetFriendDataManagerUser()
-
+                    // Get Events from database
+                    EventDataManager.resetEventDataManagerUser()
                     goToListActivity()
                     finish()
                 } else {

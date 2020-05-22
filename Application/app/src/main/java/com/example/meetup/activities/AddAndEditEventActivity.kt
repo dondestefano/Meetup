@@ -53,6 +53,8 @@ class AddAndEditEventActivity : AppCompatActivity() {
         getExtraFromIntent()
         setOnClickListeners()
         determineAddOrEdit()
+
+        println("!!! userID first ${event?.invitedUsers?.size}")
     }
 
     private fun getExtraFromIntent() {
@@ -72,7 +74,10 @@ class AddAndEditEventActivity : AppCompatActivity() {
             if (eventPosition != EVENT_POSITION_NOT_SET) {
                 inviteAdditional()
 
-            } else { goToInvite() }
+            } else {
+                EventDataManager.inviteList.clear()
+                goToInvite()
+            }
         }
 
         saveButton.setOnClickListener{
@@ -84,8 +89,9 @@ class AddAndEditEventActivity : AppCompatActivity() {
             dialogBuilder.setTitle("Cancel this event?")
                 .setMessage("Are you sure you want to cancel and remove this event?")
                 .setPositiveButton("Remove", DialogInterface.OnClickListener { dialog, id ->
+                    println("!!! userID ${event?.invitedUsers?.size}")
                     event?.let { EventDataManager.removeEvent(it) }
-                    Snackbar.make(it, "${event?.name} has been cenceled", Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(it, "${event?.name} has been canceled", Snackbar.LENGTH_LONG).show()
                     finish()
                 })
                 .setNegativeButton("Cancel", DialogInterface.OnClickListener {
@@ -120,7 +126,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
             event.changeDate(date)
             event.changeName(name)
 
-            event.keyName?.let { EventDataManager.updateEventToFirebase(it, event) }
+            EventDataManager.updateEventDetailsToFireBase(event)
             finish()
         }
     }
@@ -186,12 +192,22 @@ class AddAndEditEventActivity : AppCompatActivity() {
         val time : String
 
         // Determine if the event is new or if the user wants to edit it.
-        // If the user wants to edit the date determine which list it's in.
+        // If the user wants to edit the event determine which list it's in.
         if (eventPosition != EVENT_POSITION_NOT_SET) {
             event = EventDataManager.itemsList[eventPosition].event
             event?.let {event ->
                 calendar.time = event.date
                 setDateForEventToEdit()
+            }
+
+            // Set the events invite list as the data manager's invited list
+            EventDataManager.inviteList = event?.invitedUsers!!
+
+            // If the user isn't the host of the event, prevent the user from editing
+            if (event?.host != UserDataManager.loggedInUser.userID) {
+                // Remove save and cancel button
+                saveButton.visibility = GONE
+                cancelButton.visibility = GONE
             }
         }
 
@@ -202,6 +218,8 @@ class AddAndEditEventActivity : AppCompatActivity() {
             time = EventDataManager.timeFormat.format(currentDate)
             dateEditText.setText(date)
             timeEditText.setText(time)
+
+            // Remove save and cancel button
             saveButton.visibility = GONE
             cancelButton.visibility = GONE
 
@@ -210,6 +228,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
             event = Event(
                 "name",
                 currentDate,
+                true,
                 true,
                 null,
                 UserDataManager.loggedInUser.userID,
