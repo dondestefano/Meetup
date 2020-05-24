@@ -94,7 +94,6 @@ class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
         eventRecyclerView?.adapter?.notifyDataSetChanged()
-        println("!!! Items in list: ${EventDataManager.itemsList.size}")
     }
 
     // Hate this. Need it.

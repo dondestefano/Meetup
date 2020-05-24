@@ -18,7 +18,7 @@
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_person_add_black_24dp"
+        app:srcCompat="@drawable/add_friend"
         app:elevation="6dp"
         app:borderWidth="0dp" />
 

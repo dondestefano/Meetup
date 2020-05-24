@@ -12,12 +12,15 @@ data class Event(var name: String? = null,
                  var host: String? = null,
                  var invitedUsers: MutableList<String>? = null ): Serializable {
 
-    fun changeAttend() {
+    fun changeAttend(status: Boolean?) {
         // Permanently set the event as no longer new.
         new = false
 
+        if (status != null) {
+            attend = status
+        } else { attend = !attend!! }
+
         // Change attend
-        attend = !attend!!
         EventDataManager.updateEventToFirebase(this.keyName!!, this)
     }
 

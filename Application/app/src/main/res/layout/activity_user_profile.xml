@@ -25,7 +25,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="48dp"
-        android:src="@drawable/ic_person_black_24dp"
+        android:src="@drawable/profile"
         app:civ_border_width="4dp"
         android:backgroundTint="@color/colorPrimary"
         app:civ_border_color="@color/design_default_color_primary_variant"/>
@@ -50,7 +50,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="16dp"
-        app:icon="@drawable/ic_person_add_black_24dp"
+        app:icon="@drawable/add_friend"
         app:iconTint="@color/colorPrimaryText"
         android:layout_gravity="end"
         android:text="Friend request"

@@ -4,15 +4,15 @@
     <group>
         <item
             android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_person_black_24dp"
+            android:icon="@drawable/profile"
             android:title="Profile"/>
         <item
             android:id="@+id/nav_events"
-            android:icon="@drawable/ic_event_black_24dp"
+            android:icon="@drawable/event"
             android:title="Events"/>
         <item
             android:id="@+id/nav_friends"
-            android:icon="@drawable/ic_friends_24dp"
+            android:icon="@drawable/friends"
             android:title="Friends"/>
     </group>
 
@@ -21,7 +21,7 @@
         <menu>
             <item
                 android:id="@+id/nav_logout"
-                android:icon="@drawable/ic_exit_to_app_black_24dp"
+                android:icon="@drawable/exit"
                 android:title="Log out"/>
         </menu>
     </item>

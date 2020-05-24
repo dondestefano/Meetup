@@ -77,7 +77,7 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
 
                 holder.attendButton.setOnClickListener{
 
-                    currentItem.event?.changeAttend()
+                    currentItem.event?.changeAttend(null)
 
                     if (event?.attend!!) {
                         holder.attendButton.setBackgroundColor(Color.GREEN)

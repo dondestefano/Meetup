@@ -5,6 +5,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
@@ -13,6 +14,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import com.example.meetup.data_managers.EventDataManager
 import com.example.meetup.objects.Event
@@ -21,6 +23,8 @@ import com.example.meetup.data_managers.UserDataManager
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import com.leinardi.android.speeddial.SpeedDialActionItem
+import com.leinardi.android.speeddial.SpeedDialView
 import kotlinx.android.synthetic.main.activity_add_new_event.*
 import kotlinx.android.synthetic.main.activity_add_new_event.view.*
 import kotlinx.android.synthetic.main.activity_main.*
@@ -35,11 +39,8 @@ class AddAndEditEventActivity : AppCompatActivity() {
     private lateinit var timeEditText: EditText
     private lateinit var dateEditText: EditText
     private lateinit var nameEditText : EditText
-    private lateinit var inviteButton : View
-    private lateinit var saveButton : View
-    private lateinit var cancelButton : View
     private lateinit var inviteFabButton : ExtendedFloatingActionButton
-    private lateinit var fabMenu : FloatingActionButton
+    private lateinit var speedDialFab : SpeedDialView
 
     // New/editable event and calendar.
     private var event : Event? = null
@@ -56,16 +57,22 @@ class AddAndEditEventActivity : AppCompatActivity() {
         timeEditText = findViewById(R.id.timeEditText)
         dateEditText = findViewById(R.id.dateEditText)
         nameEditText = findViewById(R.id.nameEditText)
-        inviteButton = findViewById(R.id.inviteButton)
-        saveButton = findViewById(R.id.saveButton)
-        cancelButton = findViewById(R.id.cancelButton)
         inviteFabButton = findViewById(R.id.inviteFabButton)
-        fabMenu = findViewById<FloatingActionButton>(R.id.fabMenu)
+        speedDialFab = findViewById(R.id.speedDialFabView)
 
 
         getExtraFromIntent()
         setOnClickListeners()
         determineAddOrEdit()
+
+        speedDialFab.setOnChangeListener(object : SpeedDialView.OnChangeListener {
+            override fun onMainActionSelected(): Boolean {
+                return false // True to keep the Speed Dial open
+            }
+
+            override fun onToggleChanged(isOpen: Boolean) {
+            }
+        })
     }
 
     private fun getExtraFromIntent() {
@@ -79,45 +86,122 @@ class AddAndEditEventActivity : AppCompatActivity() {
             finish()
         }
 
-        fabMenu.setOnClickListener {
-            fabMenu.isExpanded = true
-        }
-        close.setOnClickListener {
-            fabMenu.isExpanded = false
-        }
-
         dateEditText.setOnClickListener {
             pickDate()
         }
+
         timeEditText.setOnClickListener{
             pickTime()
         }
-
-        inviteButton.setOnClickListener{
-            goToInvite()
-            finish()
-        }
-
-        saveButton.setOnClickListener{
-            editEvent(eventPosition)
-        }
-
-        cancelButton.setOnClickListener{
-            val dialogBuilder = AlertDialog.Builder(this)
-            dialogBuilder.setTitle("Cancel this event?")
-                .setMessage("Are you sure you want to cancel and remove this event?")
-                .setPositiveButton("Remove", DialogInterface.OnClickListener { dialog, id ->
-                    println("!!! userID ${event?.invitedUsers?.size}")
-                    event?.let { EventDataManager.removeEvent(it) }
-                    Snackbar.make(it, "${event?.name} has been canceled", Snackbar.LENGTH_LONG).show()
-                    finish()
-                })
-                .setNegativeButton("Cancel", DialogInterface.OnClickListener {
-                        dialog, id -> dialog.cancel()
-                })
-                .show()
-        }
     }
+
+    private fun setupRadialFabButtonHost() {
+        speedDialFab.addActionItem(
+            SpeedDialActionItem.Builder(R.id.saveChangesFab, R.drawable.edit)
+                .setFabBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getTheme()))
+                .setFabImageTintColor(ResourcesCompat.getColor(getResources(), R.color.colorBlack, getTheme()))
+                .setLabel("Save changes")
+                .setLabelColor(Color.WHITE)
+                .setLabelBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimaryDark, getTheme()))
+                .setLabelClickable(false)
+                .create())
+
+        speedDialFab.addActionItem(
+            SpeedDialActionItem.Builder(R.id.inviteFriendsFab, R.drawable.add_friend)
+                .setFabBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getTheme()))
+                .setFabImageTintColor(ResourcesCompat.getColor(getResources(), R.color.colorBlack, getTheme()))
+                .setLabel("Invite friends")
+                .setLabelColor(Color.WHITE)
+                .setLabelBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimaryDark, getTheme()))
+                .setLabelClickable(false)
+                .create())
+
+        speedDialFab.addActionItem(
+            SpeedDialActionItem.Builder(R.id.cancelEventFab, R.drawable.remove)
+                .setFabBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.design_default_color_error, getTheme()))
+                .setFabImageTintColor(ResourcesCompat.getColor(getResources(), R.color.colorBlack, getTheme()))
+                .setLabel("Cancel event")
+                .setLabelColor(Color.WHITE)
+                .setLabelBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.design_default_color_error, getTheme()))
+                .setLabelClickable(false)
+                .create())
+
+        speedDialFab.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
+            when (actionItem.id) {
+                R.id.saveChangesFab -> {
+                    editEvent(eventPosition)
+                    speedDialFab.close()
+                    return@OnActionSelectedListener true
+                    finish()
+                }
+
+                R.id.inviteFriendsFab -> {
+                    goToInvite()
+                    speedDialFab.close()
+                    return@OnActionSelectedListener true
+                    finish()
+                }
+
+                R.id.cancelEventFab -> {
+                    val dialogBuilder = AlertDialog.Builder(this)
+                    dialogBuilder.setTitle("Cancel this event?")
+                        .setMessage("Are you sure you want to cancel and remove this event?")
+                        .setPositiveButton("Remove", DialogInterface.OnClickListener { dialog, id ->
+                            event?.let { EventDataManager.removeEvent(it) }
+                            speedDialFab.close()
+                            finish()
+                        })
+                        .setNegativeButton("Cancel", DialogInterface.OnClickListener {
+                                dialog, id -> dialog.cancel()
+                        })
+                        .show()
+                }
+            }
+            false
+        })
+    }
+
+    private fun setUpSpeedDialFabInvited() {
+        speedDialFab.addActionItem(
+            SpeedDialActionItem.Builder(R.id.attendFab, R.drawable.approve)
+                .setFabBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPositive, getTheme()))
+                .setFabImageTintColor(ResourcesCompat.getColor(getResources(), R.color.colorWhite, getTheme()))
+                .setLabel("I'm game!")
+                .setLabelColor(Color.WHITE)
+                .setLabelBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPositive, getTheme()))
+                .setLabelClickable(false)
+                .create())
+
+        speedDialFab.addActionItem(
+            SpeedDialActionItem.Builder(R.id.declineFab, R.drawable.decline)
+                .setFabBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.design_default_color_error, getTheme()))
+                .setFabImageTintColor(ResourcesCompat.getColor(getResources(), R.color.colorWhite, getTheme()))
+                .setLabel("No game for me.")
+                .setLabelColor(Color.WHITE)
+                .setLabelBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.design_default_color_error, getTheme()))
+                .setLabelClickable(false)
+                .create())
+
+        speedDialFab.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
+            when (actionItem.id) {
+                R.id.attendFab -> {
+                    event?.changeAttend(true)
+                    speedDialFab.close()
+                    finish()
+                    return@OnActionSelectedListener true
+                }
+
+                R.id.declineFab -> {
+                    event?.changeAttend(false)
+                    speedDialFab.close()
+                    finish()
+                    return@OnActionSelectedListener true
+                }
+            }
+            false
+        })
+    }
+
 
     //* Invite friends *//
 
@@ -159,12 +243,10 @@ class AddAndEditEventActivity : AppCompatActivity() {
             // Set the events invite list as the data manager's invited list
             EventDataManager.inviteList = event?.invitedUsers!!
 
-            // If the user isn't the host of the event, prevent the user from editing
-            if (event?.host != UserDataManager.loggedInUser.userID) {
-                // Remove save and cancel button
-                saveButton.visibility = GONE
-                cancelButton.visibility = GONE
-            }
+            // If the user is the host setup the radial menu for editing
+            if (event?.host == UserDataManager.loggedInUser.userID) {
+                setupRadialFabButtonHost()
+            } else { setUpSpeedDialFabInvited() }
         }
 
         // Get the current time and date if the user wants to add a new event.
@@ -175,11 +257,8 @@ class AddAndEditEventActivity : AppCompatActivity() {
             dateEditText.setText(date)
             timeEditText.setText(time)
 
-/*            // Remove save and cancel button
-            saveButton.visibility = GONE
-            cancelButton.visibility = GONE*/
-            fabMenu.visibility = GONE
             inviteFabButton.visibility = VISIBLE
+            speedDialFab.visibility = GONE
 
             // Set base data for a new event
             val list = mutableListOf<String>()
