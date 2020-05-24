@@ -53,8 +53,6 @@ class AddAndEditEventActivity : AppCompatActivity() {
         getExtraFromIntent()
         setOnClickListeners()
         determineAddOrEdit()
-
-        println("!!! userID first ${event?.invitedUsers?.size}")
     }
 
     private fun getExtraFromIntent() {
@@ -71,13 +69,8 @@ class AddAndEditEventActivity : AppCompatActivity() {
         }
 
         inviteButton.setOnClickListener{
-            if (eventPosition != EVENT_POSITION_NOT_SET) {
-                inviteAdditional()
-
-            } else {
-                EventDataManager.inviteList.clear()
-                goToInvite()
-            }
+            goToInvite()
+            finish()
         }
 
         saveButton.setOnClickListener{
@@ -101,91 +94,29 @@ class AddAndEditEventActivity : AppCompatActivity() {
         }
     }
 
-    private fun addEvent() {
-        val name = nameEditText.text.toString()
-
-        if (name.isNotEmpty()) {
-            val date : Date = calendar.time
-            event?.let { event ->
-                val eventKey = UUID.randomUUID().toString()
-                event.date = date
-                event.keyName = eventKey
-                event.name = name
-                event.keyName?.let { EventDataManager.updateEventToFirebase(it, event) }
-                finish()
-            }
-        } else {
-            errorToast("Please enter a name for your event.")
-        }
-    }
-
-    private fun editEvent(position: Int) {
-        val name = nameEditText.text.toString()
-        val date : Date = calendar.time
-        event?.let { event ->
-            event.changeDate(date)
-            event.changeName(name)
-
-            EventDataManager.updateEventDetailsToFireBase(event)
-            finish()
-        }
-    }
+    //* Invite friends *//
 
     private fun goToInvite() {
         val name = nameEditText.text.toString()
+        // Check if the user has entered a name for the event.
         if (name.isNotEmpty()) {
-            addEvent()
+            // If the event is new clear invite list and save the event
+            // before continuing.
+            if (eventPosition == EVENT_POSITION_NOT_SET) {
+                EventDataManager.inviteList.clear()
+                addEvent()
+            } else { EventDataManager.inviteList = event?.invitedUsers!! }
+
             val intent = Intent(this, InviteActivity::class.java)
             intent.putExtra("EVENT", event)
-
             startActivity(intent)
-        } else {
+        }
+        else {
             errorToast("Please enter a name for your event.")
         }
     }
 
-    private fun inviteAdditional() {
-        val intent = Intent(this, InviteActivity::class.java)
-        intent.putExtra("EVENT", event)
-
-        startActivity(intent)
-    }
-
-    private fun pickDate() {
-        // Get the calendars date so that it can be used with the datepicker.
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-        var datePickerDialog = DatePickerDialog(
-            this,
-            DatePickerDialog.OnDateSetListener { datePicker, selectedYear, monthValue, dayOfMonth ->
-
-                calendar.set(Calendar.YEAR, selectedYear)
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                calendar.set(Calendar.MONTH, monthValue)
-                val newDate = EventDataManager.dateFormat.format(calendar.time)
-
-                // Update text and the save button with the new information.
-                dateEditText.setText(newDate)
-            }, year, month, day
-        )
-
-        // Prevent the user from choosing a date that has already passed.
-        datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000
-        datePickerDialog.show()
-    }
-
-    private fun pickTime() {
-        val timeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
-            calendar.set(Calendar.HOUR_OF_DAY, hour)
-            calendar.set(Calendar.MINUTE, minute)
-            val newTime = EventDataManager.timeFormat.format(calendar.time)
-            timeEditText.setText(newTime)
-        }
-            TimePickerDialog(this, timeSetListener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true)
-            .show()
-    }
+    //* Edit event *//
 
     private fun determineAddOrEdit() {
         val date : String
@@ -246,6 +177,72 @@ class AddAndEditEventActivity : AppCompatActivity() {
             timeEditText.setText(time)
             nameEditText.setText(name)
             saveButton.text = "Save"
+        }
+    }
+
+    private fun pickDate() {
+        // Get the calendars date so that it can be used with the datepicker.
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        var datePickerDialog = DatePickerDialog(
+            this,
+            DatePickerDialog.OnDateSetListener { datePicker, selectedYear, monthValue, dayOfMonth ->
+
+                calendar.set(Calendar.YEAR, selectedYear)
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                calendar.set(Calendar.MONTH, monthValue)
+                val newDate = EventDataManager.dateFormat.format(calendar.time)
+
+                // Update text and the save button with the new information.
+                dateEditText.setText(newDate)
+            }, year, month, day
+        )
+
+        // Prevent the user from choosing a date that has already passed.
+        datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000
+        datePickerDialog.show()
+    }
+
+    private fun pickTime() {
+        val timeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
+            calendar.set(Calendar.HOUR_OF_DAY, hour)
+            calendar.set(Calendar.MINUTE, minute)
+            val newTime = EventDataManager.timeFormat.format(calendar.time)
+            timeEditText.setText(newTime)
+        }
+            TimePickerDialog(this, timeSetListener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true)
+            .show()
+    }
+
+
+    private fun addEvent() {
+        val name = nameEditText.text.toString()
+
+        if (name.isNotEmpty()) {
+            val date : Date = calendar.time
+            event?.let { event ->
+                val eventKey = UUID.randomUUID().toString()
+                event.date = date
+                event.keyName = eventKey
+                event.name = name
+                event.keyName?.let { EventDataManager.updateEventToFirebase(it, event) }
+            }
+        } else {
+            errorToast("Please enter a name for your event.")
+        }
+    }
+
+    private fun editEvent(position: Int) {
+        val name = nameEditText.text.toString()
+        val date : Date = calendar.time
+        event?.let { event ->
+            event.changeDate(date)
+            event.changeName(name)
+
+            EventDataManager.updateEventDetailsToFireBase(event)
+            finish()
         }
     }
 

@@ -25,11 +25,8 @@ object EventDataManager {
 
     //* Datebase-helpers *//
     var db = FirebaseFirestore.getInstance()
-    lateinit var snapshot: ListenerRegistration
     private var currentUser : FirebaseUser? = null
     private lateinit var eventRef : CollectionReference
-    private lateinit var userInviteRef : CollectionReference
-    private lateinit var inviteRef: CollectionReference
 
     // Data listeners //
 
@@ -130,7 +127,6 @@ object EventDataManager {
     }
 
     fun updateEventToFirebase(eventKey : String, event : Event) {
-        event.invitedUsers = inviteList
         eventRef.document(eventKey).set(event)
     }
 
@@ -167,6 +163,7 @@ object EventDataManager {
 
     fun inviteFriends(event: Event) {
         event.invitedUsers = inviteList
+        event.attend = false
         for (friendID in inviteList) {
             val friendEventRef = db.collection(EVENT_PATH).document(friendID).collection(EVENT_COLLECTION_PATH)
             event.keyName?.let { friendEventRef.document(it).set(event) }

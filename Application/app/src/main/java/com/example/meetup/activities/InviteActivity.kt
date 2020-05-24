@@ -31,7 +31,6 @@ class InviteActivity : AppCompatActivity() {
         setOnclickListeners()
 
         setInviteUserRecycleAdapter()
-        userRecyclerView?.let { FriendDataManager.setFirebaseListenerForFriends(it) }
     }
 
     private fun setOnclickListeners() {
@@ -47,14 +46,19 @@ class InviteActivity : AppCompatActivity() {
         val userAdapter = InviteRecycleAdapter(this)
         userRecyclerView?.adapter = userAdapter
         userAdapter.updateItemsToList(FriendDataManager.friendsList)
+
+        userRecyclerView?.let { FriendDataManager.setFirebaseListenerForFriends(it) }
     }
 
     private fun getExtraFromIntent() {
         // Get the event's position
         event = intent.getSerializableExtra(EVENT_EXTRA) as Event
+        EventDataManager.inviteList = event.invitedUsers!!
+        println("!!! Listan ${EventDataManager.inviteList}")
     }
 
     private fun inviteUserToEvent(event : Event) {
+        event.invitedUsers = EventDataManager.inviteList
         EventDataManager.inviteFriends(event)
         finish()
     }

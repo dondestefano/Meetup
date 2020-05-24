@@ -37,10 +37,23 @@ class InviteRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
         holder.nameSearchView.text = currentUser.name
         val uri = currentUser.profileImageURL
         Picasso.get().load(uri).into(holder.imageView)
+
+        // Check if the friend is already invited.
+        for (friendID in EventDataManager.inviteList) {
+            if (friendID == currentUser.userID) {
+                holder.userInviteCheckBox.isChecked = true
+                holder.userInviteCheckBox.isEnabled = false
+            }
+        }
+
+        // Add and remove friends from invites with the checkbox
         holder.userInviteCheckBox.setOnClickListener() {
             if(holder.userInviteCheckBox.isChecked){
                 currentUser.userID?.let { EventDataManager.inviteList.add(it) }
-            } else { EventDataManager.inviteList.remove(currentUser.userID) }
+                println("!!! Listan Ja ${EventDataManager.inviteList}")
+            }
+            else { EventDataManager.inviteList.remove(currentUser.userID)
+                println("!!! Listan Nej ${EventDataManager.inviteList}")}
         }
     }
 
