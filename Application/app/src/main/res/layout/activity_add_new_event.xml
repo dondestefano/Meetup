@@ -52,7 +52,10 @@
         android:layout_marginBottom="16dp"
         app:icon="@drawable/add_friend"
         android:text="Save &amp; invite"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:backgroundTint="@color/colorAccent"
+        app:iconTint="@color/colorPrimaryDark"
+        android:textColor="@color/colorPrimaryDark"/>
 
     <com.leinardi.android.speeddial.SpeedDialOverlayLayout
         android:id="@+id/overlay"
@@ -66,6 +69,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:sdMainFabClosedSrc="@drawable/add"
+        app:sdMainFabClosedIconColor="@color/colorPrimaryDark"
         app:sdOverlayLayout="@id/overlay"/>
 
 

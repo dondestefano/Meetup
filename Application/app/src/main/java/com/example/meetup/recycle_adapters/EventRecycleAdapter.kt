@@ -3,16 +3,22 @@ package com.example.meetup.recycle_adapters
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Color.GREEN
+import android.graphics.drawable.AdaptiveIconDrawable
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.meetup.activities.AddAndEditEventActivity
 import com.example.meetup.objects.AdapterItem
 import com.example.meetup.data_managers.EventDataManager
 import com.example.meetup.R
+import com.squareup.picasso.Picasso
 
 class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -66,6 +72,20 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
         when (holder) {
             is HeaderViewHolder -> {
                 holder.headerNameTextView.text = holder.text
+
+                when (holder.text) {
+                    "New invites!" -> {
+                        holder.headerIconImageView.setImageResource(R.drawable.new_alert)
+                    }
+
+                    "Attending events" -> {
+                        holder.headerIconImageView.setImageResource(R.drawable.approve)
+                    }
+
+                    "Declined events" -> {
+                        holder.headerIconImageView.setImageResource(R.drawable.decline)
+                    }
+                }
             }
 
             is EventViewHolder -> {
@@ -80,23 +100,30 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
                     currentItem.event?.changeAttend(null)
 
                     if (event?.attend!!) {
-                        holder.attendButton.setBackgroundColor(Color.GREEN)
+                        holder.attendButton.setBackgroundResource(R.color.colorPositive)
                         holder.attendButton.setText("Yes")
+                        holder.attendButton.setTextColor(Color.GREEN)
                     } else {
-                        holder.attendButton.setBackgroundColor(Color.RED)
+                        holder.attendButton.setBackgroundResource(R.color.design_default_color_error)
                         holder.attendButton.setText("No")
+                        holder.attendButton.setTextColor(Color.RED)
                     }
                 }
 
                 if (event?.new!!) {
                     holder.attendButton.setBackgroundColor(Color.GRAY)
                     holder.attendButton.setText("U GAME?")
+                    holder.attendButton.setTextColor(Color.YELLOW)
                 }
                 else if (event?.attend!!) {
-                    holder.attendButton.setBackgroundColor(Color.GREEN)
+                    holder.attendButton.setBackgroundResource(R.color.colorPositive)
                     holder.attendButton.setText("Yes")
-                } else {holder.attendButton.setBackgroundColor(Color.RED)
-                    holder.attendButton.setText("No")}
+                    holder.attendButton.setTextColor(Color.GREEN)
+                } else {holder.attendButton.setBackgroundResource(R.color.design_default_color_error)
+                    holder.attendButton.setText("No")
+                    holder.attendButton.setTextColor(Color.RED)
+                }
+
             }
         }
     }
@@ -118,6 +145,7 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
 
     inner class HeaderViewHolder(itemView: View, text: String) : RecyclerView.ViewHolder(itemView)  {
         val headerNameTextView: TextView = itemView.findViewById<TextView>(R.id.eventListHeader)
+        val headerIconImageView: ImageView = itemView.findViewById(R.id.headerIconImageView)
         val text = text
     }
 }

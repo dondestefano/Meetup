@@ -99,27 +99,27 @@ class AddAndEditEventActivity : AppCompatActivity() {
         speedDialFab.addActionItem(
             SpeedDialActionItem.Builder(R.id.saveChangesFab, R.drawable.edit)
                 .setFabBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getTheme()))
-                .setFabImageTintColor(ResourcesCompat.getColor(getResources(), R.color.colorBlack, getTheme()))
+                .setFabImageTintColor(ResourcesCompat.getColor(getResources(), R.color.colorWhite, getTheme()))
                 .setLabel("Save changes")
                 .setLabelColor(Color.WHITE)
-                .setLabelBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimaryDark, getTheme()))
+                .setLabelBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getTheme()))
                 .setLabelClickable(false)
                 .create())
 
         speedDialFab.addActionItem(
             SpeedDialActionItem.Builder(R.id.inviteFriendsFab, R.drawable.add_friend)
                 .setFabBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getTheme()))
-                .setFabImageTintColor(ResourcesCompat.getColor(getResources(), R.color.colorBlack, getTheme()))
+                .setFabImageTintColor(ResourcesCompat.getColor(getResources(), R.color.colorWhite, getTheme()))
                 .setLabel("Invite friends")
                 .setLabelColor(Color.WHITE)
-                .setLabelBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimaryDark, getTheme()))
+                .setLabelBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getTheme()))
                 .setLabelClickable(false)
                 .create())
 
         speedDialFab.addActionItem(
             SpeedDialActionItem.Builder(R.id.cancelEventFab, R.drawable.remove)
                 .setFabBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.design_default_color_error, getTheme()))
-                .setFabImageTintColor(ResourcesCompat.getColor(getResources(), R.color.colorBlack, getTheme()))
+                .setFabImageTintColor(ResourcesCompat.getColor(getResources(), R.color.colorWhite, getTheme()))
                 .setLabel("Cancel event")
                 .setLabelColor(Color.WHITE)
                 .setLabelBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.design_default_color_error, getTheme()))
