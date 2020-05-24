@@ -8,15 +8,23 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.example.meetup.data_managers.EventDataManager
 import com.example.meetup.objects.Event
 import com.example.meetup.R
 import com.example.meetup.data_managers.UserDataManager
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.activity_add_new_event.*
+import kotlinx.android.synthetic.main.activity_add_new_event.view.*
+import kotlinx.android.synthetic.main.activity_main.*
+import java.security.cert.Extension
 import java.util.*
 
 const val EVENT_POSITION_NOT_SET = -1
@@ -27,9 +35,11 @@ class AddAndEditEventActivity : AppCompatActivity() {
     private lateinit var timeEditText: EditText
     private lateinit var dateEditText: EditText
     private lateinit var nameEditText : EditText
-    private lateinit var inviteButton : Button
-    private lateinit var saveButton : Button
-    private lateinit var cancelButton : Button
+    private lateinit var inviteButton : View
+    private lateinit var saveButton : View
+    private lateinit var cancelButton : View
+    private lateinit var inviteFabButton : ExtendedFloatingActionButton
+    private lateinit var fabMenu : FloatingActionButton
 
     // New/editable event and calendar.
     private var event : Event? = null
@@ -49,6 +59,9 @@ class AddAndEditEventActivity : AppCompatActivity() {
         inviteButton = findViewById(R.id.inviteButton)
         saveButton = findViewById(R.id.saveButton)
         cancelButton = findViewById(R.id.cancelButton)
+        inviteFabButton = findViewById(R.id.inviteFabButton)
+        fabMenu = findViewById<FloatingActionButton>(R.id.fabMenu)
+
 
         getExtraFromIntent()
         setOnClickListeners()
@@ -61,6 +74,18 @@ class AddAndEditEventActivity : AppCompatActivity() {
     }
 
     private fun setOnClickListeners() {
+        inviteFabButton.setOnClickListener {
+            goToInvite()
+            finish()
+        }
+
+        fabMenu.setOnClickListener {
+            fabMenu.isExpanded = true
+        }
+        close.setOnClickListener {
+            fabMenu.isExpanded = false
+        }
+
         dateEditText.setOnClickListener {
             pickDate()
         }
@@ -150,9 +175,11 @@ class AddAndEditEventActivity : AppCompatActivity() {
             dateEditText.setText(date)
             timeEditText.setText(time)
 
-            // Remove save and cancel button
+/*            // Remove save and cancel button
             saveButton.visibility = GONE
-            cancelButton.visibility = GONE
+            cancelButton.visibility = GONE*/
+            fabMenu.visibility = GONE
+            inviteFabButton.visibility = VISIBLE
 
             // Set base data for a new event
             val list = mutableListOf<String>()
@@ -176,7 +203,6 @@ class AddAndEditEventActivity : AppCompatActivity() {
             dateEditText.setText(date)
             timeEditText.setText(time)
             nameEditText.setText(name)
-            saveButton.text = "Save"
         }
     }
 
