@@ -35,7 +35,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimaryDark">
+        android:background="@color/colorNeutral">
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -48,8 +48,8 @@
             app:backgroundTint="@color/colorAccent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_add_white_24dp"
-            app:tint="@color/colorPrimaryDark" />
+            app:srcCompat="@drawable/new_event"
+            app:tint="@color/colorNeutral" />
 
 
         <androidx.recyclerview.widget.RecyclerView

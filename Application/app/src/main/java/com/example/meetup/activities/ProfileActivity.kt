@@ -13,6 +13,7 @@ import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import com.example.meetup.data_managers.FriendDataManager
 import com.example.meetup.data_managers.UserDataManager
 import com.example.meetup.R
@@ -32,6 +33,7 @@ class UserProfileActivity : AppCompatActivity() {
     private lateinit var userNameText: TextView
     private lateinit var userImageView: ImageView
     private lateinit var addFriendButton: Button
+    private lateinit var toolbar: Toolbar
     private var currentState = STRANGER_STATE
 
     // User being displayed
@@ -53,12 +55,26 @@ class UserProfileActivity : AppCompatActivity() {
         getExtraFromIntent()
         determineState()
         setupUser()
+        setupToolbar()
     }
 
     private fun getExtraFromIntent() {
         // Get users ID and find correct user
         userID = intent.getStringExtra("USER_ID")
         user = UserDataManager.getUser(userID)
+    }
+
+    private fun setupToolbar() {
+        toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbarProfile)
+        setSupportActionBar(toolbar)
+
+        this.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        this.supportActionBar?.setHomeAsUpIndicator(R.drawable.close)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        finish() // close this activity as oppose to navigating up
+        return false
     }
 
     private fun determineState() {

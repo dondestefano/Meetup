@@ -1,15 +1,16 @@
 package com.example.meetup.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.meetup.data_managers.EventDataManager
-import com.example.meetup.objects.Event
 import com.example.meetup.R
+import com.example.meetup.data_managers.EventDataManager
 import com.example.meetup.data_managers.FriendDataManager
+import com.example.meetup.objects.Event
 import com.example.meetup.recycle_adapters.InviteRecycleAdapter
 
 const val EVENT_EXTRA = "EVENT"
@@ -19,6 +20,7 @@ class InviteActivity : AppCompatActivity() {
     private lateinit var searchField : EditText
     private lateinit var inviteButton : Button
     private lateinit var event : Event
+    private lateinit var toolbar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,8 +31,24 @@ class InviteActivity : AppCompatActivity() {
 
         getExtraFromIntent()
         setOnclickListeners()
+        setupToolbar()
 
         setInviteUserRecycleAdapter()
+
+
+    }
+
+    private fun setupToolbar() {
+        toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbarInvite)
+        setSupportActionBar(toolbar)
+
+        this.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        this.supportActionBar?.setHomeAsUpIndicator(R.drawable.close)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        finish() // close this activity as oppose to navigating up
+        return false
     }
 
     private fun setOnclickListeners() {

@@ -12,8 +12,10 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import com.example.meetup.data_managers.EventDataManager
@@ -39,6 +41,8 @@ class AddAndEditEventActivity : AppCompatActivity() {
     private lateinit var timeEditText: EditText
     private lateinit var dateEditText: EditText
     private lateinit var nameEditText : EditText
+    private lateinit var toolbar: Toolbar
+    private lateinit var toolbarText: TextView
     private lateinit var inviteFabButton : ExtendedFloatingActionButton
     private lateinit var speedDialFab : SpeedDialView
 
@@ -63,11 +67,12 @@ class AddAndEditEventActivity : AppCompatActivity() {
 
         getExtraFromIntent()
         setOnClickListeners()
+        setupToolbar()
         determineAddOrEdit()
 
         speedDialFab.setOnChangeListener(object : SpeedDialView.OnChangeListener {
             override fun onMainActionSelected(): Boolean {
-                return false // True to keep the Speed Dial open
+                return false
             }
 
             override fun onToggleChanged(isOpen: Boolean) {
@@ -80,10 +85,26 @@ class AddAndEditEventActivity : AppCompatActivity() {
         eventPosition = intent.getIntExtra(EVENT_POSITION_KEY, eventPosition)
     }
 
+    //* Setup functionality *//
+
+    private fun setupToolbar() {
+        toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbarEvent)
+        setSupportActionBar(toolbar)
+
+        toolbarText = findViewById(R.id.toolbarEventText)
+
+        this.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        this.supportActionBar?.setHomeAsUpIndicator(R.drawable.close)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return false
+    }
+
     private fun setOnClickListeners() {
         inviteFabButton.setOnClickListener {
             goToInvite()
-            finish()
         }
 
         dateEditText.setOnClickListener {
@@ -232,15 +253,16 @@ class AddAndEditEventActivity : AppCompatActivity() {
         val time : String
 
         // Determine if the event is new or if the user wants to edit it.
-        // If the user wants to edit the event determine which list it's in.
+        // If the user wants to edit the event get it from the EventDataManagers itemsList.
         if (eventPosition != EVENT_POSITION_NOT_SET) {
             event = EventDataManager.itemsList[eventPosition].event
             event?.let {event ->
                 calendar.time = event.date
                 setDateForEventToEdit()
+                toolbarText.text = event.name
             }
 
-            // Set the events invite list as the data manager's invited list
+            // Set the events invite list as the data manager's invited list.
             EventDataManager.inviteList = event?.invitedUsers!!
 
             // If the user is the host setup the radial menu for editing
@@ -260,8 +282,10 @@ class AddAndEditEventActivity : AppCompatActivity() {
             inviteFabButton.visibility = VISIBLE
             speedDialFab.visibility = GONE
 
+            toolbarText.text = "New event"
+
             // Set base data for a new event
-            val list = mutableListOf<String>()
+            val inviteList = mutableListOf<String>()
             event = Event(
                 "name",
                 currentDate,
@@ -269,7 +293,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
                 true,
                 null,
                 UserDataManager.loggedInUser.userID,
-                list)
+                inviteList)
         }
     }
 

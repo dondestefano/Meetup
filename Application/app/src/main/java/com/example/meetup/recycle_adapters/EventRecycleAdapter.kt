@@ -100,11 +100,9 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
                     currentItem.event?.changeAttend(null)
 
                     if (event?.attend!!) {
-                        holder.attendButton.setBackgroundResource(R.color.colorPositive)
                         holder.attendButton.setText("Yes")
                         holder.attendButton.setTextColor(Color.GREEN)
                     } else {
-                        holder.attendButton.setBackgroundResource(R.color.design_default_color_error)
                         holder.attendButton.setText("No")
                         holder.attendButton.setTextColor(Color.RED)
                     }
@@ -116,10 +114,9 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
                     holder.attendButton.setTextColor(Color.YELLOW)
                 }
                 else if (event?.attend!!) {
-                    holder.attendButton.setBackgroundResource(R.color.colorPositive)
                     holder.attendButton.setText("Yes")
                     holder.attendButton.setTextColor(Color.GREEN)
-                } else {holder.attendButton.setBackgroundResource(R.color.design_default_color_error)
+                } else {
                     holder.attendButton.setText("No")
                     holder.attendButton.setTextColor(Color.RED)
                 }
