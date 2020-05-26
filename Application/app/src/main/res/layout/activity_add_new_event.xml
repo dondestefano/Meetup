@@ -100,7 +100,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:sdMainFabClosedSrc="@drawable/add"
-        app:sdMainFabClosedIconColor="@color/colorPrimaryDark"
+        app:sdMainFabClosedIconColor="@color/colorWhite"
         app:sdOverlayLayout="@id/overlay"/>
 
 

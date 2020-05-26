@@ -3,10 +3,6 @@
 
     <group>
         <item
-            android:id="@+id/nav_profile"
-            android:icon="@drawable/profile"
-            android:title="Profile"/>
-        <item
             android:id="@+id/nav_events"
             android:icon="@drawable/event"
             android:title="Events"/>
@@ -19,6 +15,10 @@
 
     <item android:title="Account Settings">
         <menu>
+            <item
+                android:id="@+id/nav_profile"
+                android:icon="@drawable/profile"
+                android:title="Profile"/>
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/exit"

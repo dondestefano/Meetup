@@ -43,23 +43,27 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login() {
-        auth.signInWithEmailAndPassword(textEmail.text.toString(), passwordText.text.toString())
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Get users from database
-                    UserDataManager.getLoggedInUser(this)
-                    UserDataManager.setFirebaseListenerForUsers(null)
-                    // Get friends from database
-                    FriendDataManager.resetFriendDataManagerUser()
-                    // Get Events from database
-                    EventDataManager.resetEventDataManagerUser()
-                    goToListActivity()
-                    finish()
-                } else {
-                    Toast.makeText(this, "Wrong e-mail or password.", Toast.LENGTH_SHORT)
-                        .show()
+        if (textEmail.text.isNotEmpty() || passwordText.text.isNotEmpty()) {
+            auth.signInWithEmailAndPassword(textEmail.text.toString(), passwordText.text.toString())
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        // Get users from database
+                        UserDataManager.getLoggedInUser(this)
+                        UserDataManager.setFirebaseListenerForUsers(null)
+                        // Get friends from database
+                        FriendDataManager.resetFriendDataManagerUser()
+                        // Get Events from database
+                        EventDataManager.resetEventDataManagerUser()
+                        goToListActivity()
+                        finish()
+                    } else {
+                        Toast.makeText(this, "Wrong e-mail or password.", Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
-            }
+        } else {Toast.makeText(this, "Please enter your e-mail and password.", Toast.LENGTH_SHORT)
+            .show()
+        }
     }
 
     private fun goToListActivity() {

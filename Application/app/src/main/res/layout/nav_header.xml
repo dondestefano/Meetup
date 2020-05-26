@@ -7,7 +7,7 @@
     android:background="@color/colorPrimary"
     android:orientation="vertical"
     android:gravity="bottom"
-    android:paddingLeft="15dp"
+    android:paddingLeft="16dp"
     android:paddingBottom="15dp">
 
     <de.hdodenhof.circleimageview.CircleImageView

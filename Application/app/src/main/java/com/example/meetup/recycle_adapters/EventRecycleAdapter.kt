@@ -35,7 +35,6 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
         listItems = list
         for(item in list) {
             val name = item.event?.name
-            println("!!! event")
         }
         notifyDataSetChanged()
     }

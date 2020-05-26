@@ -72,7 +72,6 @@ class InviteActivity : AppCompatActivity() {
         // Get the event's position
         event = intent.getSerializableExtra(EVENT_EXTRA) as Event
         EventDataManager.inviteList = event.invitedUsers!!
-        println("!!! Listan ${EventDataManager.inviteList}")
     }
 
     private fun inviteUserToEvent(event : Event) {

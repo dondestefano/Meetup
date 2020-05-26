@@ -61,5 +61,6 @@ class InviteRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
         val nameSearchView : TextView = itemView.findViewById<TextView>(R.id.userSearchName)
         val imageView : ImageView = itemView.findViewById<ImageView>(R.id.userSearchImage)
         val userInviteCheckBox : CheckBox = itemView.findViewById<CheckBox>(R.id.inviteCheckBox)
+        val lineBreak: View = itemView.findViewById(R.id.lineBreak)
     }
 }

@@ -167,12 +167,12 @@ class AddAndEditEventActivity : AppCompatActivity() {
                     val dialogBuilder = AlertDialog.Builder(this)
                     dialogBuilder.setTitle("Cancel this event?")
                         .setMessage("Are you sure you want to cancel and remove this event?")
-                        .setPositiveButton("Remove", DialogInterface.OnClickListener { dialog, id ->
+                        .setPositiveButton("Yes", DialogInterface.OnClickListener { dialog, id ->
                             event?.let { EventDataManager.removeEvent(it) }
                             speedDialFab.close()
                             finish()
                         })
-                        .setNegativeButton("Cancel", DialogInterface.OnClickListener {
+                        .setNegativeButton("No", DialogInterface.OnClickListener {
                                 dialog, id -> dialog.cancel()
                         })
                         .show()
