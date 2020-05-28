@@ -112,7 +112,7 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
                 when {
                     event?.host == UserDataManager.loggedInUser.userID -> {
                         holder.attendButton.setText("Hosting")
-                        holder.attendButton.setTextColor(Color.GREEN)
+                        holder.attendButton.setTextColor(Color.WHITE)
                         holder.attendButton.isClickable = false
                         holder.attendButton.isEnabled = false
                     }
