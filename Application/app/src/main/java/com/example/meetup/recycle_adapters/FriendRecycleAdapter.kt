@@ -57,6 +57,19 @@ class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
         when (holder) {
             is HeaderViewHolder -> {
                 holder.headerNameTextView.text = holder.text
+                when (holder.text) {
+                    "Friends." -> {
+                        holder.headerIconImageView.setImageResource(R.drawable.friends)
+                    }
+
+                    "New friend requests." -> {
+                        holder.headerIconImageView.setImageResource(R.drawable.new_alert)
+                    }
+
+                    "Requests sent." -> {
+                        holder.headerIconImageView.setImageResource(R.drawable.sent)
+                    }
+                }
             }
 
             is FriendViewHolder -> {
@@ -91,6 +104,8 @@ class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
     inner class HeaderViewHolder(itemView: View, text: String) :
         RecyclerView.ViewHolder(itemView) {
         val headerNameTextView: TextView = itemView.findViewById<TextView>(R.id.eventListHeader)
+        val headerIconImageView: ImageView = itemView.findViewById(R.id.headerIconImageView)
         val text = text
+
     }
 }

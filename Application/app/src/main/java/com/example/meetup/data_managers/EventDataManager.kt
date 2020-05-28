@@ -1,14 +1,17 @@
 package com.example.meetup.data_managers
 
 import androidx.recyclerview.widget.RecyclerView
+import com.example.meetup.data_managers.EventDataManager.db
 import com.example.meetup.objects.AdapterItem
 import com.example.meetup.objects.Event
 import com.example.meetup.recycle_adapters.EventRecycleAdapter
+import com.example.meetup.recycle_adapters.GuestListRecycleAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.auth.User
 import java.text.SimpleDateFormat
 
 const val EVENT_PATH = "events"
@@ -149,6 +152,37 @@ object EventDataManager {
             "invitedUsers", invitedUsers)
         }
     }
+
+    fun checkAttendance(event: Event, holder: EventRecycleAdapter.EventViewHolder) {
+        val acceptedInvites = mutableListOf<com.example.meetup.objects.User>()
+        val host = event?.host?.let { UserDataManager.getUser(it) }
+        acceptedInvites.add(host!!)
+
+        for (friendID in event.invitedUsers!!) {
+            event.keyName?.let {
+                db.collection(EVENT_PATH).document(friendID).collection(EVENT_COLLECTION_PATH).document(
+                    it
+                )
+            }?.addSnapshotListener(){ snapshot, e ->
+                // Check accepted invites in Firebase
+                if (snapshot != null) {
+                    val status = snapshot.data?.getValue("attend")
+                    val checkNew = snapshot.data?.getValue("new")
+                    if (status == true) {
+                        val guest = UserDataManager.getUser(friendID)
+                        acceptedInvites.add(guest!!)
+                        holder.guestListRecyclerView.adapter?.notifyDataSetChanged()
+                    }
+                    else {
+                        val declinedUser = UserDataManager.getUser(friendID)
+                        acceptedInvites.remove(declinedUser) }
+                        holder.guestListRecyclerView.adapter?.notifyDataSetChanged()
+                }
+            }
+            holder.setGuestRecycleAdapter(acceptedInvites)
+        }
+    }
+
 
     fun removeEvent(event: Event) {
         // Remove the event from invited friends events

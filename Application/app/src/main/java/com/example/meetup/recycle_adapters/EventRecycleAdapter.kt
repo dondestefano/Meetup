@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Color.GREEN
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.Drawable
+import android.service.autofill.UserData
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,17 +14,21 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.OrientationHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.meetup.activities.AddAndEditEventActivity
 import com.example.meetup.objects.AdapterItem
 import com.example.meetup.data_managers.EventDataManager
 import com.example.meetup.R
+import com.example.meetup.data_managers.UserDataManager
+import com.example.meetup.objects.User
 import com.squareup.picasso.Picasso
 
 class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
     private val layoutInflater = LayoutInflater.from(context)
     private var listItems = listOf<AdapterItem>()
+
     companion object {
         const val TYPE_NEW_HEADER = 0
         const val TYPE_ACCEPT_HEADER = 1
@@ -33,9 +38,6 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
 
     fun updateItemsToList(list : List<AdapterItem>) {
         listItems = list
-        for(item in list) {
-            val name = item.event?.name
-        }
         notifyDataSetChanged()
     }
 
@@ -90,36 +92,37 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
             is EventViewHolder -> {
                 val currentItem = listItems[position]
                 val event = currentItem.event
+                val guestList = mutableListOf<User>()
                 holder.textViewName.text = event?.name
                 holder.textViewDate.text = (EventDataManager.dateFormat.format(event?.date) + " " + EventDataManager.timeFormat.format(event?.date))
                 holder.eventPosition = position
 
                 holder.attendButton.setOnClickListener{
-
                     currentItem.event?.changeAttend(null)
+                    holder.guestListRecyclerView.adapter?.notifyDataSetChanged()
+                }
 
-                    if (event?.attend!!) {
-                        holder.attendButton.setText("Yes")
+                if (event != null) {
+                    EventDataManager.checkAttendance(event, holder)
+                }
+
+                when {
+                    event?.new!! -> {
+                        holder.attendButton.setBackgroundColor(Color.GRAY)
+                        holder.attendButton.setText("U Game?")
+                        holder.attendButton.setTextColor(Color.YELLOW)
+                    }
+
+                    event?.attend!! -> {
+                        holder.attendButton.setText("I'm Game")
                         holder.attendButton.setTextColor(Color.GREEN)
-                    } else {
-                        holder.attendButton.setText("No")
+                    }
+
+                    else -> {
+                        holder.attendButton.setText("Can't")
                         holder.attendButton.setTextColor(Color.RED)
                     }
                 }
-
-                if (event?.new!!) {
-                    holder.attendButton.setBackgroundColor(Color.GRAY)
-                    holder.attendButton.setText("U GAME?")
-                    holder.attendButton.setTextColor(Color.YELLOW)
-                }
-                else if (event?.attend!!) {
-                    holder.attendButton.setText("Yes")
-                    holder.attendButton.setTextColor(Color.GREEN)
-                } else {
-                    holder.attendButton.setText("No")
-                    holder.attendButton.setTextColor(Color.RED)
-                }
-
             }
         }
     }
@@ -129,6 +132,7 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
         val textViewDate: TextView = itemView.findViewById<TextView>(R.id.textViewDate)
         val attendButton: TextView = itemView.findViewById<Button>(R.id.attendButton)
         var eventPosition = 0
+        val guestListRecyclerView = itemView.findViewById<RecyclerView>(R.id.guestListRecyclerView)
 
         init {
             itemView.setOnClickListener {
@@ -136,6 +140,13 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
                 intent.putExtra("EVENT_POSITION", eventPosition)
                 context.startActivity(intent)
             }
+        }
+
+        fun setGuestRecycleAdapter(guestList: List<User>) {
+            guestListRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+            val guestListAdapter = GuestListRecycleAdapter(context)
+            guestListAdapter.updateGuestList(guestList)
+            guestListRecyclerView.adapter = guestListAdapter
         }
     }
 

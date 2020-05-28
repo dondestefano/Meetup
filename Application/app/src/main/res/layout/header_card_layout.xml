@@ -39,7 +39,7 @@
                 android:layout_marginBottom="16dp"
                 android:text="Hej"
                 android:textColor="@color/colorAccent"
-                android:textSize="25dp"
+                android:textSize="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/headerIconImageView"
                 app:layout_constraintTop_toTopOf="parent" />
