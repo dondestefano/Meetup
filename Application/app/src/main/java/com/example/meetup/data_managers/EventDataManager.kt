@@ -52,7 +52,7 @@ object EventDataManager {
                 val attendList = mutableListOf<AdapterItem>()
                 val declineList = mutableListOf<AdapterItem>()
 
-                // Search for events with status attending.
+                // Search for events with status new.
                 for (document in snapshot.documents) {
                     val loadEvent = document.toObject(Event::class.java)
                     if (loadEvent != null && loadEvent.new == true) {
@@ -60,7 +60,12 @@ object EventDataManager {
                             loadEvent, null,
                             EventRecycleAdapter.TYPE_EVENT
                         )
-                        newInviteList.add(item)
+                        // Sort the event as new if the user isn't the host.
+                        if (loadEvent.host != UserDataManager.loggedInUser.userID) {
+                            newInviteList.add(item)
+                        }
+                        // Sort the event as attending if the user is the host.
+                        else { attendList.add(item) }
                     }
                 }
 
@@ -100,7 +105,7 @@ object EventDataManager {
                     itemsList.addAll(attendList)
                 }
 
-                //Search for events with status not attending
+                //Search for events with status declined.
                 for (document in snapshot.documents) {
                     val loadEvent = document.toObject(Event::class.java)
                     if (loadEvent != null && loadEvent.attend == false && loadEvent.new == false) {
@@ -153,8 +158,10 @@ object EventDataManager {
         }
     }
 
-    fun checkAttendance(event: Event, holder: EventRecycleAdapter.EventViewHolder) {
+    fun checkAttendance(event: Event, guestListRecyclerView: RecyclerView, guestListRecycleAdapter: GuestListRecycleAdapter) {
+        // Create a list to save each guest with attend = true.
         val acceptedInvites = mutableListOf<com.example.meetup.objects.User>()
+        // Add the host of the event by default.
         val host = event?.host?.let { UserDataManager.getUser(it) }
         acceptedInvites.add(host!!)
 
@@ -166,20 +173,27 @@ object EventDataManager {
             }?.addSnapshotListener(){ snapshot, e ->
                 // Check accepted invites in Firebase
                 if (snapshot != null) {
+                    // Get the status for attend and new to determine which list to put the guest in.
                     val status = snapshot.data?.getValue("attend")
                     val checkNew = snapshot.data?.getValue("new")
-                    if (status == true) {
-                        val guest = UserDataManager.getUser(friendID)
-                        acceptedInvites.add(guest!!)
-                        holder.guestListRecyclerView.adapter?.notifyDataSetChanged()
+                    when (status) {
+                        true -> {
+                            val guest = UserDataManager.getUser(friendID)
+                            acceptedInvites.add(guest!!)
+                            guestListRecyclerView.adapter?.notifyDataSetChanged()
+                        }
+
+                        false -> {
+                            val declinedUser = UserDataManager.getUser(friendID)
+                            acceptedInvites.remove(declinedUser)
+                        }
                     }
-                    else {
-                        val declinedUser = UserDataManager.getUser(friendID)
-                        acceptedInvites.remove(declinedUser) }
-                        holder.guestListRecyclerView.adapter?.notifyDataSetChanged()
+                    // Assign the list to the adapter.
+                    guestListRecycleAdapter.updateGuestList(acceptedInvites)
+                    // Tell the view to update.
+                    guestListRecyclerView.adapter?.notifyDataSetChanged()
                 }
             }
-            holder.setGuestRecycleAdapter(acceptedInvites)
         }
     }
 

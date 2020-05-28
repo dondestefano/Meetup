@@ -58,23 +58,23 @@ class AddAndEditEventActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_event)
 
+        // Get views.
         timeEditText = findViewById(R.id.timeEditText)
         dateEditText = findViewById(R.id.dateEditText)
         nameEditText = findViewById(R.id.nameEditText)
         inviteFabButton = findViewById(R.id.inviteFabButton)
         speedDialFab = findViewById(R.id.speedDialFabView)
 
-
+        // Setup activity
         getExtraFromIntent()
-        setOnClickListeners()
         setupToolbar()
         determineAddOrEdit()
 
+        // Set speedDialFunctionality
         speedDialFab.setOnChangeListener(object : SpeedDialView.OnChangeListener {
             override fun onMainActionSelected(): Boolean {
                 return false
             }
-
             override fun onToggleChanged(isOpen: Boolean) {
             }
         })
@@ -105,6 +105,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
     private fun setOnClickListeners() {
         inviteFabButton.setOnClickListener {
             goToInvite()
+            finish()
         }
 
         dateEditText.setOnClickListener {
@@ -117,6 +118,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
     }
 
     private fun setupRadialFabButtonHost() {
+        // Setup each individual action button for host functionality.
         speedDialFab.addActionItem(
             SpeedDialActionItem.Builder(R.id.saveChangesFab, R.drawable.edit)
                 .setFabBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getTheme()))
@@ -183,6 +185,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
     }
 
     private fun setUpSpeedDialFabInvited() {
+        // Setup each individual action button for attendance functionality.
         speedDialFab.addActionItem(
             SpeedDialActionItem.Builder(R.id.attendFab, R.drawable.approve)
                 .setFabBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPositive, getTheme()))
@@ -268,10 +271,19 @@ class AddAndEditEventActivity : AppCompatActivity() {
             // If the user is the host setup the radial menu for editing
             if (event?.host == UserDataManager.loggedInUser.userID) {
                 setupRadialFabButtonHost()
-            } else { setUpSpeedDialFabInvited() }
+                setOnClickListeners()
+            }
+            // If the user is not the host setup attendance radial menu
+            // and disable editing.
+            else {
+                setUpSpeedDialFabInvited()
+                nameEditText.isFocusable = false
+                dateEditText.isFocusable = false
+                timeEditText.isFocusable = false
+            }
         }
 
-        // Get the current time and date if the user wants to add a new event.
+        // If the user wants to add a new event get the current time and date.
         else {
             val currentDate = calendar.time
             date = EventDataManager.dateFormat.format(currentDate)
@@ -294,10 +306,13 @@ class AddAndEditEventActivity : AppCompatActivity() {
                 null,
                 UserDataManager.loggedInUser.userID,
                 inviteList)
+
+            // Set on click listeners to enable edit functionality.
+            setOnClickListeners()
         }
     }
 
-    fun setDateForEventToEdit() {
+    private fun setDateForEventToEdit() {
         event?.let { event ->
             val date = EventDataManager.dateFormat.format(event.date)
             val time = EventDataManager.timeFormat.format(event.date)

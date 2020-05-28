@@ -22,6 +22,7 @@ import com.example.meetup.objects.AdapterItem
 import com.example.meetup.data_managers.EventDataManager
 import com.example.meetup.R
 import com.example.meetup.data_managers.UserDataManager
+import com.example.meetup.objects.Event
 import com.example.meetup.objects.User
 import com.squareup.picasso.Picasso
 
@@ -78,11 +79,9 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
                     "New invites!" -> {
                         holder.headerIconImageView.setImageResource(R.drawable.new_alert)
                     }
-
                     "Attending events" -> {
                         holder.headerIconImageView.setImageResource(R.drawable.approve)
                     }
-
                     "Declined events" -> {
                         holder.headerIconImageView.setImageResource(R.drawable.decline)
                     }
@@ -97,30 +96,45 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
                 holder.textViewDate.text = (EventDataManager.dateFormat.format(event?.date) + " " + EventDataManager.timeFormat.format(event?.date))
                 holder.eventPosition = position
 
-                holder.attendButton.setOnClickListener{
-                    currentItem.event?.changeAttend(null)
-                    holder.guestListRecyclerView.adapter?.notifyDataSetChanged()
+                // If the user isn't the host enable quick attendance functionality.
+                if (event?.host != UserDataManager.loggedInUser.userID) {
+                    holder.attendButton.setOnClickListener{
+                        currentItem.event?.changeAttend(null)
+                        holder.guestListRecyclerView.adapter?.notifyDataSetChanged()
+                    }
                 }
 
+                // Check attendance of guests through EventDataManager
                 if (event != null) {
-                    EventDataManager.checkAttendance(event, holder)
+                    holder.setGuestRecycleAdapter(guestList, event)
                 }
 
                 when {
-                    event?.new!! -> {
-                        holder.attendButton.setBackgroundColor(Color.GRAY)
+                    event?.host == UserDataManager.loggedInUser.userID -> {
+                        holder.attendButton.setText("Hosting")
+                        holder.attendButton.setTextColor(Color.GREEN)
+                        holder.attendButton.isClickable = false
+                        holder.attendButton.isEnabled = false
+                    }
+
+                    event?.new!! ->  {
                         holder.attendButton.setText("U Game?")
                         holder.attendButton.setTextColor(Color.YELLOW)
+                        holder.attendButton.isClickable = true
+                        holder.attendButton.isEnabled = true
                     }
 
                     event?.attend!! -> {
                         holder.attendButton.setText("I'm Game")
                         holder.attendButton.setTextColor(Color.GREEN)
+                        holder.attendButton.isClickable = true
+                        holder.attendButton.isEnabled = true
                     }
-
                     else -> {
                         holder.attendButton.setText("Can't")
                         holder.attendButton.setTextColor(Color.RED)
+                        holder.attendButton.isClickable = true
+                        holder.attendButton.isEnabled = true
                     }
                 }
             }
@@ -142,11 +156,12 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
             }
         }
 
-        fun setGuestRecycleAdapter(guestList: List<User>) {
+        fun setGuestRecycleAdapter(guestList: List<User>, event: Event) {
             guestListRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             val guestListAdapter = GuestListRecycleAdapter(context)
             guestListAdapter.updateGuestList(guestList)
             guestListRecyclerView.adapter = guestListAdapter
+            EventDataManager.checkAttendance(event, guestListRecyclerView, guestListAdapter)
         }
     }
 

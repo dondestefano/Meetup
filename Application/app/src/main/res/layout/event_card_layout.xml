@@ -52,12 +52,13 @@
                 app:layout_constraintBottom_toTopOf="@id/guestListRecyclerView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:backgroundTint="@color/colorPrimaryDark"/>
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:textColor="@color/colorAccent"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/guestListRecyclerView"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="32dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@id/textViewDate"
 

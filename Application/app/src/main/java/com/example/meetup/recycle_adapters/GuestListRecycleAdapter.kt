@@ -32,11 +32,6 @@ class GuestListRecycleAdapter(private val context: Context): RecyclerView.Adapte
         Picasso.get().load(uri).into(holder.guestImageView)
     }
 
-    fun updateItemsToList(list : List<User>) {
-        guests = list
-        notifyDataSetChanged()
-    }
-
     inner class GuestListViewHolder(guestView: View) : RecyclerView.ViewHolder(guestView) {
         val guestImageView: ImageView = itemView.findViewById(R.id.guestImage)
     }
