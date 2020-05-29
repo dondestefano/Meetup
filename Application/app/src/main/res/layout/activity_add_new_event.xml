@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.AddAndEditEventActivity">
+    tools:context=".activities.AddAndEditEventActivity"
+    android:background="@color/colorNeutral">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarNewEvent"
@@ -13,6 +14,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:elevation="0dp"
+        android:translationZ="0.1dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <androidx.appcompat.widget.Toolbar
@@ -26,52 +29,67 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
-                <TextView
-                    android:id="@+id/toolbarEventText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="New event"
-                    android:textColor="#FFFFFF"
-                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"/>
+                <!--                <TextView
+                                    android:id="@+id/toolbarEventText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="New event"
+                                    android:textColor="#FFFFFF"
+                                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"/>-->
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <EditText
-        android:id="@+id/nameEditText"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="112dp"
-        android:ems="10"
-        android:hint="Event name"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appBarNewEvent" />
+        android:background="@color/colorPrimary"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingTop="80dp"
+        android:paddingBottom="80dp">
 
-    <EditText
-        android:id="@+id/dateEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:ems="10"
-        android:focusableInTouchMode="false"
-        android:inputType="date"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameEditText" />
+        <EditText
+            android:id="@+id/nameEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="New event"
+            android:inputType="textPersonName"
+            android:textColor="@color/colorWhite"
+            android:textSize="25sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/timeEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:ems="10"
-        android:focusableInTouchMode="false"
-        android:inputType="date|time"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dateEditText" />
+        <EditText
+            android:id="@+id/dateEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
+            android:ems="7"
+            android:textSize="22sp"
+            android:textColor="@color/colorWhite"
+            android:focusableInTouchMode="false"
+            android:inputType="date"
+            app:layout_constraintStart_toStartOf="@id/nameEditText"
+            app:layout_constraintTop_toBottomOf="@+id/nameEditText" />
+
+        <EditText
+            android:id="@+id/timeEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:ems="4"
+            android:textSize="22sp"
+            android:textColor="@color/colorAccent"
+            android:focusableInTouchMode="false"
+            android:inputType="date|time"
+            android:textAlignment="center"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintEnd_toEndOf="@id/nameEditText"
+            app:layout_constraintTop_toBottomOf="@+id/nameEditText" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/inviteFabButton"

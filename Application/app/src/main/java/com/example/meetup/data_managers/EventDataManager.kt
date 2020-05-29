@@ -131,6 +131,9 @@ object EventDataManager {
                 // Notify changes to the adapter when the async data has been loaded
                 eventRecyclerView.adapter?.notifyDataSetChanged()
             }
+            if (snapshot == null) {
+                println("!!! No good")
+            }
         }
     }
 
@@ -180,7 +183,6 @@ object EventDataManager {
                         true -> {
                             val guest = UserDataManager.getUser(friendID)
                             acceptedInvites.add(guest!!)
-                            guestListRecyclerView.adapter?.notifyDataSetChanged()
                         }
 
                         false -> {
@@ -192,6 +194,7 @@ object EventDataManager {
                     guestListRecycleAdapter.updateGuestList(acceptedInvites)
                     // Tell the view to update.
                     guestListRecyclerView.adapter?.notifyDataSetChanged()
+                    guestListRecyclerView.scheduleLayoutAnimation()
                 }
             }
         }

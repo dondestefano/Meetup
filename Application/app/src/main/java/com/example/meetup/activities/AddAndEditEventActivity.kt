@@ -42,7 +42,6 @@ class AddAndEditEventActivity : AppCompatActivity() {
     private lateinit var dateEditText: EditText
     private lateinit var nameEditText : EditText
     private lateinit var toolbar: Toolbar
-    private lateinit var toolbarText: TextView
     private lateinit var inviteFabButton : ExtendedFloatingActionButton
     private lateinit var speedDialFab : SpeedDialView
 
@@ -91,8 +90,6 @@ class AddAndEditEventActivity : AppCompatActivity() {
         toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbarEvent)
         setSupportActionBar(toolbar)
 
-        toolbarText = findViewById(R.id.toolbarEventText)
-
         this.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         this.supportActionBar?.setHomeAsUpIndicator(R.drawable.close)
     }
@@ -105,7 +102,6 @@ class AddAndEditEventActivity : AppCompatActivity() {
     private fun setOnClickListeners() {
         inviteFabButton.setOnClickListener {
             goToInvite()
-            finish()
         }
 
         dateEditText.setOnClickListener {
@@ -243,6 +239,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
             val intent = Intent(this, InviteActivity::class.java)
             intent.putExtra("EVENT", event)
             startActivity(intent)
+            finish()
         }
         else {
             errorToast("Please enter a name for your event.")
@@ -262,7 +259,6 @@ class AddAndEditEventActivity : AppCompatActivity() {
             event?.let {event ->
                 calendar.time = event.date
                 setDateForEventToEdit()
-                toolbarText.text = event.name
             }
 
             // Set the events invite list as the data manager's invited list.
@@ -293,8 +289,6 @@ class AddAndEditEventActivity : AppCompatActivity() {
 
             inviteFabButton.visibility = VISIBLE
             speedDialFab.visibility = GONE
-
-            toolbarText.text = "New event"
 
             // Set base data for a new event
             val inviteList = mutableListOf<String>()

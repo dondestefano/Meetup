@@ -43,7 +43,14 @@ class CreateAccountActivity : AppCompatActivity() {
         val createButton = findViewById<Button>(R.id.createAccountButton)
 
         createButton.setOnClickListener{
-            addAccount()
+            if (createEmailText.text.isNotEmpty() && createPasswordText.text.isNotEmpty() && createUsernameEditText.text.isNotEmpty()) {
+                addAccount()
+            }
+            else {
+                Toast.makeText(this, "Please fill in your details.", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
         }
 
         uploadImageButton.setOnClickListener {
@@ -81,7 +88,7 @@ class CreateAccountActivity : AppCompatActivity() {
                         .show()
                     finish()
                 } else {
-                    Toast.makeText(this, "User not created.", Toast.LENGTH_SHORT)
+                    Toast.makeText(this, "E-mail or username already taken.", Toast.LENGTH_SHORT)
                         .show()
                 }
             }
