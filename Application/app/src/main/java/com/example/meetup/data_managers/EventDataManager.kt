@@ -1,43 +1,90 @@
 package com.example.meetup.data_managers
 
 import androidx.recyclerview.widget.RecyclerView
+import com.example.meetup.data_managers.EventDataManager.db
 import com.example.meetup.objects.AdapterItem
 import com.example.meetup.objects.Event
 import com.example.meetup.recycle_adapters.EventRecycleAdapter
+import com.example.meetup.recycle_adapters.GuestListRecycleAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.auth.User
 import java.text.SimpleDateFormat
 
+const val EVENT_PATH = "events"
+const val EVENT_COLLECTION_PATH = "userEvents"
 
 object EventDataManager {
-    // List //
-    val itemsList = mutableListOf<AdapterItem>()
+    //* Lists *//
+    val itemsList = mutableListOf<AdapterItem>() // List for recycleview
+    var inviteList = mutableListOf<String>() // List for inviting friends to events
 
-    // Dateformatters //
+    //* Dateformatters *//
     val dateFormat = SimpleDateFormat("E dd-MMM-yyyy")
     val timeFormat = SimpleDateFormat("HH:mm")
 
-    // Datebase-helpers
+    //* Datebase-helpers *//
     var db = FirebaseFirestore.getInstance()
     private var currentUser : FirebaseUser? = null
     private lateinit var eventRef : CollectionReference
 
+    // Data listeners //
+
+    fun resetEventDataManagerUser() {
+        // Get the current users information for the EventDataManager
+        currentUser = FirebaseAuth.getInstance().currentUser
+        currentUser?.let {
+            eventRef = db.collection(EVENT_PATH).document(it.uid).collection(EVENT_COLLECTION_PATH)
+        }
+    }
+
     fun setFirebaseListener(eventRecyclerView: RecyclerView) {
-        eventRef?.addSnapshotListener { snapshot, e ->
+        eventRef.addSnapshotListener { snapshot, e ->
             // Clear list
             itemsList.clear()
             // Load attending events from Firebase
             if (snapshot != null) {
                 // Create temporary sortable lists for attending and not attending
+                val newInviteList = mutableListOf<AdapterItem>()
                 val attendList = mutableListOf<AdapterItem>()
                 val declineList = mutableListOf<AdapterItem>()
+
+                // Search for events with status new.
+                for (document in snapshot.documents) {
+                    val loadEvent = document.toObject(Event::class.java)
+                    if (loadEvent != null && loadEvent.new == true) {
+                        val item = AdapterItem(
+                            loadEvent, null,
+                            EventRecycleAdapter.TYPE_EVENT
+                        )
+                        // Sort the event as new if the user isn't the host.
+                        if (loadEvent.host != UserDataManager.loggedInUser.userID) {
+                            newInviteList.add(item)
+                        }
+                        // Sort the event as attending if the user is the host.
+                        else { attendList.add(item) }
+                    }
+                }
+
+                if (newInviteList.isNotEmpty()) {
+                    // Add attend header
+                    val newHeader = AdapterItem(
+                        null, null,
+                        EventRecycleAdapter.TYPE_NEW_HEADER
+                    )
+                    itemsList.add(newHeader)
+                    // Sort attend list before adding it to itemsList
+                    attendList.sortBy { it.event?.date }
+                    itemsList.addAll(newInviteList)
+                }
 
                 // Search for events with status attending.
                 for (document in snapshot.documents) {
                     val loadEvent = document.toObject(Event::class.java)
-                    if (loadEvent != null && loadEvent.attend == true) {
+                    if (loadEvent != null && loadEvent.attend == true && loadEvent.new == false) {
                         val item = AdapterItem(
                             loadEvent, null,
                             EventRecycleAdapter.TYPE_EVENT
@@ -46,7 +93,7 @@ object EventDataManager {
                     }
                 }
 
-                if(attendList.isNotEmpty()) {
+                if (attendList.isNotEmpty()) {
                     // Add attend header
                     val attendHeader = AdapterItem(
                         null, null,
@@ -58,10 +105,10 @@ object EventDataManager {
                     itemsList.addAll(attendList)
                 }
 
-                //Search for events with status not attending
+                //Search for events with status declined.
                 for (document in snapshot.documents) {
                     val loadEvent = document.toObject(Event::class.java)
-                    if (loadEvent != null && loadEvent.attend == false) {
+                    if (loadEvent != null && loadEvent.attend == false && loadEvent.new == false) {
                         val item = AdapterItem(
                             loadEvent, null,
                             EventRecycleAdapter.TYPE_EVENT
@@ -70,7 +117,7 @@ object EventDataManager {
                     }
                 }
 
-                if(declineList.isNotEmpty()) {
+                if (declineList.isNotEmpty()) {
                     // Add decline header
                     val declineHeader = AdapterItem(
                         null, null,
@@ -84,16 +131,94 @@ object EventDataManager {
                 // Notify changes to the adapter when the async data has been loaded
                 eventRecyclerView.adapter?.notifyDataSetChanged()
             }
+            if (snapshot == null) {
+                println("!!! No good")
+            }
         }
     }
 
-    fun updateEventToFirebase(eventKeyName : String, event : Event) {
-        eventRef?.document(eventKeyName)?.set(event)
+    fun updateEventToFirebase(eventKey : String, event : Event) {
+        eventRef.document(eventKey).set(event)
     }
 
-    fun resetEventDataManagerUser() {
-        // Get the current users information for the EventDataManager
-        currentUser = FirebaseAuth.getInstance().currentUser
-        currentUser?.let { eventRef = db.collection("users").document(it.uid).collection("userEvents") }
+    fun updateEventDetailsToFireBase(event: Event) {
+        val date = event.date
+        val name = event.name
+        val invitedUsers = event.invitedUsers
+
+        for (friendID in event.invitedUsers!!) {
+            val friendEventRef = db.collection(EVENT_PATH).document(friendID).collection(EVENT_COLLECTION_PATH)
+            event.keyName?.let { friendEventRef.document(it).update(
+                "date", date,
+                "name", name,
+                "invitedUsers", invitedUsers) }
+        }
+
+        event.keyName?.let { eventRef.document(it).update(
+            "date", date,
+            "name", name,
+            "invitedUsers", invitedUsers)
+        }
+    }
+
+    fun checkAttendance(event: Event, guestListRecyclerView: RecyclerView, guestListRecycleAdapter: GuestListRecycleAdapter) {
+        // Create a list to save each guest with attend = true.
+        val acceptedInvites = mutableListOf<com.example.meetup.objects.User>()
+        // Add the host of the event by default.
+        val host = event?.host?.let { UserDataManager.getUser(it) }
+        acceptedInvites.add(host!!)
+
+        for (friendID in event.invitedUsers!!) {
+            event.keyName?.let {
+                db.collection(EVENT_PATH).document(friendID).collection(EVENT_COLLECTION_PATH).document(
+                    it
+                )
+            }?.addSnapshotListener(){ snapshot, e ->
+                // Check accepted invites in Firebase
+                if (snapshot != null) {
+                    // Get the status for attend and new to determine which list to put the guest in.
+                    val status = snapshot.data?.getValue("attend")
+                    val checkNew = snapshot.data?.getValue("new")
+                    when (status) {
+                        true -> {
+                            val guest = UserDataManager.getUser(friendID)
+                            acceptedInvites.add(guest!!)
+                        }
+
+                        false -> {
+                            val declinedUser = UserDataManager.getUser(friendID)
+                            acceptedInvites.remove(declinedUser)
+                        }
+                    }
+                    // Assign the list to the adapter.
+                    guestListRecycleAdapter.updateGuestList(acceptedInvites)
+                    // Tell the view to update.
+                    guestListRecyclerView.adapter?.notifyDataSetChanged()
+                    guestListRecyclerView.scheduleLayoutAnimation()
+                }
+            }
+        }
+    }
+
+
+    fun removeEvent(event: Event) {
+        // Remove the event from invited friends events
+        for (friendID in event.invitedUsers!!) {
+            val friendEventRef = db.collection(EVENT_PATH).document(friendID).collection(EVENT_COLLECTION_PATH)
+            event.keyName?.let { friendEventRef.document(it).delete() }
+        }
+
+        // Remove the event from hosts events
+        event.keyName?.let { eventRef.document(it).delete() }
+    }
+
+    fun inviteFriends(event: Event) {
+        event.invitedUsers = inviteList
+        event.attend = false
+        for (friendID in inviteList) {
+            val friendEventRef = db.collection(EVENT_PATH).document(friendID).collection(EVENT_COLLECTION_PATH)
+            event.keyName?.let { friendEventRef.document(it).set(event) }
+        }
+        event.keyName?.let { updateEventToFirebase(it, event) }
     }
 }

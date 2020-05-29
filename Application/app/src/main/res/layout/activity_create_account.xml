@@ -6,28 +6,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/addImageButton"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/createNameEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:background="@drawable/drawable_rounded_button"
-        tools:ignore="MissingConstraints"
-        android:text="Add image"/>
+        android:text="Add image"
+        android:layout_marginTop="64dp"
+        app:icon="@drawable/add_image"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/chosenPictureImageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="64dp"
+        android:src="@drawable/profile"
+        app:civ_border_width="4dp"
+        app:civ_border_color="@color/colorPrimary"/>
 
     <EditText
         android:id="@+id/createNameEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="128dp"
+        android:layout_marginTop="64dp"
         android:ems="10"
         android:hint="Username"
         android:inputType="text"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/chosenPictureImageView"/>
 
     <EditText
         android:id="@+id/createEmailEditText"
@@ -61,6 +73,9 @@
         android:text="Create Account"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/createPasswordEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/createPasswordEditText"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:textColor="@color/colorAccent"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

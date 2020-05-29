@@ -4,61 +4,122 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.AddAndEditEventActivity">
+    tools:context=".activities.AddAndEditEventActivity"
+    android:background="@color/colorNeutral">
 
-    <EditText
-        android:id="@+id/nameEditText"
-        android:layout_width="wrap_content"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarNewEvent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="128dp"
-        android:ems="10"
-        android:hint="Event name"
-        android:inputType="textPersonName"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:elevation="0dp"
+        android:translationZ="0.1dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-    <EditText
-        android:id="@+id/dateEditText"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarEvent"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <!--                <TextView
+                                    android:id="@+id/toolbarEventText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="New event"
+                                    android:textColor="#FFFFFF"
+                                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"/>-->
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingTop="80dp"
+        android:paddingBottom="80dp">
+
+        <EditText
+            android:id="@+id/nameEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="New event"
+            android:inputType="textPersonName"
+            android:textColor="@color/colorWhite"
+            android:textSize="25sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/dateEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
+            android:ems="7"
+            android:textSize="22sp"
+            android:textColor="@color/colorWhite"
+            android:focusableInTouchMode="false"
+            android:inputType="date"
+            app:layout_constraintStart_toStartOf="@id/nameEditText"
+            app:layout_constraintTop_toBottomOf="@+id/nameEditText" />
+
+        <EditText
+            android:id="@+id/timeEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:ems="4"
+            android:textSize="22sp"
+            android:textColor="@color/colorAccent"
+            android:focusableInTouchMode="false"
+            android:inputType="date|time"
+            android:textAlignment="center"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintEnd_toEndOf="@id/nameEditText"
+            app:layout_constraintTop_toBottomOf="@+id/nameEditText" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/inviteFabButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:ems="10"
-        android:focusableInTouchMode="false"
-        android:inputType="date"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameEditText" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="16dp"
+        app:icon="@drawable/save_event"
+        android:text="Save &amp; invite"
+        android:visibility="gone"
+        android:backgroundTint="@color/colorAccent"
+        app:iconTint="@color/colorWhite"
+        android:textColor="@color/colorWhite"/>
 
-    <EditText
-        android:id="@+id/timeEditText"
+    <com.leinardi.android.speeddial.SpeedDialOverlayLayout
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.leinardi.android.speeddial.SpeedDialView
+        android:id="@+id/speedDialFabView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:ems="10"
-        android:focusableInTouchMode="false"
-        android:inputType="date|time"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dateEditText" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:sdMainFabClosedSrc="@drawable/add"
+        app:sdMainFabClosedIconColor="@color/colorWhite"
+        app:sdOverlayLayout="@id/overlay"/>
 
-    <Button
-        android:id="@+id/inviteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Invite"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timeEditText" />
-
-    <Button
-        android:id="@+id/saveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/inviteButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -44,9 +44,9 @@ object UserDataManager {
 
     fun setFirebaseListenerForUsers(userRecyclerView: RecyclerView?) {
         allUsersRef.addSnapshotListener { snapshot, e ->
-            // Clear list
+            // Clear list.
             allUsersList.clear()
-            // Load all users from Firebase
+            // Load all users from Firebase.
             if (snapshot != null) {
                 for (document in snapshot.documents) {
                     val loadUser = document.toObject(User::class.java)
@@ -58,6 +58,7 @@ object UserDataManager {
     }
 
     fun getUser(userID : String): User?  {
+        // Get users through the already fetched list of all users.
         for (user in allUsersList) {
             if (user.userID == userID) {
                 return user
@@ -67,7 +68,10 @@ object UserDataManager {
     }
 
     fun uploadImageToFirebaseStorage(selectedPhotoUri: Uri) {
+        userDataRef = auth.currentUser?.uid?.let { allUsersRef.document(it) }!!
+        // Create a random ID for the image.
         val filename = UUID.randomUUID().toString()
+        // Save the image to FirebaseStorage.
         val imageRef = FirebaseStorage.getInstance().getReference("/images/$filename")
         imageRef.putFile(selectedPhotoUri).addOnSuccessListener {
             imageRef.downloadUrl.addOnSuccessListener {

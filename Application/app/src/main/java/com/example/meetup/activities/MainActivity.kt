@@ -3,46 +3,43 @@ package com.example.meetup.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
-import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import com.example.meetup.fragments.FriendsListFragment
+import com.example.meetup.fragments.EventListFragment
 import com.example.meetup.R
-import com.example.meetup.data_managers.EventDataManager
 import com.example.meetup.data_managers.UserDataManager
-import com.example.meetup.recycle_adapters.EventRecycleAdapter
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.auth.User
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.nav_header.view.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 
+const val EVENT_FRAGMENT = "event_fragment"
+const val FRIENDS_FRAGMENT = "friend_fragment"
 
 class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-    private var eventRecyclerView : RecyclerView? = null
-    lateinit var auth: FirebaseAuth
     lateinit var toolbar: Toolbar
     lateinit var drawerLayout: DrawerLayout
     lateinit var navView: NavigationView
+    lateinit var eventListFragment: EventListFragment
+    lateinit var friendsListFragment: FriendsListFragment
+    lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         auth = FirebaseAuth.getInstance()
 
+        eventListFragment = EventListFragment()
+        friendsListFragment = FriendsListFragment()
+
+        replaceFragment(eventListFragment, EVENT_FRAGMENT)
+
         setUpNavDrawer()
-        setEventRecycleAdapters()
-        setFabButtons()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -52,8 +49,12 @@ class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 logout()
             }
 
+            R.id.nav_events -> {
+                replaceFragment(eventListFragment, EVENT_FRAGMENT)
+            }
+
             R.id.nav_friends -> {
-                goToFriends()
+                replaceFragment(friendsListFragment, FRIENDS_FRAGMENT)
             }
 
             R.id.nav_profile -> {
@@ -75,6 +76,8 @@ class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerLayout = findViewById(R.id.drawer_layout)
         navView = findViewById(R.id.nav_view)
 
+        navView.setBackgroundResource(R.color.colorNeutral)
+
         val toggle = ActionBarDrawerToggle(
             this, drawerLayout, toolbar, 0, 0
         )
@@ -89,7 +92,7 @@ class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onResume() {
         super.onResume()
-        eventRecyclerView?.adapter?.notifyDataSetChanged()
+        eventListFragment.eventRecyclerView?.adapter?.notifyDataSetChanged()
     }
 
     // Hate this. Need it.
@@ -103,29 +106,8 @@ class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 navView.getHeaderView(0).nav_textview_username.text = UserDataManager.loggedInUser.name
 
                 val uri = UserDataManager.loggedInUser.profileImageURL
-                println("!!! $uri")
                 Picasso.get().load(uri).into(navView.getHeaderView(0).nav_profile_image)
             }
-        }
-    }
-
-    private fun setEventRecycleAdapters() {
-        eventRecyclerView = findViewById<RecyclerView>(R.id.attendRecyclerView)
-        eventRecyclerView?.layoutManager = LinearLayoutManager(this)
-
-        val eventAdapter = EventRecycleAdapter(this)
-        eventAdapter.updateItemsToList(EventDataManager.itemsList)
-        eventRecyclerView?.adapter = eventAdapter
-
-        eventRecyclerView?.let { EventDataManager.setFirebaseListener(it) }
-    }
-
-    private fun setFabButtons() {
-        val fab = findViewById<View>(R.id.addEventActionButton)
-        fab.setOnClickListener{
-            val intent = Intent(this, AddAndEditEventActivity::class.java)
-            intent.putExtra("EVENT_POSITION", "NO_LIST")
-            startActivity(intent)
         }
     }
 
@@ -136,10 +118,10 @@ class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         finish()
     }
 
-    private fun goToFriends() {
-        val intent = Intent(this, FriendListActivity::class.java)
-        startActivity(intent)
+
+    private fun replaceFragment(fragment: Fragment, tag: String) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, fragment, tag)
+        transaction.commit()
     }
-
-
 }

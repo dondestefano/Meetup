@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/cancelEventFab"
+        android:icon="@drawable/profile"
+        android:title="Cancel"/>
+    <item
+        android:id="@+id/inviteFriendsFab"
+        android:icon="@drawable/profile"
+        android:title="Invite friends"/>
+    <item
+        android:id="@+id/saveChangesFab"
+        android:icon="@drawable/event"
+        android:title="Save changes"/>
+    <item
+        android:id="@+id/attendFab"
+        android:icon="@drawable/friends"
+        android:title="I'm game"/>
+    <item
+        android:id="@+id/declineFab"
+        android:icon="@drawable/friends"
+        android:title="No game for me"/>
+
+</menu>

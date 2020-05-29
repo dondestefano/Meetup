@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.meetup.data_managers.UserDataManager
 import com.example.meetup.R
+import com.example.meetup.data_managers.EventDataManager
 import com.example.meetup.data_managers.FriendDataManager
 import com.example.meetup.objects.User
 import com.squareup.picasso.Picasso
@@ -36,16 +37,23 @@ class InviteRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
         holder.nameSearchView.text = currentUser.name
         val uri = currentUser.profileImageURL
         Picasso.get().load(uri).into(holder.imageView)
+
+        // Check if the friend is already invited.
+        for (friendID in EventDataManager.inviteList) {
+            if (friendID == currentUser.userID) {
+                holder.userInviteCheckBox.isChecked = true
+                holder.userInviteCheckBox.isEnabled = false
+            }
+        }
+
+        // Add and remove friends from invites with the checkbox
         holder.userInviteCheckBox.setOnClickListener() {
             if(holder.userInviteCheckBox.isChecked){
-                FriendDataManager.inviteList.add(currentUser)
-                for (users in FriendDataManager.inviteList) {
-                }
-
-            } else { FriendDataManager.inviteList.remove(currentUser)
-                for (users in FriendDataManager.inviteList) {
-                }
+                currentUser.userID?.let { EventDataManager.inviteList.add(it) }
+                println("!!! Listan Ja ${EventDataManager.inviteList}")
             }
+            else { EventDataManager.inviteList.remove(currentUser.userID)
+                println("!!! Listan Nej ${EventDataManager.inviteList}")}
         }
     }
 
@@ -53,5 +61,6 @@ class InviteRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
         val nameSearchView : TextView = itemView.findViewById<TextView>(R.id.userSearchName)
         val imageView : ImageView = itemView.findViewById<ImageView>(R.id.userSearchImage)
         val userInviteCheckBox : CheckBox = itemView.findViewById<CheckBox>(R.id.inviteCheckBox)
+        val lineBreak: View = itemView.findViewById(R.id.lineBreak)
     }
 }

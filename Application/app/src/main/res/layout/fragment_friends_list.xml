@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.FriendListActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.FriendsListFragment"
+    android:background="@color/colorNeutral">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addFriendActionButton"
@@ -13,12 +14,12 @@
         android:layout_gravity="end|bottom"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        app:tint="@color/colorPrimaryText"
-        app:backgroundTint="@color/colorPrimary"
+        app:tint="@color/colorWhite"
+        app:backgroundTint="@color/colorAccent"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_person_add_black_24dp"
+        app:srcCompat="@drawable/add_friend"
         app:elevation="6dp"
         app:borderWidth="0dp" />
 
@@ -26,13 +27,10 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/friendRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:elevation="4dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        android:background="@color/colorNeutral"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
