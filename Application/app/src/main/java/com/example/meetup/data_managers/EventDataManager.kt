@@ -4,8 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.meetup.data_managers.EventDataManager.db
 import com.example.meetup.objects.AdapterItem
 import com.example.meetup.objects.Event
-import com.example.meetup.recycle_adapters.EventRecycleAdapter
-import com.example.meetup.recycle_adapters.GuestListRecycleAdapter
+import com.example.meetup.recycle_adapters.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference
@@ -161,14 +160,18 @@ object EventDataManager {
         }
     }
 
-    fun checkAttendance(event: Event, guestListRecyclerView: RecyclerView, guestListRecycleAdapter: GuestListRecycleAdapter) {
+    fun checkAttendance(event: Event, guestListRecyclerView: RecyclerView, guestListRecycleAdapter: GuestListRecycleAdapter, guestStatus: String) {
         // Create a list to save each guest with attend = true.
         val acceptedInvites = mutableListOf<com.example.meetup.objects.User>()
+        val declinedInvites = mutableListOf<com.example.meetup.objects.User>()
+        val newInvites = mutableListOf<com.example.meetup.objects.User>()
         // Add the host of the event by default.
         val host = event?.host?.let { UserDataManager.getUser(it) }
         acceptedInvites.add(host!!)
 
         for (friendID in event.invitedUsers!!) {
+            // Check friends event document to get their status.
+            println("!!! $guestStatus")
             event.keyName?.let {
                 db.collection(EVENT_PATH).document(friendID).collection(EVENT_COLLECTION_PATH).document(
                     it
@@ -179,19 +182,43 @@ object EventDataManager {
                     // Get the status for attend and new to determine which list to put the guest in.
                     val status = snapshot.data?.getValue("attend")
                     val checkNew = snapshot.data?.getValue("new")
-                    when (status) {
-                        true -> {
+                    when  {
+                        status == true && checkNew == false -> {
                             val guest = UserDataManager.getUser(friendID)
                             acceptedInvites.add(guest!!)
+                            declinedInvites.remove(guest)
+                            newInvites.remove(guest)
+                            println("!!! Found accepted")
                         }
 
-                        false -> {
-                            val declinedUser = UserDataManager.getUser(friendID)
-                            acceptedInvites.remove(declinedUser)
+                        status == false && checkNew == false -> {
+                            val declinedGuest = UserDataManager.getUser(friendID)
+                            acceptedInvites.remove(declinedGuest)
+                            declinedInvites.add(declinedGuest!!)
+                            newInvites.remove(declinedGuest)
+                            println("!!! Found declined")
+                        }
+
+                        checkNew == true ->  {
+                            val newGuest = UserDataManager.getUser(friendID)
+                            newInvites.add(newGuest!!)
+                            println("!!! Found new")
                         }
                     }
-                    // Assign the list to the adapter.
-                    guestListRecycleAdapter.updateGuestList(acceptedInvites)
+                    // Assign the correct list to the adapter.
+                    when (guestStatus) {
+                        GUEST_LIST_ATTEND -> {
+                            guestListRecycleAdapter.updateGuestList(acceptedInvites)
+                        }
+
+                        GUEST_LIST_DECLINED -> {
+                            guestListRecycleAdapter.updateGuestList(declinedInvites)
+                        }
+
+                        GUEST_LIST_NEW -> {
+                            guestListRecycleAdapter.updateGuestList(newInvites)
+                        }
+                    }
                     // Tell the view to update.
                     guestListRecyclerView.adapter?.notifyDataSetChanged()
                     guestListRecyclerView.scheduleLayoutAnimation()

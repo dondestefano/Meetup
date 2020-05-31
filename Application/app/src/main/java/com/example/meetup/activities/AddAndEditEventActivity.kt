@@ -16,12 +16,19 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.meetup.data_managers.EventDataManager
 import com.example.meetup.objects.Event
 import com.example.meetup.R
 import com.example.meetup.data_managers.UserDataManager
+import com.example.meetup.recycle_adapters.GUEST_LIST_ATTEND
+import com.example.meetup.recycle_adapters.GUEST_LIST_DECLINED
+import com.example.meetup.recycle_adapters.GUEST_LIST_NEW
+import com.example.meetup.recycle_adapters.GuestListRecycleAdapter
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -37,10 +44,16 @@ const val EVENT_POSITION_NOT_SET = -1
 const val EVENT_POSITION_KEY = "EVENT_POSITION"
 
 class AddAndEditEventActivity : AppCompatActivity() {
-    // Layout assets.
+    // Event assets resources.
     private lateinit var timeEditText: EditText
     private lateinit var dateEditText: EditText
     private lateinit var nameEditText : EditText
+    // Guest status resources.
+    private lateinit var attendRecyclerView: RecyclerView
+    private lateinit var declineRecyclerView: RecyclerView
+    private lateinit var newRecyclerView: RecyclerView
+    private lateinit var guestStatusLayout: ConstraintLayout
+    // Event functionality resources.
     private lateinit var toolbar: Toolbar
     private lateinit var inviteFabButton : ExtendedFloatingActionButton
     private lateinit var speedDialFab : SpeedDialView
@@ -49,9 +62,8 @@ class AddAndEditEventActivity : AppCompatActivity() {
     private var event : Event? = null
     private val calendar: Calendar = Calendar.getInstance()
 
-    // Put extra helpers.
-    private var eventPosition =
-        EVENT_POSITION_NOT_SET
+    // Set position as not set by default.
+    private var eventPosition = EVENT_POSITION_NOT_SET
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +75,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
         nameEditText = findViewById(R.id.nameEditText)
         inviteFabButton = findViewById(R.id.inviteFabButton)
         speedDialFab = findViewById(R.id.speedDialFabView)
+        guestStatusLayout = findViewById(R.id.guestStatusLayout)
 
         // Setup activity
         getExtraFromIntent()
@@ -95,30 +108,18 @@ class AddAndEditEventActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
+        // Closes the activity when pressing the close button.
         finish()
         return false
-    }
-
-    private fun setOnClickListeners() {
-        inviteFabButton.setOnClickListener {
-            goToInvite()
-        }
-
-        dateEditText.setOnClickListener {
-            pickDate()
-        }
-
-        timeEditText.setOnClickListener{
-            pickTime()
-        }
     }
 
     private fun setupRadialFabButtonHost() {
         // Setup each individual action button for host functionality.
         speedDialFab.addActionItem(
             SpeedDialActionItem.Builder(R.id.saveChangesFab, R.drawable.edit)
-                .setFabBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getTheme()))
-                .setFabImageTintColor(ResourcesCompat.getColor(getResources(), R.color.colorWhite, getTheme()))
+                .setFabBackgroundColor(ResourcesCompat.getColor(resources, R.color.colorPrimary, theme
+                ))
+                .setFabImageTintColor(ResourcesCompat.getColor(resources, R.color.colorWhite, theme))
                 .setLabel("Save changes")
                 .setLabelColor(Color.WHITE)
                 .setLabelBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getTheme()))
@@ -145,6 +146,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
                 .setLabelClickable(false)
                 .create())
 
+        // Set functions for speedDial buttons.
         speedDialFab.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
             when (actionItem.id) {
                 R.id.saveChangesFab -> {
@@ -207,19 +209,60 @@ class AddAndEditEventActivity : AppCompatActivity() {
                 R.id.attendFab -> {
                     event?.changeAttend(true)
                     speedDialFab.close()
-                    finish()
+                    attendRecyclerView.adapter?.notifyDataSetChanged()
+
                     return@OnActionSelectedListener true
                 }
 
                 R.id.declineFab -> {
                     event?.changeAttend(false)
                     speedDialFab.close()
-                    finish()
+                    attendRecyclerView.adapter?.notifyDataSetChanged()
                     return@OnActionSelectedListener true
                 }
             }
             false
         })
+    }
+
+    private fun setupRecycleViews() {
+        println("!!! Doing it")
+        attendRecyclerView = findViewById(R.id.attendingListRecyclerView)
+        declineRecyclerView = findViewById(R.id.declinedListRecyclerView)
+        newRecyclerView = findViewById(R.id.invitedListRecyclerView)
+
+        // Setup accepted adapter.
+        attendRecyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        val attendingGuestsAdapter = GuestListRecycleAdapter(this)
+        attendRecyclerView.adapter = attendingGuestsAdapter
+        EventDataManager.checkAttendance(event!!, attendRecyclerView, attendingGuestsAdapter, GUEST_LIST_ATTEND)
+
+        // Setup declined adapter.
+        declineRecyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        val declinedGuestsAdapter = GuestListRecycleAdapter(this)
+        declineRecyclerView.adapter = declinedGuestsAdapter
+        println("!!! This is the ${event?.name} ")
+        EventDataManager.checkAttendance(event!!, declineRecyclerView, declinedGuestsAdapter, GUEST_LIST_DECLINED)
+
+        // Setup new adapter.
+        newRecyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        val newGuestsAdapter = GuestListRecycleAdapter(this)
+        newRecyclerView.adapter = newGuestsAdapter
+        EventDataManager.checkAttendance(event!!, newRecyclerView, newGuestsAdapter, GUEST_LIST_NEW)
+    }
+
+    private fun setOnClickListeners() {
+        inviteFabButton.setOnClickListener {
+            goToInvite()
+        }
+
+        dateEditText.setOnClickListener {
+            pickDate()
+        }
+
+        timeEditText.setOnClickListener{
+            pickTime()
+        }
     }
 
 
@@ -252,7 +295,6 @@ class AddAndEditEventActivity : AppCompatActivity() {
         val date : String
         val time : String
 
-        // Determine if the event is new or if the user wants to edit it.
         // If the user wants to edit the event get it from the EventDataManagers itemsList.
         if (eventPosition != EVENT_POSITION_NOT_SET) {
             event = EventDataManager.itemsList[eventPosition].event
@@ -260,6 +302,8 @@ class AddAndEditEventActivity : AppCompatActivity() {
                 calendar.time = event.date
                 setDateForEventToEdit()
             }
+
+            setupRecycleViews()
 
             // Set the events invite list as the data manager's invited list.
             EventDataManager.inviteList = event?.invitedUsers!!
@@ -300,6 +344,9 @@ class AddAndEditEventActivity : AppCompatActivity() {
                 null,
                 UserDataManager.loggedInUser.userID,
                 inviteList)
+
+            // Hide guest status for new events.
+            guestStatusLayout.visibility = GONE
 
             // Set on click listeners to enable edit functionality.
             setOnClickListeners()

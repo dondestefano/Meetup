@@ -37,9 +37,29 @@ class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         eventListFragment = EventListFragment()
         friendsListFragment = FriendsListFragment()
 
+        // Show eventListFragment when the app starts.
         replaceFragment(eventListFragment, EVENT_FRAGMENT)
 
         setUpNavDrawer()
+    }
+
+    private fun setUpNavDrawer() {
+        toolbar = findViewById(R.id.toolbar)
+        drawerLayout = findViewById(R.id.drawer_layout)
+        navView = findViewById(R.id.nav_view)
+
+        setSupportActionBar(toolbar)
+        navView.setBackgroundResource(R.color.colorNeutral)
+
+        val toggle = ActionBarDrawerToggle(
+            this, drawerLayout, toolbar, 0, 0
+        )
+
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        navView.setNavigationItemSelectedListener(this)
+        getLoggedInUser()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -69,33 +89,13 @@ class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    private fun setUpNavDrawer() {
-        toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
-
-        drawerLayout = findViewById(R.id.drawer_layout)
-        navView = findViewById(R.id.nav_view)
-
-        navView.setBackgroundResource(R.color.colorNeutral)
-
-        val toggle = ActionBarDrawerToggle(
-            this, drawerLayout, toolbar, 0, 0
-        )
-
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-
-        navView.setNavigationItemSelectedListener(this)
-
-        getLoggedInUser()
-    }
-
     override fun onResume() {
         super.onResume()
         eventListFragment.eventRecyclerView?.adapter?.notifyDataSetChanged()
     }
 
     // Hate this. Need it.
+    // Gives the navDrawer enough time to setup before fetching the image.
     private fun getLoggedInUser() {
         val loggedInUserID = auth.currentUser?.uid
         UserDataManager.userDataRef = loggedInUserID?.let { UserDataManager.allUsersRef.document(it) }!!
@@ -117,7 +117,6 @@ class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         startActivity(intent)
         finish()
     }
-
 
     private fun replaceFragment(fragment: Fragment, tag: String) {
         val transaction = supportFragmentManager.beginTransaction()

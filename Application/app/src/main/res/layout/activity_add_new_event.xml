@@ -29,18 +29,12 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
-                <!--                <TextView
-                                    android:id="@+id/toolbarEventText"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="New event"
-                                    android:textColor="#FFFFFF"
-                                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"/>-->
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/eventDetailsLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
@@ -91,6 +85,122 @@
             app:layout_constraintTop_toBottomOf="@+id/nameEditText" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/guestStatusLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/eventDetailsLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingStart="50dp"
+        android:paddingEnd="50dp"
+        android:paddingTop="40dp">
+
+        <ImageView
+            android:id="@+id/attendHeaderIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/attendingHeader"
+            app:layout_constraintBottom_toBottomOf="@id/attendingHeader"
+            app:layout_constraintEnd_toStartOf="@id/attendingHeader"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginEnd="6dp"
+            android:src="@drawable/approve"
+            android:tint="@color/colorAccent"/>
+
+        <TextView
+            android:id="@+id/attendingHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:text="Attending"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"
+            android:layout_marginStart="5dp"
+            app:layout_constraintStart_toEndOf="@id/attendHeaderIcon"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/attendingListRecyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginTop="10dp"
+            android:layoutAnimation="@anim/guest_recycler_view_animation"
+            app:layout_constraintStart_toStartOf="@id/attendHeaderIcon"
+            app:layout_constraintTop_toBottomOf="@id/attendHeaderIcon"
+            android:orientation="horizontal" />
+
+        <ImageView
+            android:id="@+id/declinedHeaderIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/declinedHeader"
+            app:layout_constraintBottom_toBottomOf="@id/declinedHeader"
+            app:layout_constraintEnd_toStartOf="@id/declinedHeader"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginEnd="6dp"
+            android:src="@drawable/decline"
+            android:tint="@color/colorPrimaryDark"/>
+
+        <TextView
+            android:id="@+id/declinedHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:text="Declined"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="14sp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="32dp"
+            app:layout_constraintStart_toEndOf="@id/declinedHeaderIcon"
+            app:layout_constraintTop_toBottomOf="@id/attendingListRecyclerView" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/declinedListRecyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginTop="10dp"
+            android:layoutAnimation="@anim/guest_recycler_view_animation"
+            app:layout_constraintStart_toStartOf="@id/declinedHeaderIcon"
+            app:layout_constraintTop_toBottomOf="@id/declinedHeaderIcon"
+            android:orientation="horizontal"/>
+
+        <ImageView
+            android:id="@+id/invitedHeaderIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/invitedHeader"
+            app:layout_constraintBottom_toBottomOf="@id/invitedHeader"
+            app:layout_constraintEnd_toStartOf="@id/invitedHeader"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginEnd="6dp"
+            android:src="@drawable/new_alert"
+            android:tint="@color/colorPrimaryDark"/>
+
+        <TextView
+            android:id="@+id/invitedHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:text="Not responded"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="14sp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="32dp"
+            app:layout_constraintStart_toEndOf="@id/invitedHeaderIcon"
+            app:layout_constraintTop_toBottomOf="@id/declinedListRecyclerView" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/invitedListRecyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginTop="10dp"
+            android:layoutAnimation="@anim/guest_recycler_view_animation"
+            app:layout_constraintStart_toStartOf="@id/invitedHeaderIcon"
+            app:layout_constraintTop_toBottomOf="@id/invitedHeaderIcon"
+            android:orientation="horizontal"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/inviteFabButton"
         android:layout_width="wrap_content"
@@ -120,6 +230,4 @@
         app:sdMainFabClosedSrc="@drawable/add"
         app:sdMainFabClosedIconColor="@color/colorWhite"
         app:sdOverlayLayout="@id/overlay"/>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
