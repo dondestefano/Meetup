@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
+import java.util.*
 
 const val EVENT_PATH = "events"
 const val EVENT_COLLECTION_PATH = "userEvents"
@@ -26,6 +27,7 @@ object EventDataManager {
     var db = FirebaseFirestore.getInstance()
     private var currentUser : FirebaseUser? = null
     private lateinit var eventRef : CollectionReference
+
 
     // Data listeners //
 
@@ -126,9 +128,6 @@ object EventDataManager {
                 }
                 // Notify changes to the adapter when the async data has been loaded
                 eventRecyclerView.adapter?.notifyDataSetChanged()
-            }
-            if (snapshot == null) {
-                println("!!! No good")
             }
         }
     }

@@ -9,13 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.SearchUsersActivity"></activity>
-        <activity android:name=".activities.FriendListActivity" />
+        <activity android:name=".activities.SearchUsersActivity" />
         <activity android:name=".activities.UserProfileActivity" />
         <activity android:name=".activities.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -24,12 +22,12 @@
         <activity android:name=".activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".activities.AddAndEditEventActivity" />
         <activity android:name=".activities.ListActivity" />
+        <receiver android:name=".notification.AlarmReceiver" />
     </application>
 
 </manifest>

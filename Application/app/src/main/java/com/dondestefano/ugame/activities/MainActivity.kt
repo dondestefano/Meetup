@@ -1,11 +1,14 @@
 package com.dondestefano.ugame.activities
 
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -13,6 +16,7 @@ import com.dondestefano.ugame.R
 import com.dondestefano.ugame.fragments.FriendsListFragment
 import com.dondestefano.ugame.fragments.EventListFragment
 import com.dondestefano.ugame.data_managers.UserDataManager
+import com.dondestefano.ugame.notification.NotificationHelper
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
@@ -39,8 +43,11 @@ class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // Show eventListFragment when the app starts.
         replaceFragment(eventListFragment, EVENT_FRAGMENT)
-
         setUpNavDrawer()
+
+        NotificationHelper.createNotificationChannel(this,
+            NotificationManagerCompat.IMPORTANCE_HIGH, true,
+            "Event", "Notification channel for events.")
     }
 
     private fun setUpNavDrawer() {
@@ -70,6 +77,7 @@ class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             R.id.nav_events -> {
+                NotificationHelper.createNotification("Event",this,"Hej", "Vi skickar meddelanden",true)
                 replaceFragment(eventListFragment, EVENT_FRAGMENT)
             }
 

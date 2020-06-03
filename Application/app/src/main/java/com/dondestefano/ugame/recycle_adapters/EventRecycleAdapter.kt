@@ -16,6 +16,8 @@ import com.dondestefano.ugame.activities.AddAndEditEventActivity
 import com.dondestefano.ugame.objects.AdapterItem
 import com.dondestefano.ugame.data_managers.EventDataManager
 import com.dondestefano.ugame.data_managers.UserDataManager
+import com.dondestefano.ugame.notification.AlarmScheduler
+import com.dondestefano.ugame.notification.NotificationHelper
 import com.dondestefano.ugame.objects.Event
 import com.dondestefano.ugame.objects.User
 
@@ -128,12 +130,21 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
                         holder.attendButton.setTextColor(Color.GREEN)
                         holder.attendButton.isClickable = true
                         holder.attendButton.isEnabled = true
+                        if (event != null && AlarmScheduler.checkIfTimeValid(event)) {
+                            // Remove any previous instance
+                            AlarmScheduler.removeAlarmForEvent(context, position)
+                            // Set new instance
+                            AlarmScheduler.setAlarmForEvent(context, position)
+                        }
                     }
                     else -> {
                         holder.attendButton.setText("Can't")
                         holder.attendButton.setTextColor(Color.RED)
                         holder.attendButton.isClickable = true
                         holder.attendButton.isEnabled = true
+                        if (event != null) {
+                            AlarmScheduler.removeAlarmForEvent(context, position)
+                        }
                     }
                 }
             }
