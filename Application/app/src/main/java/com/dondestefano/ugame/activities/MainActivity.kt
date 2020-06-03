@@ -27,10 +27,10 @@ const val FRIENDS_FRAGMENT = "friend_fragment"
 
 class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     lateinit var toolbar: Toolbar
-    lateinit var drawerLayout: DrawerLayout
-    lateinit var navView: NavigationView
-    lateinit var eventListFragment: EventListFragment
-    lateinit var friendsListFragment: FriendsListFragment
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navView: NavigationView
+    private lateinit var eventListFragment: EventListFragment
+    private lateinit var friendsListFragment: FriendsListFragment
     lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,7 +77,6 @@ class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             R.id.nav_events -> {
-                NotificationHelper.createNotification("Event",this,"Hej", "Vi skickar meddelanden",true)
                 replaceFragment(eventListFragment, EVENT_FRAGMENT)
             }
 

@@ -16,7 +16,7 @@ class AlarmReceiver : BroadcastReceiver() {
             val eventPosition = intent.getIntExtra(EVENT_EXTRA, -0)
             if (eventPosition != -0) {
                 val event = EventDataManager.itemsList[eventPosition].event
-                event?.name?.let { NotificationHelper.createNotification("Event", context, it, "Your event: ${it}, is about to start.", true) }
+                event?.name?.let { NotificationHelper.createNotification("Event", context, it, "Your event: ${it}, is about to start.") }
             }
         }
     }

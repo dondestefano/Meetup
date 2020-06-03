@@ -28,14 +28,14 @@ object NotificationHelper {
         }
     }
 
-    fun createNotification(id: String, context: Context, title: String, message: String, autoCancel: Boolean) {
+    fun createNotification(id: String, context: Context, title: String, message: String) {
         val channelId = "${context.packageName}-$id"
 
         val notificationBuilder = NotificationCompat.Builder(context, channelId).apply {
             setSmallIcon(R.drawable.event)
             setContentTitle(title)
             setContentText(message)
-            setAutoCancel(autoCancel)
+            setAutoCancel(true)
 
             val intent = Intent(context, SplashActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

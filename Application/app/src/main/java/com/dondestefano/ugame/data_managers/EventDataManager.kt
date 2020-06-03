@@ -50,6 +50,14 @@ object EventDataManager {
                 val attendList = mutableListOf<AdapterItem>()
                 val declineList = mutableListOf<AdapterItem>()
 
+                // Check for and remove passed events.
+                for (document in snapshot.documents) {
+                    val loadEvent = document.toObject(Event::class.java)
+                    if (loadEvent != null && checkIfEventHasPassed(loadEvent)) {
+                        removeEvent(loadEvent)
+                    }
+                }
+
                 // Search for events with status new.
                 for (document in snapshot.documents) {
                     val loadEvent = document.toObject(Event::class.java)
@@ -223,15 +231,17 @@ object EventDataManager {
         }
     }
 
-
     fun removeEvent(event: Event) {
-        // Remove the event from invited friends events
-        for (friendID in event.invitedUsers!!) {
-            val friendEventRef = db.collection(EVENT_PATH).document(friendID).collection(EVENT_COLLECTION_PATH)
-            event.keyName?.let { friendEventRef.document(it).delete() }
+        // If the host removes the event
+        // Remove the event from invited friends as well.
+        if (UserDataManager.loggedInUser.userID == event.host) {
+            for (friendID in event.invitedUsers!!) {
+                val friendEventRef = db.collection(EVENT_PATH).document(friendID).collection(EVENT_COLLECTION_PATH)
+                event.keyName?.let { friendEventRef.document(it).delete() }
+            }
         }
 
-        // Remove the event from hosts events
+        // Remove the event from current users events.
         event.keyName?.let { eventRef.document(it).delete() }
     }
 
@@ -263,5 +273,21 @@ object EventDataManager {
         }
         // Update the event for all users.
         updateEventDetailsToFireBase(event)
+    }
+
+    private fun checkIfEventHasPassed(event: Event): Boolean {
+        // Get the current date.
+        val now = Calendar.getInstance(Locale.getDefault())
+
+        // Get the events date + one day.
+        val eventTimePassed = Calendar.getInstance(Locale.getDefault())
+        event?.date?.let {
+            eventTimePassed.set(Calendar.HOUR_OF_DAY, 0)
+            eventTimePassed.set(Calendar.MINUTE, 0)
+            eventTimePassed.set(Calendar.SECOND, 0)
+            eventTimePassed.set(Calendar.MONTH, it.month)
+            eventTimePassed.set(Calendar.DAY_OF_WEEK, it.day + 2) // Date days start at 0. Add two to get the day after.
+        }
+        return now.time >= eventTimePassed.time
     }
 }

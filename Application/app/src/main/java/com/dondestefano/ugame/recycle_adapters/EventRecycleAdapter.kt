@@ -131,9 +131,9 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
                         holder.attendButton.isClickable = true
                         holder.attendButton.isEnabled = true
                         if (event != null && AlarmScheduler.checkIfTimeValid(event)) {
-                            // Remove any previous instance
+                            // Remove any previous instance.
                             AlarmScheduler.removeAlarmForEvent(context, position)
-                            // Set new instance
+                            // Set new instance.
                             AlarmScheduler.setAlarmForEvent(context, position)
                         }
                     }
@@ -142,6 +142,7 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
                         holder.attendButton.setTextColor(Color.RED)
                         holder.attendButton.isClickable = true
                         holder.attendButton.isEnabled = true
+                        // Remove any scheduled alarms for the event.
                         if (event != null) {
                             AlarmScheduler.removeAlarmForEvent(context, position)
                         }
