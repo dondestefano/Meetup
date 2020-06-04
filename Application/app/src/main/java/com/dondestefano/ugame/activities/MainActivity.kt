@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.nav_header.view.*
 const val EVENT_FRAGMENT = "event_fragment"
 const val FRIENDS_FRAGMENT = "friend_fragment"
 
-class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     lateinit var toolbar: Toolbar
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navView: NavigationView
@@ -48,6 +48,10 @@ class ListActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         NotificationHelper.createNotificationChannel(this,
             NotificationManagerCompat.IMPORTANCE_HIGH, true,
             "Event", "Notification channel for events.")
+
+        NotificationHelper.createNotificationChannel(this,
+            NotificationManagerCompat.IMPORTANCE_HIGH, true,
+            "Friends", "Notification channel for friends.")
     }
 
     private fun setUpNavDrawer() {

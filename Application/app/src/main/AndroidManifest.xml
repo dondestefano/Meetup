@@ -19,15 +19,23 @@
         </activity>
         <activity android:name=".activities.InviteActivity" />
         <activity android:name=".activities.CreateAccountActivity" />
-        <activity android:name=".activities.LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".activities.LoginActivity"/>
         <activity android:name=".activities.AddAndEditEventActivity" />
-        <activity android:name=".activities.ListActivity" />
+        <activity android:name=".activities.MainActivity" />
         <receiver android:name=".notification.AlarmReceiver" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_ugame_notification_icon" />
+        <service android:name=".notification.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="SplashActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

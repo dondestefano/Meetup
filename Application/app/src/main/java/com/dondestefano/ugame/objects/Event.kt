@@ -16,15 +16,17 @@ data class Event(var name: String? = null,
         // Permanently set the event as no longer new.
         new = false
 
-        if (status != null) {
-            attend = status
-        } else { attend = !attend!! }
+        // Change attend status.
+        attend = if (status != null) {
+            status
+        } else {
+            !attend!!
+        }
 
-        // Change attend
+        // Update to Firebase.
         EventDataManager.updateEventToFirebase(this.keyName!!, this)
     }
 
-    ///////// CHECK IF I NEED THESE
     fun changeName(name : String) {
         this.name = name
         EventDataManager.updateEventToFirebase(this.keyName!!, this)

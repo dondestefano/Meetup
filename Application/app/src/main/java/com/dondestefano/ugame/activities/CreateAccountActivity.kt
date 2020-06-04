@@ -13,9 +13,12 @@ import android.widget.ImageView
 import android.widget.Toast
 import com.dondestefano.ugame.R
 import com.dondestefano.ugame.data_managers.UserDataManager
+import com.dondestefano.ugame.notification.MyFirebaseMessagingService
 import com.dondestefano.ugame.objects.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.ktx.Firebase
 
 // Image
 var selectedPhotoUri : Uri? = null
@@ -99,7 +102,12 @@ class CreateAccountActivity : AppCompatActivity() {
         val userID = currentUser?.uid
         val email = currentUser?.email.toString()
         val name = createUsernameEditText.text.toString()
-        val newUser = User(name, email, userID)
+        val registrationToken = FirebaseInstanceId.getInstance().token
+        val registrationTokens = mutableListOf<String>()
+        if (registrationToken != null) {
+            registrationTokens.add(registrationToken)
+        }
+        val newUser = User(name, email, userID, null, registrationTokens)
 
         UserDataManager.allUsersRef.document(userID.toString()).set(
             newUser

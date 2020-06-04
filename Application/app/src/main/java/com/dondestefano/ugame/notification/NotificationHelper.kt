@@ -8,11 +8,9 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import com.dondestefano.ugame.R
-import com.dondestefano.ugame.activities.SplashActivity
-import com.dondestefano.ugame.objects.Event
-import java.util.*
-import java.util.Calendar.*
+import com.dondestefano.ugame.activities.MainActivity
 
 object NotificationHelper {
 
@@ -28,19 +26,29 @@ object NotificationHelper {
         }
     }
 
-    fun createNotification(id: String, context: Context, title: String, message: String) {
+    fun createNotification(id: String, context: Context, title: String, message: String, intent: Intent) {
         val channelId = "${context.packageName}-$id"
 
         val notificationBuilder = NotificationCompat.Builder(context, channelId).apply {
-            setSmallIcon(R.drawable.event)
+            setSmallIcon(R.drawable.ic_ugame_notification_icon)
+            color = ContextCompat.getColor(context, R.color.colorAccent)
             setContentTitle(title)
             setContentText(message)
             setAutoCancel(true)
 
-            val intent = Intent(context, SplashActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            var pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            val intentMain = Intent(context, MainActivity::class.java)
+            //Check if the intent leads to the starting page. If so use intentMain.
+            intentMain.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 
-            val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            //Check if the intent leads to the starting page.
+            if (intentMain == intent) {
+                val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            } else {
+                // If not add it to an array with the starting page.
+                val chainIntent = arrayOf(intentMain, intent)
+                pendingIntent = PendingIntent.getActivities(context, 0, chainIntent, PendingIntent.FLAG_ONE_SHOT)
+            }
 
             setContentIntent(pendingIntent)
         }

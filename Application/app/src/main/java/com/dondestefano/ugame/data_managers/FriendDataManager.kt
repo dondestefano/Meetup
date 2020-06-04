@@ -1,6 +1,7 @@
 package com.dondestefano.ugame.data_managers
 
 import android.content.Context
+import android.service.autofill.UserData
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.dondestefano.ugame.activities.*
@@ -147,13 +148,17 @@ object FriendDataManager {
         // Send request to friend and upload to friends friendRequests collection in Firebase
         friend.userID?.let { friendReqRef = db.collection(FRIEND_REQUEST_PATH).document(it).collection(REQUEST_PATH) }
         val requestReceived = hashMapOf(
-            "status" to REQUEST_RECEIVED
+            "status" to REQUEST_RECEIVED,
+            "to" to friend.userID,
+            "from" to UserDataManager.loggedInUser.userID
         )
         UserDataManager.loggedInUser.userID?.let { friendReqRef?.document(it)?.set(requestReceived as Map<String, String>) }
 
         // Add request to user and upload to the users friendRequests collection in Firebase
         val request = hashMapOf(
-            "status" to REQUEST_SENT
+            "status" to REQUEST_SENT,
+            "to" to friend.userID,
+            "from" to UserDataManager.loggedInUser.userID
         )
         friend.userID?.let { userReqRef?.document(it)?.set(request as Map<String, String>) }
     }

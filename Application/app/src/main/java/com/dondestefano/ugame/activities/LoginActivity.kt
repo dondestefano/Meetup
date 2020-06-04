@@ -11,7 +11,9 @@ import com.dondestefano.ugame.R
 import com.dondestefano.ugame.data_managers.EventDataManager
 import com.dondestefano.ugame.data_managers.FriendDataManager
 import com.dondestefano.ugame.data_managers.UserDataManager
+import com.dondestefano.ugame.notification.MyFirebaseMessagingService
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.iid.FirebaseInstanceId
 
 class LoginActivity : AppCompatActivity() {
 
@@ -54,6 +56,11 @@ class LoginActivity : AppCompatActivity() {
                         FriendDataManager.resetFriendDataManagerUser()
                         // Get Events from database
                         EventDataManager.resetEventDataManagerUser()
+                        // Set a new registrationToken if the user doesn't have one.
+                        val registrationToken = FirebaseInstanceId.getInstance().token
+                        if (registrationToken != null) {
+                            MyFirebaseMessagingService.addTokenToFirestore(registrationToken)
+                        }
                         goToListActivity()
                         finish()
                     } else {
@@ -67,7 +74,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun goToListActivity() {
-        val intent = Intent(this, ListActivity::class.java)
+        val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
     }
 

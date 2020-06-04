@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dondestefano.ugame.R
@@ -113,7 +114,7 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
                 when {
                     event?.host == UserDataManager.loggedInUser.userID -> {
                         holder.attendButton.setText("Hosting")
-                        holder.attendButton.setTextColor(Color.WHITE)
+                        holder.attendButton.setTextColor(ContextCompat.getColor(context, R.color.colorNeutral))
                         holder.attendButton.isClickable = false
                         holder.attendButton.isEnabled = false
                     }
@@ -127,7 +128,7 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
 
                     event?.attend!! -> {
                         holder.attendButton.setText("I'm Game")
-                        holder.attendButton.setTextColor(Color.GREEN)
+                        holder.attendButton.setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
                         holder.attendButton.isClickable = true
                         holder.attendButton.isEnabled = true
                         if (event != null && AlarmScheduler.checkIfTimeValid(event)) {
@@ -139,7 +140,7 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
                     }
                     else -> {
                         holder.attendButton.setText("Can't")
-                        holder.attendButton.setTextColor(Color.RED)
+                        holder.attendButton.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
                         holder.attendButton.isClickable = true
                         holder.attendButton.isEnabled = true
                         // Remove any scheduled alarms for the event.

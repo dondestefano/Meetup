@@ -14,7 +14,7 @@ import java.util.*
 
 object UserDataManager {
     // All users //
-    var loggedInUser = User(null, null, null)
+    var loggedInUser = User(null, null, null, null, mutableListOf())
     val allUsersList = mutableListOf<User>()
 
     // Database-helpers //
@@ -36,7 +36,6 @@ object UserDataManager {
                 } else {
                     Toast.makeText(context, "Error fetching user", Toast.LENGTH_SHORT)
                         .show()
-
                 }
             }
         }
@@ -78,6 +77,19 @@ object UserDataManager {
                 userDataRef.update("profileImageURL", it.toString())
             }
         }
+    }
+
+    fun getFCMRegistrationToken(onComplete: (tokens: MutableList<String>) -> Unit) {
+        userDataRef.get().addOnSuccessListener {
+            val user = it.toObject(User::class.java)
+            if (user != null) {
+                user.registrationTokens?.let { onComplete(it) }
+            }
+        }
+    }
+
+    fun setFCMRegistrationTokens(registrationTokens: MutableList<String>) {
+        userDataRef.update("registrationTokens", registrationTokens)
     }
 
     // Might be of use
