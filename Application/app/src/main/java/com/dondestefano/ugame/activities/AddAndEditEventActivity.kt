@@ -110,29 +110,35 @@ class AddAndEditEventActivity : AppCompatActivity() {
                 .setFabBackgroundColor(ResourcesCompat.getColor(resources, R.color.colorPrimary, theme
                 ))
                 .setFabImageTintColor(ResourcesCompat.getColor(resources, R.color.colorWhite, theme))
-                .setLabel("Save changes")
+                .setLabel(getString(R.string.save_changes))
                 .setLabelColor(Color.WHITE)
-                .setLabelBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getTheme()))
+                .setLabelBackgroundColor(ResourcesCompat.getColor(resources, R.color.colorPrimary, theme))
                 .setLabelClickable(false)
                 .create())
 
         speedDialFab.addActionItem(
             SpeedDialActionItem.Builder(R.id.inviteFriendsFab, R.drawable.add_friend)
-                .setFabBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getTheme()))
-                .setFabImageTintColor(ResourcesCompat.getColor(getResources(), R.color.colorWhite, getTheme()))
-                .setLabel("Invite friends")
+                .setFabBackgroundColor(ResourcesCompat.getColor(resources, R.color.colorPrimary, theme
+                ))
+                .setFabImageTintColor(ResourcesCompat.getColor(resources, R.color.colorWhite, theme
+                ))
+                .setLabel(getString(R.string.invite_friend))
                 .setLabelColor(Color.WHITE)
-                .setLabelBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getTheme()))
+                .setLabelBackgroundColor(ResourcesCompat.getColor(resources, R.color.colorPrimary, theme))
                 .setLabelClickable(false)
                 .create())
 
         speedDialFab.addActionItem(
             SpeedDialActionItem.Builder(R.id.cancelEventFab, R.drawable.remove)
-                .setFabBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.design_default_color_error, getTheme()))
-                .setFabImageTintColor(ResourcesCompat.getColor(getResources(), R.color.colorWhite, getTheme()))
-                .setLabel("Cancel event")
+                .setFabBackgroundColor(ResourcesCompat.getColor(resources, R.color.design_default_color_error,
+                    theme
+                ))
+                .setFabImageTintColor(ResourcesCompat.getColor(resources, R.color.colorWhite, theme))
+                .setLabel(getString(R.string.cancel_event))
                 .setLabelColor(Color.WHITE)
-                .setLabelBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.design_default_color_error, getTheme()))
+                .setLabelBackgroundColor(ResourcesCompat.getColor(resources, R.color.design_default_color_error,
+                    theme
+                ))
                 .setLabelClickable(false)
                 .create())
 
@@ -140,23 +146,21 @@ class AddAndEditEventActivity : AppCompatActivity() {
         speedDialFab.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
             when (actionItem.id) {
                 R.id.saveChangesFab -> {
-                    editEvent(eventPosition)
+                    editEvent()
                     speedDialFab.close()
                     return@OnActionSelectedListener true
-                    finish()
                 }
 
                 R.id.inviteFriendsFab -> {
                     goToInvite()
                     speedDialFab.close()
                     return@OnActionSelectedListener true
-                    finish()
                 }
 
                 R.id.cancelEventFab -> {
                     val dialogBuilder = AlertDialog.Builder(this)
-                    dialogBuilder.setTitle("Cancel this event?")
-                        .setMessage("Are you sure you want to cancel and remove this event?")
+                    dialogBuilder.setTitle(getString(R.string.remove_event_title))
+                        .setMessage(getString(R.string.remove_event_text))
                         .setPositiveButton("Yes", DialogInterface.OnClickListener { dialog, id ->
                             event?.let { EventDataManager.removeEvent(it) }
                             speedDialFab.close()
@@ -176,21 +180,23 @@ class AddAndEditEventActivity : AppCompatActivity() {
         // Setup each individual action button for attendance functionality.
         speedDialFab.addActionItem(
             SpeedDialActionItem.Builder(R.id.attendFab, R.drawable.approve)
-                .setFabBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPositive, getTheme()))
-                .setFabImageTintColor(ResourcesCompat.getColor(getResources(), R.color.colorWhite, getTheme()))
-                .setLabel("I'm game!")
+                .setFabBackgroundColor(ResourcesCompat.getColor(resources, R.color.colorPositive, theme))
+                .setFabImageTintColor(ResourcesCompat.getColor(resources, R.color.colorWhite, theme))
+                .setLabel(getString(R.string.accept_dialog))
                 .setLabelColor(Color.WHITE)
-                .setLabelBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPositive, getTheme()))
+                .setLabelBackgroundColor(ResourcesCompat.getColor(resources, R.color.colorPositive, theme))
                 .setLabelClickable(false)
                 .create())
 
         speedDialFab.addActionItem(
             SpeedDialActionItem.Builder(R.id.declineFab, R.drawable.decline)
-                .setFabBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.design_default_color_error, getTheme()))
-                .setFabImageTintColor(ResourcesCompat.getColor(getResources(), R.color.colorWhite, getTheme()))
-                .setLabel("No game for me.")
+                .setFabBackgroundColor(ResourcesCompat.getColor(resources, R.color.design_default_color_error,
+                    theme
+                ))
+                .setFabImageTintColor(ResourcesCompat.getColor(resources, R.color.colorWhite, theme))
+                .setLabel(getString(R.string.decline_dialog))
                 .setLabelColor(Color.WHITE)
-                .setLabelBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.design_default_color_error, getTheme()))
+                .setLabelBackgroundColor(ResourcesCompat.getColor(resources, R.color.design_default_color_error, theme))
                 .setLabelClickable(false)
                 .create())
 
@@ -216,7 +222,6 @@ class AddAndEditEventActivity : AppCompatActivity() {
     }
 
     private fun setupRecycleViews() {
-        println("!!! Doing it")
         attendRecyclerView = findViewById(R.id.attendingListRecyclerView)
         declineRecyclerView = findViewById(R.id.declinedListRecyclerView)
         newRecyclerView = findViewById(R.id.invitedListRecyclerView)
@@ -231,7 +236,6 @@ class AddAndEditEventActivity : AppCompatActivity() {
         declineRecyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         val declinedGuestsAdapter = GuestListRecycleAdapter(this)
         declineRecyclerView.adapter = declinedGuestsAdapter
-        println("!!! This is the ${event?.name} ")
         EventDataManager.checkAttendance(event!!, declineRecyclerView, declinedGuestsAdapter, GUEST_LIST_DECLINED)
 
         // Setup new adapter.
@@ -275,7 +279,7 @@ class AddAndEditEventActivity : AppCompatActivity() {
             finish()
         }
         else {
-            errorToast("Please enter a name for your event.")
+            errorToast(getString(R.string.no_name_warning))
         }
     }
 
@@ -405,11 +409,11 @@ class AddAndEditEventActivity : AppCompatActivity() {
                 event.keyName?.let { EventDataManager.updateEventToFirebase(it, event) }
             }
         } else {
-            errorToast("Please enter a name for your event.")
+            errorToast(getString(R.string.no_name_warning))
         }
     }
 
-    private fun editEvent(position: Int) {
+    private fun editEvent() {
         val name = nameEditText.text.toString()
         val date : Date = calendar.time
         event?.let { event ->

@@ -20,7 +20,7 @@ object EventDataManager {
     var inviteList = mutableListOf<String>() // List for inviting friends to events
 
     //* Dateformatters *//
-    val dateFormat = SimpleDateFormat("E dd-MMM-yyyy")
+    val dateFormat = SimpleDateFormat("E, dd MMM, yyyy")
     val timeFormat = SimpleDateFormat("HH:mm")
 
     //* Datebase-helpers *//
@@ -170,12 +170,11 @@ object EventDataManager {
         val declinedInvites = mutableListOf<com.dondestefano.ugame.objects.User>()
         val newInvites = mutableListOf<com.dondestefano.ugame.objects.User>()
         // Add the host of the event by default.
-        val host = event?.host?.let { UserDataManager.getUser(it) }
+        val host = event.host?.let { UserDataManager.getUser(it) }
         acceptedInvites.add(host!!)
 
         for (friendID in event.invitedUsers!!) {
             // Check friends event document to get their status.
-            println("!!! $guestStatus")
             event.keyName?.let {
                 db.collection(EVENT_PATH).document(friendID).collection(EVENT_COLLECTION_PATH).document(
                     it
@@ -192,7 +191,6 @@ object EventDataManager {
                             acceptedInvites.add(guest!!)
                             declinedInvites.remove(guest)
                             newInvites.remove(guest)
-                            println("!!! Found accepted")
                         }
 
                         status == false && checkNew == false -> {
@@ -200,13 +198,11 @@ object EventDataManager {
                             acceptedInvites.remove(declinedGuest)
                             declinedInvites.add(declinedGuest!!)
                             newInvites.remove(declinedGuest)
-                            println("!!! Found declined")
                         }
 
                         checkNew == true ->  {
                             val newGuest = UserDataManager.getUser(friendID)
                             newInvites.add(newGuest!!)
-                            println("!!! Found new")
                         }
                     }
                     // Assign the correct list to the adapter.
@@ -281,7 +277,7 @@ object EventDataManager {
 
         // Get the events date + one day.
         val eventTimePassed = Calendar.getInstance(Locale.getDefault())
-        event?.date?.let {
+        event.date?.let {
             eventTimePassed.set(Calendar.HOUR_OF_DAY, 0)
             eventTimePassed.set(Calendar.MINUTE, 0)
             eventTimePassed.set(Calendar.SECOND, 0)

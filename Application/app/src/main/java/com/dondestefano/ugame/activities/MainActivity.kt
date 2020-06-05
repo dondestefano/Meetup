@@ -20,6 +20,7 @@ import com.dondestefano.ugame.notification.NotificationHelper
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.nav_header.view.*
 
 const val EVENT_FRAGMENT = "event_fragment"
@@ -44,14 +45,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Show eventListFragment when the app starts.
         replaceFragment(eventListFragment, EVENT_FRAGMENT)
         setUpNavDrawer()
-
-        NotificationHelper.createNotificationChannel(this,
-            NotificationManagerCompat.IMPORTANCE_HIGH, true,
-            "Event", "Notification channel for events.")
-
-        NotificationHelper.createNotificationChannel(this,
-            NotificationManagerCompat.IMPORTANCE_HIGH, true,
-            "Friends", "Notification channel for friends.")
+        setNotificationChannel()
     }
 
     private fun setUpNavDrawer() {
@@ -71,6 +65,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         navView.setNavigationItemSelectedListener(this)
         getLoggedInUser()
+    }
+
+    private fun setNotificationChannel() {
+
+        // Channel for event notifications.
+        val eventChannel: String = getString(R.string.event_channel_name)
+
+        NotificationHelper.createNotificationChannel(this,
+            NotificationManagerCompat.IMPORTANCE_HIGH, true,
+            eventChannel, "Notification channel for events.")
+
+        val friendChannel: String = getString(R.string.friend_channel_name)
+        // Channel for friend notifications.
+        NotificationHelper.createNotificationChannel(this,
+            NotificationManagerCompat.IMPORTANCE_HIGH, true,
+            friendChannel, "Notification channel for friends.")
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

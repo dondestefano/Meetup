@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import com.dondestefano.ugame.R
 import com.dondestefano.ugame.data_managers.FriendDataManager
 import com.dondestefano.ugame.data_managers.UserDataManager
@@ -57,7 +58,7 @@ class UserProfileActivity : AppCompatActivity() {
 
     private fun getExtraFromIntent() {
         // Get users ID and find correct user
-        userID = intent.getStringExtra("USER_ID")
+        userID = intent.getStringExtra(USER_ID)
         user = UserDataManager.getUser(userID)
     }
 
@@ -95,16 +96,18 @@ class UserProfileActivity : AppCompatActivity() {
         when (currentState) {
             FRIEND_STATE -> {
                 addFriendButton = findViewById(R.id.sendFriendRequestButton)
-                addFriendButton.text = "Unfriend"
+                addFriendButton.text = getString(R.string.unfriend)
+                addFriendButton.setBackgroundColor(ContextCompat.getColor(this, R.color.design_default_color_error))
                 addFriendButton.setOnClickListener {
                     user?.let { FriendDataManager.removeFriend(this, it) }
+                    addFriendButton.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent))
                     currentState = STRANGER_STATE
                     setUpFromState()
                 }
             }
             STRANGER_STATE -> {
                 addFriendButton = findViewById(R.id.sendFriendRequestButton)
-                addFriendButton.text = "Add friend"
+                addFriendButton.text = getString(R.string.add_friend)
                 addFriendButton.setOnClickListener {
                     user?.let { FriendDataManager.sendFriendRequest(it) }
                     currentState = SENT_STATE
@@ -113,7 +116,7 @@ class UserProfileActivity : AppCompatActivity() {
             }
             SENT_STATE -> {
                 addFriendButton = findViewById(R.id.sendFriendRequestButton)
-                addFriendButton.text = "Cancel friend request"
+                addFriendButton.text = getString(R.string.cancel_request)
                 addFriendButton.setOnClickListener {
                     user?.let { FriendDataManager.removeFriend(this, it) }
                     currentState = STRANGER_STATE
@@ -122,7 +125,7 @@ class UserProfileActivity : AppCompatActivity() {
             }
             RECEIVED_STATE -> {
                 addFriendButton = findViewById(R.id.sendFriendRequestButton)
-                addFriendButton.text = "Accept friend request"
+                addFriendButton.text = getString(R.string.accept_request)
                 addFriendButton.setOnClickListener {
                     user?.let { FriendDataManager.acceptFriendRequest(it) }
                     currentState = FRIEND_STATE
@@ -154,7 +157,7 @@ class UserProfileActivity : AppCompatActivity() {
 
             addFriendButton.visibility = VISIBLE
 
-            addFriendButton.text = "Save changes"
+            addFriendButton.text = getString(R.string.save_changes)
             addFriendButton.setOnClickListener {
                 selectedPhotoUri?.let { UserDataManager.uploadImageToFirebaseStorage(it)}
                 setupUser()

@@ -26,17 +26,15 @@ object UserDataManager {
     fun getLoggedInUser(context: Context) {
         val loggedInUserID = auth.currentUser?.uid
         userDataRef = loggedInUserID?.let { allUsersRef.document(it) }!!
-        if(loggedInUserID != null) {
-            userDataRef?.addSnapshotListener { snapshot, e ->
-                // Load user with the correct id from Firebase
-                if (snapshot != null) {
-                    loggedInUser = snapshot.toObject(User::class.java)!!
-                    Toast.makeText(context, "Welcome ${UserDataManager.loggedInUser.name}!", Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    Toast.makeText(context, "Error fetching user", Toast.LENGTH_SHORT)
-                        .show()
-                }
+        userDataRef.addSnapshotListener { snapshot, e ->
+            // Load user with the correct id from Firebase
+            if (snapshot != null) {
+                loggedInUser = snapshot.toObject(User::class.java)!!
+                Toast.makeText(context, "Welcome ${UserDataManager.loggedInUser.name}!", Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+                Toast.makeText(context, "Error fetching user", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }

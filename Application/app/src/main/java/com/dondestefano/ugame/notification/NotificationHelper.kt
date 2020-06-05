@@ -36,18 +36,18 @@ object NotificationHelper {
             setContentText(message)
             setAutoCancel(true)
 
-            var pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            var pendingIntent: PendingIntent
             val intentMain = Intent(context, MainActivity::class.java)
             //Check if the intent leads to the starting page. If so use intentMain.
             intentMain.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 
             //Check if the intent leads to the starting page.
-            if (intentMain == intent) {
-                val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            pendingIntent = if (intentMain == intent) {
+                PendingIntent.getActivity(context, 0, intent, 0)
             } else {
                 // If not add it to an array with the starting page.
                 val chainIntent = arrayOf(intentMain, intent)
-                pendingIntent = PendingIntent.getActivities(context, 0, chainIntent, PendingIntent.FLAG_ONE_SHOT)
+                PendingIntent.getActivities(context, 0, chainIntent, PendingIntent.FLAG_ONE_SHOT)
             }
 
             setContentIntent(pendingIntent)

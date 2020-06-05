@@ -25,14 +25,12 @@ object AlarmScheduler {
             datetimeToAlarm.set(Calendar.MILLISECOND, 0)
             datetimeToAlarm.set(Calendar.DAY_OF_WEEK, date.day + 1)
         }
-        println("!!! Set $alarmIntent")
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, datetimeToAlarm.timeInMillis,(1000 * 60 * 60 * 24 * 7).toLong(), alarmIntent)
     }
 
     fun removeAlarmForEvent(context: Context, eventPosition: Int) {
         val alarmIntent = createPendingIntent(context, eventPosition)
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        println("!!! Removed $alarmIntent")
         alarmManager.cancel(alarmIntent)
     }
 
@@ -51,7 +49,8 @@ object AlarmScheduler {
         val now = Calendar.getInstance(Locale.getDefault())
         // Get events time
         val eventTime = Calendar.getInstance(Locale.getDefault())
-        event?.date?.let {
+        event
+            .date?.let {
             eventTime.set(Calendar.HOUR_OF_DAY, it.hours)
             eventTime.set(Calendar.MINUTE, it.minutes)
             eventTime.set(Calendar.SECOND, 0)

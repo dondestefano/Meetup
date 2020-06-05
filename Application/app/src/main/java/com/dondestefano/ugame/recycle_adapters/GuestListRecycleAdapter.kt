@@ -1,12 +1,15 @@
 package com.dondestefano.ugame.recycle_adapters
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.dondestefano.ugame.R
+import com.dondestefano.ugame.activities.AddAndEditEventActivity
+import com.dondestefano.ugame.activities.UserProfileActivity
 import com.dondestefano.ugame.objects.User
 import com.squareup.picasso.Picasso
 
@@ -30,9 +33,19 @@ class GuestListRecycleAdapter(private val context: Context): RecyclerView.Adapte
         val currentGuest = guests[position]
         val uri = currentGuest.profileImageURL
         Picasso.get().load(uri).into(holder.guestImageView)
+        holder.userID = currentGuest.userID
     }
 
     inner class GuestListViewHolder(guestView: View) : RecyclerView.ViewHolder(guestView) {
         val guestImageView: ImageView = itemView.findViewById(R.id.guestImage)
+        var userID: String? = null
+
+        init {
+            itemView.setOnClickListener {
+                    val intent = Intent(context, UserProfileActivity::class.java)
+                    intent.putExtra("USER_ID", userID)
+                    context.startActivity(intent)
+            }
+        }
     }
 }

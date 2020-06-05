@@ -29,17 +29,17 @@ class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
         when (viewType) {
             TYPE_FRIEND_HEADER -> {
                 val itemView = layoutInflater.inflate(R.layout.header_card_layout, parent, false)
-                return HeaderViewHolder(itemView, "Friends.")
+                return HeaderViewHolder(itemView, context.getString(R.string.friend_list_title))
             }
 
             TYPE_REQUESTED_HEADER -> {
                 val itemView = layoutInflater.inflate(R.layout.header_card_layout, parent, false)
-                return HeaderViewHolder(itemView, "New friend requests.")
+                return HeaderViewHolder(itemView, context.getString(R.string.new_friend_list_title))
             }
 
             TYPE_WAITING_HEADER -> {
                 val itemView = layoutInflater.inflate(R.layout.header_card_layout, parent, false)
-                return HeaderViewHolder(itemView, "Requests sent.")
+                return HeaderViewHolder(itemView, context.getString(R.string.sent_request_list_title))
             }
 
             else -> {
@@ -58,15 +58,15 @@ class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
             is HeaderViewHolder -> {
                 holder.headerNameTextView.text = holder.text
                 when (holder.text) {
-                    "Friends." -> {
+                    context.getString(R.string.friend_list_title) -> {
                         holder.headerIconImageView.setImageResource(R.drawable.friends)
                     }
 
-                    "New friend requests." -> {
+                    context.getString(R.string.new_friend_list_title) -> {
                         holder.headerIconImageView.setImageResource(R.drawable.new_alert)
                     }
 
-                    "Requests sent." -> {
+                    context.getString(R.string.sent_request_list_title) -> {
                         holder.headerIconImageView.setImageResource(R.drawable.sent)
                     }
                 }
@@ -106,6 +106,5 @@ class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
         val headerNameTextView: TextView = itemView.findViewById<TextView>(R.id.eventListHeader)
         val headerIconImageView: ImageView = itemView.findViewById(R.id.headerIconImageView)
         val text = text
-
     }
 }

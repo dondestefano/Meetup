@@ -141,7 +141,7 @@ object FriendDataManager {
     fun resetFriendDataManagerUser() {
         // Get the current users information for the EventDataManager
         currentUser = FirebaseAuth.getInstance().currentUser!!
-        currentUser?.uid.let { userReqRef = db.collection(FRIEND_REQUEST_PATH).document(it).collection(REQUEST_PATH) }
+        currentUser.uid.let { userReqRef = db.collection(FRIEND_REQUEST_PATH).document(it).collection(REQUEST_PATH) }
     }
 
     fun sendFriendRequest(friend: User) {
@@ -152,7 +152,7 @@ object FriendDataManager {
             "to" to friend.userID,
             "from" to UserDataManager.loggedInUser.userID
         )
-        UserDataManager.loggedInUser.userID?.let { friendReqRef?.document(it)?.set(requestReceived as Map<String, String>) }
+        UserDataManager.loggedInUser.userID?.let { friendReqRef.document(it).set(requestReceived as Map<String, String>) }
 
         // Add request to user and upload to the users friendRequests collection in Firebase
         val request = hashMapOf(
@@ -160,7 +160,7 @@ object FriendDataManager {
             "to" to friend.userID,
             "from" to UserDataManager.loggedInUser.userID
         )
-        friend.userID?.let { userReqRef?.document(it)?.set(request as Map<String, String>) }
+        friend.userID?.let { userReqRef.document(it).set(request as Map<String, String>) }
     }
 
     fun acceptFriendRequest(friend: User) {
@@ -169,21 +169,21 @@ object FriendDataManager {
         UserDataManager.loggedInUser.userID?.let { friendReqRef.document(it).update("status", REQUEST_ACCEPTED) }
 
         // Update request as accepted in firebase
-        friend.userID?.let { userReqRef?.document(it)?.update("status", REQUEST_ACCEPTED)}
+        friend.userID?.let { userReqRef.document(it).update("status", REQUEST_ACCEPTED)}
     }
 
     fun removeFriend(context: Context, friend: User) {
         // Remove request from friend and upload to friends friendRequests collection in Firebase
         friend.userID?.let { friendReqRef = db.collection(FRIEND_REQUEST_PATH).document(it).collection(REQUEST_PATH) }
-        UserDataManager.loggedInUser.userID?.let { friendReqRef?.document(it)}
+        UserDataManager.loggedInUser.userID?.let { friendReqRef.document(it)}
             ?.delete()
 
         // Remove request from user and upload to the users friendRequests collection in Firebase
-        friend.userID?.let { userReqRef?.document(it) }
+        friend.userID?.let { userReqRef.document(it) }
             ?.delete()
             ?.addOnSuccessListener {
                 Toast.makeText(context, "Removed ${friend.name} from friends.", Toast.LENGTH_SHORT)
-                        .show()
+                    .show()
             }
             ?.addOnFailureListener{
                 Toast.makeText(context, "Error. Cant't remove ${friend.name} from friend list.", Toast.LENGTH_SHORT)
