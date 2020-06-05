@@ -43,7 +43,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:text="Hej"
+                android:text="@string/profile"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/userSearchImage"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -52,7 +52,7 @@
                 android:id="@+id/inviteCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Invite"
+                android:text="@string/invite"
                 android:layout_marginEnd="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"

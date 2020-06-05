@@ -5,6 +5,7 @@ import android.content.Intent
 import android.service.autofill.UserData
 import android.util.Log
 import android.widget.Toast
+import com.dondestefano.ugame.R
 import com.dondestefano.ugame.activities.MainActivity
 import com.dondestefano.ugame.activities.SplashActivity
 import com.dondestefano.ugame.activities.UserProfileActivity
@@ -37,20 +38,22 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         when (sender) {
             "event" -> {
+                val eventChannel: String = getString(R.string.event_channel_name)
                 val host = hostId?.let { UserDataManager.getUser(it) }
                 if (host != null) {
-                    NotificationHelper.createNotification("Event", this, eventName!!, "${host.name} has invited you. Are you game?", intentMain)
-                } else {NotificationHelper.createNotification("Event", this, "New event.", "You have a new invitation. Are you game?", intentMain)}
+                    NotificationHelper.createNotification(eventChannel, this, eventName!!, "${host.name} has invited you. Are you game?", intentMain)
+                } else {NotificationHelper.createNotification(eventChannel, this, "New event.", "You have a new invitation. Are you game?", intentMain)}
             }
 
             "friend" -> {
+                val friendChannel: String = getString(R.string.friend_channel_name)
                 val intentFriend = Intent(this, UserProfileActivity::class.java)
                 val friend = friendId?.let { UserDataManager.getUser(it) }
                 if (friend != null) {
-                    // Add the friends id to intent.
+                    // Add the friend's id to intent.
                     intentFriend.putExtra("USER_ID", friendId)
-                    NotificationHelper.createNotification("Event", this, "New friend request", "${friend.name} wants to be your friend.", intentFriend)
-                } else {NotificationHelper.createNotification("Event", this, "New friend request", "Someone wants to be your friend", intentFriend)}
+                    NotificationHelper.createNotification(friendChannel, this, "New friend request", "${friend.name} wants to be your friend.", intentFriend)
+                } else {NotificationHelper.createNotification(friendChannel, this, "New friend request", "Someone wants to be your friend", intentFriend)}
             }
         }
     }

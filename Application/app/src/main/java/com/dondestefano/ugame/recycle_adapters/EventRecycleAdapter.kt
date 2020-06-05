@@ -36,8 +36,6 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
         const val TYPE_ACCEPT_HEADER = 1
         const val TYPE_DECLINE_HEADER = 2
         const val TYPE_EVENT = 3
-        // Helpers to determine what list the guestListRecycleView should display.
-
     }
 
     fun updateItemsToList(list : List<AdapterItem>) {
@@ -49,17 +47,17 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
         when (viewType) {
             TYPE_NEW_HEADER -> {
                 val itemView = layoutInflater.inflate(R.layout.header_card_layout, parent, false)
-                return HeaderViewHolder(itemView, "New invites!")
+                return HeaderViewHolder(itemView, context.getString(R.string.new_invites))
             }
 
             TYPE_ACCEPT_HEADER -> {
                 val itemView = layoutInflater.inflate(R.layout.header_card_layout, parent, false)
-                return HeaderViewHolder(itemView, "Attending events")
+                return HeaderViewHolder(itemView, context.getString(R.string.attending_events))
             }
 
             TYPE_DECLINE_HEADER -> {
                 val itemView = layoutInflater.inflate(R.layout.header_card_layout, parent, false)
-                return HeaderViewHolder(itemView, "Declined events")
+                return HeaderViewHolder(itemView, context.getString(R.string.declined_events))
             }
 
             else -> {
@@ -79,14 +77,16 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
                 holder.headerNameTextView.text = holder.text
 
                 when (holder.text) {
-                    "New invites!" -> {
+                    context.getString(R.string.new_invites) -> {
                         holder.headerIconImageView.setImageResource(R.drawable.new_alert)
                     }
-                    "Attending events" -> {
+                    context.getString(R.string.attending_events) -> {
                         holder.headerIconImageView.setImageResource(R.drawable.approve)
                     }
-                    "Declined events" -> {
+                    context.getString(R.string.declined_events) -> {
                         holder.headerIconImageView.setImageResource(R.drawable.decline)
+                        holder.headerIconImageView.setColorFilter(ContextCompat.getColor(context, R.color.colorPrimaryDark))
+                        holder.headerNameTextView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
                     }
                 }
             }
@@ -94,9 +94,8 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
             is EventViewHolder -> {
                 val currentItem = listItems[position]
                 val event = currentItem.event
-                val guestList = mutableListOf<User>()
                 holder.textViewName.text = event?.name
-                holder.textViewDate.text = (EventDataManager.dateFormat.format(event?.date) + " " + EventDataManager.timeFormat.format(event?.date))
+                holder.textViewDate.text = (EventDataManager.dateFormat.format(event?.date) + " - " + EventDataManager.timeFormat.format(event?.date))
                 holder.eventPosition = position
 
                 // If the user isn't the host enable quick attendance functionality.
@@ -113,25 +112,25 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
 
                 when {
                     event?.host == UserDataManager.loggedInUser.userID -> {
-                        holder.attendButton.setText("Hosting")
+                        holder.attendButton.text = context.getString(R.string.hosting_event_button_text)
                         holder.attendButton.setTextColor(ContextCompat.getColor(context, R.color.colorNeutral))
                         holder.attendButton.isClickable = false
                         holder.attendButton.isEnabled = false
                     }
 
                     event?.new!! ->  {
-                        holder.attendButton.setText("U Game?")
+                        holder.attendButton.text = context.getString(R.string.new_event_button_text)
                         holder.attendButton.setTextColor(Color.YELLOW)
                         holder.attendButton.isClickable = true
                         holder.attendButton.isEnabled = true
                     }
 
-                    event?.attend!! -> {
-                        holder.attendButton.setText("I'm Game")
+                    event.attend!! -> {
+                        holder.attendButton.text = context.getString(R.string.attending_event_button_text)
                         holder.attendButton.setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
                         holder.attendButton.isClickable = true
                         holder.attendButton.isEnabled = true
-                        if (event != null && AlarmScheduler.checkIfTimeValid(event)) {
+                        if (AlarmScheduler.checkIfTimeValid(event)) {
                             // Remove any previous instance.
                             AlarmScheduler.removeAlarmForEvent(context, position)
                             // Set new instance.
@@ -139,7 +138,7 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
                         }
                     }
                     else -> {
-                        holder.attendButton.setText("Can't")
+                        holder.attendButton.text = context.getString(R.string.declined_event_button_text)
                         holder.attendButton.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
                         holder.attendButton.isClickable = true
                         holder.attendButton.isEnabled = true

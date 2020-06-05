@@ -30,7 +30,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Profile"
+                    android:text="@string/profile"
                     android:textColor="#FFFFFF"
                     style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"/>
             </LinearLayout>
@@ -70,8 +70,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="32dp"
-        android:textSize="25dp"
-        android:text="TextView" />
+        android:textSize="25sp"
+        android:text="@string/profile" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/sendFriendRequestButton"
@@ -84,7 +84,7 @@
         app:icon="@drawable/add_friend"
         app:iconTint="@color/colorWhite"
         android:layout_gravity="end"
-        android:text="Friend request"
+        android:text="@string/friend_request"
         android:textColor="@color/colorWhite"
         app:backgroundTint="@color/colorAccent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

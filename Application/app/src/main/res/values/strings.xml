@@ -1,6 +1,54 @@
 <resources>
     <string name="app_name">UGame</string>
+    <string name="search">Search…</string>
+    <string name="app_slogan">Let\'s get the crew together!</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    // Notification channel names.
+    <string name="event_channel_name">Event</string>
+    <string name="friend_channel_name">Friends</string>
+
+    // Login strings.
+    <string name="username">Username</string>
+    <string name="e_mail">E-mail</string>
+    <string name="password">Password</string>
+    <string name="create_account">Create Account</string>
+    <string name="login">Login</string>
+
+    // Event strings.
+    <string name="new_event">New event</string>
+    <string name="event_time">Event time</string>
+    <string name="attending">Attending</string>
+    <string name="declined">Declined</string>
+    <string name="new_invites">New invites!</string>
+    <string name="attending_events">Attending events</string>
+    <string name="declined_events">Declined events</string>
+    <string name="hosting_event_button_text">Hosting</string>
+    <string name="new_event_button_text">U Game?</string>
+    <string name="attending_event_button_text">I\'m Game</string>
+    <string name="declined_event_button_text">Can\'t</string>
+    <string name="cancel_event">Cancel event</string>
+    <string name="save_changes">Save changes</string>
+    <string name="accept_dialog">I\'m game!</string>
+    <string name="decline_dialog">No game for me.</string>
+    <string name="save_amp_invite"><![CDATA[Save & invite]]></string>
+    <string name="invite">Invite</string>
+
+    // Profile strings.
+    <string name="friend_list_title">Friends.</string>
+    <string name="new_friend_list_title">New friend requests.</string>
+    <string name="sent_request_list_title">Requests sent.</string>
+    <string name="profile">Profile</string>
+    <string name="friend_request">Friend request</string>
+    <string name="add_friend">Add friend</string>
+    <string name="cancel_request">Cancel friend request</string>
+    <string name="accept_request">Accept friend request</string>
+    <string name="unfriend">Unfriend</string>
+    <string name="invite_friend">Invite friends</string>
+    <string name="find_friends">Find friends</string>
+
+    // Messages.
+    <string name="no_name_warning">Please enter a name for your event.</string>
+    <string name="remove_event_title">Cancel this event?</string>
+    <string name="remove_event_text">Are you sure you want to cancel and remove this event?</string>
+    <string name="not_responded">Not responded</string>
 </resources>

@@ -48,10 +48,8 @@ class InviteRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
         holder.userInviteCheckBox.setOnClickListener() {
             if(holder.userInviteCheckBox.isChecked){
                 currentUser.userID?.let { EventDataManager.inviteList.add(it) }
-                println("!!! Listan Ja ${EventDataManager.inviteList}")
             }
-            else { EventDataManager.inviteList.remove(currentUser.userID)
-                println("!!! Listan Nej ${EventDataManager.inviteList}")}
+            else { EventDataManager.inviteList.remove(currentUser.userID)}
         }
     }
 

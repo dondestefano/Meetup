@@ -53,7 +53,6 @@ class CreateAccountActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please fill in your details.", Toast.LENGTH_SHORT)
                     .show()
             }
-
         }
 
         uploadImageButton.setOnClickListener {

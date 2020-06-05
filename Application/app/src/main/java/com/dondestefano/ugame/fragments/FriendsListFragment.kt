@@ -72,7 +72,7 @@ class FriendsListFragment : Fragment() {
 
     private fun setFabButtons() {
         val fab = view?.findViewById<View>(R.id.addFriendActionButton)
-        fab?.setOnClickListener { view ->
+        fab?.setOnClickListener {
             val intent = Intent(activity, SearchUsersActivity::class.java)
             startActivity(intent)
         }

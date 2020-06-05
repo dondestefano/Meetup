@@ -30,7 +30,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Invite Friends"
+                    android:text="@string/invite_friend"
                     android:textColor="#FFFFFF"
                     style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"/>
             </LinearLayout>
@@ -44,7 +44,7 @@
         android:layout_marginTop="32dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:hint="Search..."
+        android:hint="@string/search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf= "@+id/appBarInvite" />
@@ -66,7 +66,7 @@
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/inviteButton"
-        android:text="Invite"
+        android:text="@string/invite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
