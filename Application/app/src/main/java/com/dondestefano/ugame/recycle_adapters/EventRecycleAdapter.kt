@@ -130,6 +130,8 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
                         holder.attendButton.setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
                         holder.attendButton.isClickable = true
                         holder.attendButton.isEnabled = true
+                        
+                        // Set alarm for event.
                         if (AlarmScheduler.checkIfTimeValid(event)) {
                             // Remove any previous instance.
                             AlarmScheduler.removeAlarmForEvent(context, position)
@@ -142,6 +144,7 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
                         holder.attendButton.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
                         holder.attendButton.isClickable = true
                         holder.attendButton.isEnabled = true
+                        
                         // Remove any scheduled alarms for the event.
                         if (event != null) {
                             AlarmScheduler.removeAlarmForEvent(context, position)
@@ -157,7 +160,7 @@ class EventRecycleAdapter(private val context: Context) : RecyclerView.Adapter<R
         val textViewDate: TextView = itemView.findViewById<TextView>(R.id.textViewDate)
         val attendButton: TextView = itemView.findViewById<Button>(R.id.attendButton)
         var eventPosition = 0
-        val guestListRecyclerView = itemView.findViewById<RecyclerView>(R.id.guestListRecyclerView)
+        val guestListRecyclerView: RecyclerView = itemView.findViewById<RecyclerView>(R.id.guestListRecyclerView)
 
         init {
             itemView.setOnClickListener {

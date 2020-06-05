@@ -106,6 +106,5 @@ class FriendRecycleAdapter(private val context: Context) : RecyclerView.Adapter<
         val headerNameTextView: TextView = itemView.findViewById<TextView>(R.id.eventListHeader)
         val headerIconImageView: ImageView = itemView.findViewById(R.id.headerIconImageView)
         val text = text
-
     }
 }

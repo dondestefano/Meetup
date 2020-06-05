@@ -183,7 +183,7 @@ object FriendDataManager {
             ?.delete()
             ?.addOnSuccessListener {
                 Toast.makeText(context, "Removed ${friend.name} from friends.", Toast.LENGTH_SHORT)
-                        .show()
+                    .show()
             }
             ?.addOnFailureListener{
                 Toast.makeText(context, "Error. Cant't remove ${friend.name} from friend list.", Toast.LENGTH_SHORT)

@@ -45,7 +45,7 @@ class GuestListRecycleAdapter(private val context: Context): RecyclerView.Adapte
                     val intent = Intent(context, UserProfileActivity::class.java)
                     intent.putExtra("USER_ID", userID)
                     context.startActivity(intent)
-                }
+            }
         }
     }
 }
